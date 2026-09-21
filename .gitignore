@@ -33,6 +33,7 @@ results/**/*.npy
 # Environments & Secrets
 .env
 scripts/fix_token.py
+scripts/fix_token.js
 .venv
 env/
 venv/
