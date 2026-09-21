@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="100%" height="100%" style="background:#0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+    <linearGradient id="propGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+    <marker id="arrCyan" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#34d399" />
+    </marker>
+    <marker id="arrPurple" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#c084fc" />
+    </marker>
+  </defs>
+
+  <rect width="1400" height="900" fill="#0b0f19" />
+
+  <!-- Header -->
+  <g transform="translate(60, 45)">
+    <text x="0" y="0" font-size="26" font-weight="bold" fill="#f8fafc">Extended 6-Model Architecture Comparison Suite</text>
+    <text x="0" y="26" font-size="14" fill="#94a3b8">Complete model library implemented in QC-CNN-Parallel1 for benchmarking, ablation testing, and scalability analysis</text>
+  </g>
+
+  <!-- ==================== MODEL 1: PROPOSED QC-CNN-PARALLEL ==================== -->
+  <g transform="translate(60, 95)">
+    <rect width="400" height="350" rx="12" fill="url(#propGrad)" stroke="#10b981" stroke-width="2" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#34d399">1. Proposed QC-CNN-Parallel</text>
+    <text x="20" y="52" font-size="11" fill="#a7f3d0">Hybrid Dual-Branch (152 Conv Params)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 70)">
+      <rect x="0" y="55" width="60" height="50" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="30" y="85" font-size="11" fill="#cbd5e1" text-anchor="middle">Input [28²]</text>
+
+      <!-- Classical path -->
+      <path d="M 60 70 L 95 70 L 95 25 L 120 25" fill="none" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrGreen)" />
+      <rect x="120" y="5" width="110" height="42" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1.2" />
+      <text x="175" y="24" font-size="10" font-weight="bold" fill="#34d399" text-anchor="middle">Conv2d (1→8, 4×4)</text>
+      <text x="175" y="38" font-size="9" fill="#a7f3d0" text-anchor="middle">[B, 8, 14, 14] · 136p</text>
+
+      <!-- Quantum path -->
+      <path d="M 60 90 L 95 90 L 95 135 L 120 135" fill="none" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arrPurple)" />
+      <rect x="120" y="115" width="110" height="42" rx="6" fill="#0f172a" stroke="#c084fc" stroke-width="1.2" />
+      <text x="175" y="134" font-size="10" font-weight="bold" fill="#c084fc" text-anchor="middle">PQC Circuit 11</text>
+      <text x="175" y="148" font-size="9" fill="#e9d5ff" text-anchor="middle">[B, 4, 14, 14] · 16p</text>
+
+      <!-- Concat -->
+      <path d="M 230 25 L 255 25 L 255 70 L 270 70" fill="none" stroke="#34d399" stroke-width="1.8" />
+      <path d="M 230 135 L 255 135 L 255 90 L 270 90" fill="none" stroke="#c084fc" stroke-width="1.8" />
+      <rect x="270" y="60" width="85" height="42" rx="6" fill="#0369a1" stroke="#38bdf8" stroke-width="1.2" />
+      <text x="312" y="78" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">Concat (⧺)</text>
+      <text x="312" y="93" font-size="9" fill="#bae6fd" text-anchor="middle">[B, 12, 14, 14]</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#059669" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#34d399">Conv Params: 152 | Total: 310,242</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">MNIST Acc: 90.05% (Paper Table 4)</text>
+      <text x="15" y="60" font-size="10" fill="#a7f3d0">Highest accuracy with lowest conv parameters</text>
+    </g>
+  </g>
+
+  <!-- ==================== MODEL 2: CLASSICAL CNN LENET-5 ==================== -->
+  <g transform="translate(500, 95)">
+    <rect width="400" height="350" rx="12" fill="url(#cardGrad)" stroke="#3b82f6" stroke-width="1.5" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#60a5fa">2. Classical CNN Baseline</text>
+    <text x="20" y="52" font-size="11" fill="#93c5fd">LeNet-5 Adapted (464 Conv Params)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 80)">
+      <rect x="0" y="35" width="55" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="27" y="60" font-size="10" fill="#cbd5e1" text-anchor="middle">Input</text>
+
+      <line x1="55" y1="56" x2="80" y2="56" stroke="#60a5fa" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="80" y="35" width="110" height="42" rx="6" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2" />
+      <text x="135" y="53" font-size="10" font-weight="bold" fill="#60a5fa" text-anchor="middle">Conv1 (1→4, 2×2)</text>
+      <text x="135" y="68" font-size="9" fill="#93c5fd" text-anchor="middle">[B, 4, 14, 14] · 20p</text>
+
+      <line x1="190" y1="56" x2="215" y2="56" stroke="#60a5fa" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="215" y="35" width="125" height="42" rx="6" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2" />
+      <text x="277" y="53" font-size="10" font-weight="bold" fill="#60a5fa" text-anchor="middle">Conv2 (4→12, 3×3)</text>
+      <text x="277" y="68" font-size="9" fill="#93c5fd" text-anchor="middle">[B, 12, 14, 14] · 444p</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#1d4ed8" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#60a5fa">Conv Params: 464 | Total: 310,554</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">MNIST Acc: 89.35% (Paper Table 4)</text>
+      <text x="15" y="60" font-size="10" fill="#94a3b8">3× more conv parameters than Proposed</text>
+    </g>
+  </g>
+
+  <!-- ==================== MODEL 3: CLASSICAL-ONLY CNN ==================== -->
+  <g transform="translate(940, 95)">
+    <rect width="400" height="350" rx="12" fill="url(#cardGrad)" stroke="#64748b" stroke-width="1.5" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#f8fafc">3. Classical-Only CNN</text>
+    <text x="20" y="52" font-size="11" fill="#94a3b8">Ablation: No Quantum Branch (136 Params)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 80)">
+      <rect x="0" y="35" width="60" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="30" y="60" font-size="10" fill="#cbd5e1" text-anchor="middle">Input</text>
+
+      <line x1="60" y1="56" x2="95" y2="56" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="95" y="35" width="125" height="42" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1.2" />
+      <text x="157" y="53" font-size="10" font-weight="bold" fill="#34d399" text-anchor="middle">Conv2d (1→8, 4×4)</text>
+      <text x="157" y="68" font-size="9" fill="#a7f3d0" text-anchor="middle">[B, 8, 14, 14] · 136p</text>
+
+      <line x1="220" y1="56" x2="255" y2="56" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="255" y="35" width="95" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1.2" />
+      <text x="302" y="53" font-size="10" font-weight="bold" fill="#f8fafc" text-anchor="middle">Dense Head</text>
+      <text x="302" y="68" font-size="9" fill="#cbd5e1" text-anchor="middle">1568 → 128</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#cbd5e1">Conv Params: 136 | Total: 209,874</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">MNIST Acc: 86.20% (Experiment 4)</text>
+      <text x="15" y="60" font-size="10" fill="#f87171">-3.85% drop without quantum branch</text>
+    </g>
+  </g>
+
+  <!-- ==================== MODEL 4: QUANTUM-ONLY CNN ==================== -->
+  <g transform="translate(60, 485)">
+    <rect width="400" height="350" rx="12" fill="url(#cardGrad)" stroke="#8b5cf6" stroke-width="1.5" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#c084fc">4. Quantum-Only CNN</text>
+    <text x="20" y="52" font-size="11" fill="#e9d5ff">Ablation: No Classical Branch (16 Params)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 80)">
+      <rect x="0" y="35" width="60" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="30" y="60" font-size="10" fill="#cbd5e1" text-anchor="middle">Input</text>
+
+      <line x1="60" y1="56" x2="95" y2="56" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arrPurple)" />
+      <rect x="95" y="35" width="125" height="42" rx="6" fill="#0f172a" stroke="#c084fc" stroke-width="1.2" />
+      <text x="157" y="53" font-size="10" font-weight="bold" fill="#c084fc" text-anchor="middle">PQC Circuit 11</text>
+      <text x="157" y="68" font-size="9" fill="#e9d5ff" text-anchor="middle">[B, 4, 14, 14] · 16p</text>
+
+      <line x1="220" y1="56" x2="255" y2="56" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arrPurple)" />
+      <rect x="255" y="35" width="95" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1.2" />
+      <text x="302" y="53" font-size="10" font-weight="bold" fill="#f8fafc" text-anchor="middle">Dense Head</text>
+      <text x="302" y="68" font-size="9" fill="#cbd5e1" text-anchor="middle">784 → 128</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#6d28d9" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#c084fc">Conv Params: 16 | Total: 109,402</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">MNIST Acc: 78.40% (Experiment 4)</text>
+      <text x="15" y="60" font-size="10" fill="#f87171">High efficiency, but needs classical texture</text>
+    </g>
+  </g>
+
+  <!-- ==================== MODEL 5: CLASSICAL-EXTENDED CNN ==================== -->
+  <g transform="translate(500, 485)">
+    <rect width="400" height="350" rx="12" fill="url(#cardGrad)" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#fbbf24">5. Classical-Extended CNN</text>
+    <text x="20" y="52" font-size="11" fill="#fde68a">Parameter-Matched Control (120 Params)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 80)">
+      <rect x="0" y="35" width="60" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="30" y="60" font-size="10" fill="#cbd5e1" text-anchor="middle">Input</text>
+
+      <line x1="60" y1="56" x2="95" y2="56" stroke="#fbbf24" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="95" y="35" width="135" height="42" rx="6" fill="#0f172a" stroke="#fbbf24" stroke-width="1.2" />
+      <text x="162" y="53" font-size="10" font-weight="bold" fill="#fbbf24" text-anchor="middle">Conv2d (1→12, 3×3)</text>
+      <text x="162" y="68" font-size="9" fill="#fde68a" text-anchor="middle">[B, 12, 14, 14] · 120p</text>
+
+      <line x1="230" y1="56" x2="265" y2="56" stroke="#fbbf24" stroke-width="1.8" marker-end="url(#arrCyan)" />
+      <rect x="265" y="35" width="85" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1.2" />
+      <text x="307" y="53" font-size="10" font-weight="bold" fill="#f8fafc" text-anchor="middle">Dense Head</text>
+      <text x="307" y="68" font-size="9" fill="#cbd5e1" text-anchor="middle">2352 → 128</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#b45309" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#fbbf24">Conv Params: 120 | Total: 310,210</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">MNIST Acc: 87.10% (Experiment 4)</text>
+      <text x="15" y="60" font-size="10" fill="#f87171">Lacks quantum non-linear Hilbert mapping</text>
+    </g>
+  </g>
+
+  <!-- ==================== MODEL 6: SCALABLE QC-CNN-PARALLEL ==================== -->
+  <g transform="translate(940, 485)">
+    <rect width="400" height="350" rx="12" fill="url(#cardGrad)" stroke="#06b6d4" stroke-width="1.5" />
+    <text x="20" y="32" font-size="15" font-weight="bold" fill="#22d3ee">6. Scalable QC-CNN-Parallel</text>
+    <text x="20" y="52" font-size="11" fill="#a5f3fc">Variable Qubits (N) &amp; Depth (L)</text>
+
+    <!-- Diagram -->
+    <g transform="translate(20, 70)">
+      <rect x="0" y="50" width="55" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
+      <text x="27" y="75" font-size="10" fill="#cbd5e1" text-anchor="middle">Input</text>
+
+      <path d="M 55 60 L 85 60 L 85 25 L 110 25" fill="none" stroke="#34d399" stroke-width="1.8" />
+      <rect x="110" y="5" width="120" height="42" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1.2" />
+      <text x="170" y="24" font-size="10" font-weight="bold" fill="#34d399" text-anchor="middle">Conv2d (1→8)</text>
+      <text x="170" y="38" font-size="9" fill="#a7f3d0" text-anchor="middle">Fixed 8 channels</text>
+
+      <path d="M 55 80 L 85 80 L 85 115 L 110 115" fill="none" stroke="#22d3ee" stroke-width="1.8" />
+      <rect x="110" y="95" width="120" height="42" rx="6" fill="#0f172a" stroke="#22d3ee" stroke-width="1.2" />
+      <text x="170" y="114" font-size="10" font-weight="bold" fill="#22d3ee" text-anchor="middle">N-Qubit PQC (L layers)</text>
+      <text x="170" y="128" font-size="9" fill="#a5f3fc" text-anchor="middle">Params = 2·N·L</text>
+
+      <path d="M 230 25 L 255 25 L 255 60 L 270 60" fill="none" stroke="#34d399" stroke-width="1.8" />
+      <path d="M 230 115 L 255 115 L 255 80 L 270 80" fill="none" stroke="#22d3ee" stroke-width="1.8" />
+      <rect x="270" y="50" width="85" height="42" rx="6" fill="#0f172a" stroke="#06b6d4" stroke-width="1.2" />
+      <text x="312" y="68" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">Concat (8+N)</text>
+      <text x="312" y="83" font-size="9" fill="#a5f3fc" text-anchor="middle">Dynamic Dense</text>
+    </g>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 260)">
+      <rect width="360" height="70" rx="8" fill="#0f172a" stroke="#0891b2" stroke-width="1" />
+      <text x="15" y="24" font-size="11" font-weight="bold" fill="#22d3ee">N ∈ {2,4,6,8} | Depth L ∈ {1..5}</text>
+      <text x="15" y="44" font-size="11" fill="#cbd5e1">Experiment 5 (Scalability Sweeps)</text>
+      <text x="15" y="60" font-size="10" fill="#a5f3fc">Proves depth ≥ 4 induces barren plateaus</text>
+    </g>
+  </g>
+</svg>

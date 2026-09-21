@@ -44,7 +44,7 @@ from utils        import plot_training_curves, plot_confusion_matrix
 SEED       = 42
 LR         = 0.01
 BATCH_SIZE = 32
-EPOCHS     = 50
+EPOCHS     = 70
 RESULTS    = Path("results/experiment2")
 RESULTS.mkdir(parents=True, exist_ok=True)
 
@@ -61,12 +61,24 @@ PAPER_REF = {
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment2(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")):
+def run_experiment2(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist"),
+                    resume: bool = True):
     set_seed(SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Device: {device}")
 
+    # Resume: load previous progress if available
+    progress_path = RESULTS / "checkpoint_progress.json"
     all_results = {}
+    if resume and progress_path.exists():
+        try:
+            with open(progress_path, "r") as f:
+                all_results = json.load(f)
+            completed = sum(len(models) for models in all_results.values())
+            if completed > 0:
+                print(f"  ⟳ Loaded checkpoint: {completed} completed training run(s).")
+        except Exception:
+            all_results = {}
 
     for ds_name in datasets_to_run:
         print(f"\n{'='*60}")
@@ -88,13 +100,20 @@ def run_experiment2(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
         num_classes = int(sample_labels.max().item()) + 1
         print(f"  Detected {num_classes} classes.")
 
-        ds_results  = {}
+        if ds_name not in all_results:
+            all_results[ds_name] = {}
+
         ds_histories = {}
 
         for model_name, model_cls in [
             ("classical_cnn",     ClassicalCNN),
             ("qc_cnn_parallel",   QCCNNParallel),
         ]:
+            # Skip if already completed on resume
+            if resume and model_name in all_results.get(ds_name, {}):
+                print(f"\n  ✓ {model_name} on {ds_name} — already completed, skipping.")
+                continue
+
             print(f"\n  Training: {model_name}")
             model = model_cls(num_classes=num_classes)
 
@@ -114,30 +133,40 @@ def run_experiment2(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
                 save_dir     = str(RESULTS),
                 model_name   = model_name,
                 dataset_name = ds_name,
+                resume       = resume,
             )
 
-            ds_results[model_name]   = summary
+            all_results[ds_name][model_name] = summary
             ds_histories[model_name] = history
 
-        all_results[ds_name] = ds_results
+            # Save progress incrementally (checkpoint)
+            with open(progress_path, "w") as f:
+                json.dump(all_results, f, indent=2)
 
         # --- Plot training curves (reproducing Figures 6–8) ---
-        plot_training_curves(
-            ds_histories,
-            metric    = "acc",
-            title     = f"Accuracy — {ds_name} (Figure 6/7/8a)",
-            save_path = str(RESULTS / ds_name / "accuracy_curve.png"),
-        )
-        plot_training_curves(
-            ds_histories,
-            metric    = "loss",
-            title     = f"Loss — {ds_name} (Figure 6/7/8b)",
-            save_path = str(RESULTS / ds_name / "loss_curve.png"),
-        )
+        # Only plot if we have history data from this run
+        if ds_histories:
+            plot_training_curves(
+                ds_histories,
+                metric    = "acc",
+                title     = f"Accuracy — {ds_name} (Figure 6/7/8a)",
+                save_path = str(RESULTS / ds_name / "accuracy_curve.png"),
+            )
+            plot_training_curves(
+                ds_histories,
+                metric    = "loss",
+                title     = f"Loss — {ds_name} (Figure 6/7/8b)",
+                save_path = str(RESULTS / ds_name / "loss_curve.png"),
+            )
 
     # Save all summaries
     with open(RESULTS / "all_summaries.json", "w") as f:
         json.dump(all_results, f, indent=2)
+
+    # Clean up checkpoint — experiment completed
+    if progress_path.exists():
+        progress_path.unlink()
+        print(f"\n  ✓ Experiment 2 checkpoint cleaned up (all runs complete).")
 
     # Print final comparison
     print("\n" + "=" * 60)
@@ -164,5 +193,9 @@ if __name__ == "__main__":
         choices=["mnist", "fashion_mnist", "overhead_mnist"],
         help="Datasets to run (default: all three paper datasets)",
     )
+    parser.add_argument(
+        "--no-resume", action="store_true",
+        help="Ignore checkpoints and start from scratch",
+    )
     args = parser.parse_args()
-    run_experiment2(datasets_to_run=args.dataset)
+    run_experiment2(datasets_to_run=args.dataset, resume=not args.no_resume)

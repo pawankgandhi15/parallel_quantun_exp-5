@@ -50,7 +50,7 @@ from utils.plotting          import plot_noise_results
 # ---------------------------------------------------------------------------
 SEED         = 42
 BATCH_SIZE   = 100      # paper uses 100 for noise experiments
-EPOCHS       = 50
+EPOCHS       = 70
 LR           = 0.01
 ERROR_RATES  = [0.1, 0.2, 0.3]
 NOISE_TYPES  = ["data_noise", "bit_flip", "phase_flip", "depolarizing"]
@@ -143,10 +143,26 @@ def evaluate_quantum_noise(model_factory,
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment3(max_test_samples: int = None):
+def run_experiment3(max_test_samples: int = None, resume: bool = True):
     set_seed(SEED)
     device   = torch.device("cpu")   # default.mixed runs on CPU
-    results  = {}
+
+    # Resume: load partial results if available
+    results_path = RESULTS_DIR / "noise_results.json"
+    results = {}
+    if resume and results_path.exists():
+        try:
+            with open(results_path, "r") as f:
+                raw = json.load(f)
+            # Convert string keys back to float keys
+            for ntype, model_dict in raw.items():
+                results[ntype] = {}
+                for model, acc_dict in model_dict.items():
+                    results[ntype][model] = {float(k): v for k, v in acc_dict.items()}
+            if results:
+                print(f"  ⟳ Loaded checkpoint: {len(results)} noise type(s) already evaluated.")
+        except Exception:
+            results = {}
 
     test_loader = get_full_mnist(max_samples=max_test_samples)
     print("=" * 60)
@@ -173,37 +189,58 @@ def run_experiment3(max_test_samples: int = None):
             model_cls(num_classes=10), train_loader, clean_test_loader,
             num_epochs=EPOCHS, lr=LR, seed=SEED, device=device,
             save_dir="results/experiment2", model_name=model_name,
-            dataset_name="mnist",
+            dataset_name="mnist", resume=resume,
         )
         return {name: value.detach().cpu() for name, value in trained.state_dict().items()}
 
     proposed_weights = load_or_train_weights("qc_cnn_parallel", QCCNNParallel)
     cnn_weights = load_or_train_weights("classical_cnn", ClassicalCNN)
 
+    # Helper to save results incrementally
+    def _save_results():
+        with open(results_path, "w") as f:
+            json_results = {
+                ntype: {
+                    model: {str(k): v for k, v in acc_dict.items()}
+                    for model, acc_dict in model_dict.items()
+                }
+                for ntype, model_dict in results.items()
+            }
+            json.dump(json_results, f, indent=2)
+
     # -----------------------------------------------------------------------
     # Table 5: Data noise
     # -----------------------------------------------------------------------
-    print("\n  Table 5: Data noise (Gaussian noise on input)")
-    base_model = QCCNNParallel(num_classes=10).to(device)
-    base_model.load_state_dict(proposed_weights)
-    cnn_model  = ClassicalCNN(num_classes=10).to(device)
-    cnn_model.load_state_dict(cnn_weights)
+    if not (resume and "data_noise" in results):
+        print("\n  Table 5: Data noise (Gaussian noise on input)")
+        base_model = QCCNNParallel(num_classes=10).to(device)
+        base_model.load_state_dict(proposed_weights)
+        cnn_model  = ClassicalCNN(num_classes=10).to(device)
+        cnn_model.load_state_dict(cnn_weights)
 
-    data_noise_results = {"Proposed": {}, "CNN": {}}
-    for p in [0.0] + ERROR_RATES:
-        prop_acc = evaluate_data_noise(base_model, test_loader, p, device)
-        cnn_acc  = evaluate_data_noise(cnn_model,  test_loader, p, device)
-        data_noise_results["Proposed"][p] = round(prop_acc, 4)
-        data_noise_results["CNN"     ][p] = round(cnn_acc,  4)
-        print(f"    p={p:.1f}  Proposed={prop_acc:.4f}  CNN={cnn_acc:.4f}  "
-              f"(paper: Prop={PAPER_REFS['data_noise']['Proposed'].get(p,'?')},"
-              f" CNN={PAPER_REFS['data_noise']['CNN'].get(p,'?')})")
-    results["data_noise"] = data_noise_results
+        data_noise_results = {"Proposed": {}, "CNN": {}}
+        for p in [0.0] + ERROR_RATES:
+            prop_acc = evaluate_data_noise(base_model, test_loader, p, device)
+            cnn_acc  = evaluate_data_noise(cnn_model,  test_loader, p, device)
+            data_noise_results["Proposed"][p] = round(prop_acc, 4)
+            data_noise_results["CNN"     ][p] = round(cnn_acc,  4)
+            print(f"    p={p:.1f}  Proposed={prop_acc:.4f}  CNN={cnn_acc:.4f}  "
+                  f"(paper: Prop={PAPER_REFS['data_noise']['Proposed'].get(p,'?')},"
+                  f" CNN={PAPER_REFS['data_noise']['CNN'].get(p,'?')})")
+        results["data_noise"] = data_noise_results
+        _save_results()
+    else:
+        print("\n  Table 5: Data noise — ✓ already completed, skipping.")
 
     # -----------------------------------------------------------------------
     # Tables 6-8: Quantum noise channels
     # -----------------------------------------------------------------------
     for noise_type in ["bit_flip", "phase_flip", "depolarizing"]:
+        if resume and noise_type in results:
+            tname = noise_type.replace("_", "-").title()
+            print(f"\n  Table 6/7/8: {tname} noise — ✓ already completed, skipping.")
+            continue
+
         tname = noise_type.replace("_", "-").title()
         print(f"\n  Table 6/7/8: {tname} noise")
         noise_results = {"Proposed": {}}
@@ -231,6 +268,7 @@ def run_experiment3(max_test_samples: int = None):
                   f"(paper: {paper_val})")
 
         results[noise_type] = noise_results
+        _save_results()
 
         # Save bar chart
         plot_noise_results(
@@ -238,18 +276,6 @@ def run_experiment3(max_test_samples: int = None):
             noise_type = tname,
             save_path  = str(RESULTS_DIR / f"noise_{noise_type}.png"),
         )
-
-    # Save all results
-    with open(RESULTS_DIR / "noise_results.json", "w") as f:
-        # Convert float keys to str for JSON
-        json_results = {
-            ntype: {
-                model: {str(k): v for k, v in acc_dict.items()}
-                for model, acc_dict in model_dict.items()
-            }
-            for ntype, model_dict in results.items()
-        }
-        json.dump(json_results, f, indent=2)
 
     print(f"\n  ✓ Results saved to: {RESULTS_DIR}")
 
@@ -275,5 +301,10 @@ if __name__ == "__main__":
         help="Limit test set size for faster runs (paper uses full 10,000; "
              "try 200-500 for quick testing on CPU).",
     )
+    parser.add_argument(
+        "--no-resume", action="store_true",
+        help="Ignore checkpoints and start from scratch",
+    )
     args = parser.parse_args()
-    run_experiment3(max_test_samples=args.max_test_samples)
+    run_experiment3(max_test_samples=args.max_test_samples,
+                    resume=not args.no_resume)

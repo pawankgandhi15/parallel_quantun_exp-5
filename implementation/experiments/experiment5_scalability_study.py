@@ -44,7 +44,7 @@ from training  import train, set_seed
 SEED       = 42
 LR         = 0.01
 BATCH_SIZE = 32
-EPOCHS     = 50
+EPOCHS     = 70
 RESULTS    = Path("results/experiment5")
 RESULTS.mkdir(parents=True, exist_ok=True)
 
@@ -60,7 +60,7 @@ FIXED_QUBITS = 4
 # ---------------------------------------------------------------------------
 # Part A: Qubit Count Scaling
 # ---------------------------------------------------------------------------
-def run_qubit_sweep(dataset_name="mnist"):
+def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
     """
     Vary qubit count while keeping depth fixed.
     Tests: 2, 4, 6, 8 qubits with depth=2.
@@ -78,9 +78,26 @@ def run_qubit_sweep(dataset_name="mnist"):
     _, sample_labels = next(iter(train_loader))
     num_classes = int(sample_labels.max().item()) + 1
 
+    # Resume: load partial results if available
+    partA_path = RESULTS / "checkpoint_partA.json"
     results = {}
+    if resume and partA_path.exists():
+        try:
+            with open(partA_path, "r") as f:
+                results = json.load(f)
+            if results:
+                print(f"  ⟳ Loaded checkpoint: {len(results)} qubit config(s) already completed.")
+        except Exception:
+            results = {}
 
     for n_qubits in QUBIT_SWEEP:
+        config_name = f"qubits_{n_qubits}_depth_{FIXED_DEPTH}"
+
+        # Skip if already completed on resume
+        if resume and config_name in results:
+            print(f"\n  ✓ {config_name} — already completed, skipping.")
+            continue
+
         print(f"\n  {'─'*55}")
         print(f"  Qubits: {n_qubits}  |  Depth: {FIXED_DEPTH}")
         print(f"  {'─'*55}")
@@ -102,7 +119,6 @@ def run_qubit_sweep(dataset_name="mnist"):
         print(f"  Gradient variance: {grad_info['grad_variance']:.6f}  "
               f"Mean norm: {grad_info['mean_grad_norm']:.6f}")
 
-        config_name = f"qubits_{n_qubits}_depth_{FIXED_DEPTH}"
         history, summary, trained_model = train(
             model        = model,
             train_loader = train_loader,
@@ -114,6 +130,7 @@ def run_qubit_sweep(dataset_name="mnist"):
             save_dir     = str(RESULTS),
             model_name   = config_name,
             dataset_name = dataset_name,
+            resume       = resume,
         )
 
         # Find convergence epoch (first epoch to reach 85% accuracy)
@@ -138,13 +155,21 @@ def run_qubit_sweep(dataset_name="mnist"):
             "gradient_mean_norm": grad_info["mean_grad_norm"],
         }
 
+        # Save progress incrementally (checkpoint)
+        with open(partA_path, "w") as f:
+            json.dump(results, f, indent=2)
+
+    # Clean up checkpoint
+    if partA_path.exists():
+        partA_path.unlink()
+
     return results
 
 
 # ---------------------------------------------------------------------------
 # Part B: Circuit Depth Scaling
 # ---------------------------------------------------------------------------
-def run_depth_sweep(dataset_name="mnist"):
+def run_depth_sweep(dataset_name="mnist", resume: bool = True):
     """
     Vary circuit depth while keeping qubit count fixed.
     Tests: depth 1, 2, 3, 4, 5 with 4 qubits.
@@ -162,9 +187,26 @@ def run_depth_sweep(dataset_name="mnist"):
     _, sample_labels = next(iter(train_loader))
     num_classes = int(sample_labels.max().item()) + 1
 
+    # Resume: load partial results if available
+    partB_path = RESULTS / "checkpoint_partB.json"
     results = {}
+    if resume and partB_path.exists():
+        try:
+            with open(partB_path, "r") as f:
+                results = json.load(f)
+            if results:
+                print(f"  ⟳ Loaded checkpoint: {len(results)} depth config(s) already completed.")
+        except Exception:
+            results = {}
 
     for n_layers in DEPTH_SWEEP:
+        config_name = f"qubits_{FIXED_QUBITS}_depth_{n_layers}"
+
+        # Skip if already completed on resume
+        if resume and config_name in results:
+            print(f"\n  ✓ {config_name} — already completed, skipping.")
+            continue
+
         print(f"\n  {'─'*55}")
         print(f"  Qubits: {FIXED_QUBITS}  |  Depth: {n_layers}")
         print(f"  {'─'*55}")
@@ -186,7 +228,6 @@ def run_depth_sweep(dataset_name="mnist"):
         print(f"  Gradient variance: {grad_info['grad_variance']:.6f}  "
               f"Mean norm: {grad_info['mean_grad_norm']:.6f}")
 
-        config_name = f"qubits_{FIXED_QUBITS}_depth_{n_layers}"
         history, summary, trained_model = train(
             model        = model,
             train_loader = train_loader,
@@ -198,6 +239,7 @@ def run_depth_sweep(dataset_name="mnist"):
             save_dir     = str(RESULTS),
             model_name   = config_name,
             dataset_name = dataset_name,
+            resume       = resume,
         )
 
         convergence_epoch = None
@@ -221,22 +263,30 @@ def run_depth_sweep(dataset_name="mnist"):
             "gradient_mean_norm": grad_info["mean_grad_norm"],
         }
 
+        # Save progress incrementally (checkpoint)
+        with open(partB_path, "w") as f:
+            json.dump(results, f, indent=2)
+
+    # Clean up checkpoint
+    if partB_path.exists():
+        partB_path.unlink()
+
     return results
 
 
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment5(parts=("A", "B"), dataset_name="mnist"):
+def run_experiment5(parts=("A", "B"), dataset_name="mnist", resume: bool = True):
     """Run the full scalability study."""
     all_results = {}
 
     if "A" in parts:
-        qubit_results = run_qubit_sweep(dataset_name)
+        qubit_results = run_qubit_sweep(dataset_name, resume=resume)
         all_results["qubit_sweep"] = qubit_results
 
     if "B" in parts:
-        depth_results = run_depth_sweep(dataset_name)
+        depth_results = run_depth_sweep(dataset_name, resume=resume)
         all_results["depth_sweep"] = depth_results
 
     # Save results
@@ -301,5 +351,8 @@ if __name__ == "__main__":
                        choices=["A", "B"], help="Which parts to run")
     parser.add_argument("--dataset", default="mnist",
                        choices=["mnist", "fashion_mnist", "overhead_mnist"])
+    parser.add_argument("--no-resume", action="store_true",
+                       help="Ignore checkpoints and start from scratch")
     args = parser.parse_args()
-    run_experiment5(parts=args.part, dataset_name=args.dataset)
+    run_experiment5(parts=args.part, dataset_name=args.dataset,
+                    resume=not args.no_resume)

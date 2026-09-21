@@ -47,7 +47,7 @@ from utils                     import plot_training_curves
 SEED       = 42
 LR         = 0.01
 BATCH_SIZE = 32
-EPOCHS     = 50
+EPOCHS     = 70
 RESULTS    = Path("results/experiment4")
 RESULTS.mkdir(parents=True, exist_ok=True)
 
@@ -66,13 +66,25 @@ ABLATION_MODELS = {
 # ---------------------------------------------------------------------------
 # Main experiment
 # ---------------------------------------------------------------------------
-def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")):
+def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist"),
+                    resume: bool = True):
     """Run the full ablation study across all datasets and model variants."""
     set_seed(SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Device: {device}")
 
+    # Resume: load partial results if available
+    progress_path = RESULTS / "checkpoint_progress.json"
     all_results = {}
+    if resume and progress_path.exists():
+        try:
+            with open(progress_path, "r") as f:
+                all_results = json.load(f)
+            completed = sum(len(models) for models in all_results.values())
+            if completed > 0:
+                print(f"  ⟳ Loaded checkpoint: {completed} completed ablation run(s).")
+        except Exception:
+            all_results = {}
 
     for ds_name in datasets_to_run:
         print(f"\n{'='*65}")
@@ -93,10 +105,17 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
         num_classes = int(sample_labels.max().item()) + 1
         print(f"  Classes: {num_classes}")
 
-        ds_results = {}
+        if ds_name not in all_results:
+            all_results[ds_name] = {}
+
         ds_histories = {}
 
         for model_name, model_info in ABLATION_MODELS.items():
+            # Skip if already completed on resume
+            if resume and model_name in all_results.get(ds_name, {}):
+                print(f"\n  ✓ {model_info['label']} on {ds_name} — already completed, skipping.")
+                continue
+
             print(f"\n  {'─'*55}")
             print(f"  Training: {model_info['label']}")
             print(f"  {'─'*55}")
@@ -122,6 +141,7 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
                 save_dir     = str(RESULTS),
                 model_name   = model_name,
                 dataset_name = ds_name,
+                resume       = resume,
             )
 
             # Add parameter efficiency metric
@@ -131,28 +151,36 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
             summary["conv_params"] = conv_params
             summary["quantum_params"] = counts.get("quantum_pqc", 0)
 
-            ds_results[model_name] = summary
+            all_results[ds_name][model_name] = summary
             ds_histories[model_name] = history
 
-        all_results[ds_name] = ds_results
+            # Save progress incrementally (checkpoint)
+            with open(progress_path, "w") as f:
+                json.dump(all_results, f, indent=2)
 
         # --- Plot comparison curves ---
-        plot_training_curves(
-            ds_histories,
-            metric    = "acc",
-            title     = f"Ablation: Accuracy — {ds_name}",
-            save_path = str(RESULTS / ds_name / "ablation_accuracy.png"),
-        )
-        plot_training_curves(
-            ds_histories,
-            metric    = "loss",
-            title     = f"Ablation: Loss — {ds_name}",
-            save_path = str(RESULTS / ds_name / "ablation_loss.png"),
-        )
+        if ds_histories:
+            plot_training_curves(
+                ds_histories,
+                metric    = "acc",
+                title     = f"Ablation: Accuracy — {ds_name}",
+                save_path = str(RESULTS / ds_name / "ablation_accuracy.png"),
+            )
+            plot_training_curves(
+                ds_histories,
+                metric    = "loss",
+                title     = f"Ablation: Loss — {ds_name}",
+                save_path = str(RESULTS / ds_name / "ablation_loss.png"),
+            )
 
     # Save all summaries
     with open(RESULTS / "ablation_results.json", "w") as f:
         json.dump(all_results, f, indent=2)
+
+    # Clean up checkpoint — experiment completed
+    if progress_path.exists():
+        progress_path.unlink()
+        print(f"\n  ✓ Experiment 4 checkpoint cleaned up (all runs complete).")
 
     # --- Print final comparison table ---
     print(f"\n{'='*80}")
@@ -198,5 +226,9 @@ if __name__ == "__main__":
         default=["mnist", "fashion_mnist", "overhead_mnist"],
         choices=["mnist", "fashion_mnist", "overhead_mnist"],
     )
+    parser.add_argument(
+        "--no-resume", action="store_true",
+        help="Ignore checkpoints and start from scratch",
+    )
     args = parser.parse_args()
-    run_experiment4(datasets_to_run=args.dataset)
+    run_experiment4(datasets_to_run=args.dataset, resume=not args.no_resume)

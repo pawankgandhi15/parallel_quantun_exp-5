@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 780" width="100%" height="100%" style="background:#090d16; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="plotBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1350" height="780" fill="#090d16" />
+
+  <!-- Title -->
+  <g transform="translate(60, 45)">
+    <text x="0" y="0" font-size="24" font-weight="bold" fill="#f8fafc">Quantum Noise Robustness Evaluation (MNIST)</text>
+    <text x="0" y="24" font-size="13" fill="#94a3b8">Experimental validation from Paper Tables 5–8 across error rates p ∈ {0.0, 0.1, 0.2, 0.3}</text>
+  </g>
+
+  <!-- Legend Header -->
+  <g transform="translate(820, 30)">
+    <rect width="470" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <line x1="20" y1="21" x2="45" y2="21" stroke="#10b981" stroke-width="3" />
+    <circle cx="32" cy="21" r="4" fill="#10b981" />
+    <text x="55" y="25" font-size="12" font-weight="bold" fill="#34d399">Proposed QC-CNN-Parallel</text>
+
+    <line x1="240" y1="21" x2="265" y2="21" stroke="#f59e0b" stroke-width="2.5" />
+    <circle cx="252" cy="21" r="4" fill="#f59e0b" />
+    <text x="275" y="25" font-size="12" fill="#fbbf24">HQNN-Quanv</text>
+
+    <line x1="380" y1="21" x2="405" y2="21" stroke="#ef4444" stroke-width="2.5" />
+    <circle cx="392" cy="21" r="4" fill="#ef4444" />
+    <text x="415" y="25" font-size="12" fill="#f87171">CNN / QNN</text>
+  </g>
+
+  <!-- ==================== SUBPLOT 1: DATA NOISE ==================== -->
+  <g transform="translate(60, 100)">
+    <rect width="580" height="300" rx="10" fill="url(#plotBg)" stroke="#334155" stroke-width="1" />
+    <text x="25" y="32" font-size="14" font-weight="bold" fill="#f8fafc">(a) Data Noise (Gaussian)</text>
+    
+    <!-- Coordinate box: x: 70 to 530 (width 460), y: 60 to 240 (height 180, representing 0.60 to 1.00) -->
+    <!-- y mapping: y = 240 - ((acc - 0.60) / 0.40) * 180 = 240 - (acc - 0.60) * 450 -->
+    <!-- x mapping: p=0.0 -> 90, p=0.1 -> 220, p=0.2 -> 350, p=0.3 -> 480 -->
+    <!-- Grid -->
+    <g stroke="#334155" stroke-width="0.8" stroke-dasharray="3,3">
+      <line x1="70" y1="60" x2="520" y2="60" />   <!-- 1.00 -->
+      <line x1="70" y1="105" x2="520" y2="105" /> <!-- 0.90 -->
+      <line x1="70" y1="150" x2="520" y2="150" /> <!-- 0.80 -->
+      <line x1="70" y1="195" x2="520" y2="195" /> <!-- 0.70 -->
+      <line x1="70" y1="240" x2="520" y2="240" /> <!-- 0.60 -->
+      
+      <line x1="90" y1="60" x2="90" y2="240" />
+      <line x1="220" y1="60" x2="220" y2="240" />
+      <line x1="350" y1="60" x2="350" y2="240" />
+      <line x1="480" y1="60" x2="480" y2="240" />
+    </g>
+
+    <!-- Y labels -->
+    <g font-size="10" fill="#94a3b8" text-anchor="end">
+      <text x="62" y="64">1.00</text>
+      <text x="62" y="109">0.90</text>
+      <text x="62" y="154">0.80</text>
+      <text x="62" y="199">0.70</text>
+      <text x="62" y="244">0.60</text>
+    </g>
+
+    <!-- X labels -->
+    <g font-size="11" fill="#94a3b8" text-anchor="middle">
+      <text x="90" y="260">p = 0.0</text>
+      <text x="220" y="260">p = 0.1</text>
+      <text x="350" y="260">p = 0.2</text>
+      <text x="480" y="260">p = 0.3</text>
+    </g>
+
+    <!-- Data curves -->
+    <!-- Proposed: 0.9005 (104.8), 0.8915 (108.8), 0.8900 (109.5), 0.8425 (130.9) -->
+    <polyline points="90,105 220,109 350,110 480,131" fill="none" stroke="#10b981" stroke-width="3" />
+    <circle cx="90" cy="105" r="4" fill="#10b981" />
+    <circle cx="220" cy="109" r="4" fill="#10b981" />
+    <circle cx="350" cy="110" r="4" fill="#10b981" />
+    <circle cx="480" cy="131" r="5" fill="#10b981" />
+    <text x="495" y="133" font-size="10" font-weight="bold" fill="#34d399">0.8425</text>
+
+    <!-- HQNN: 0.8320 (135.6), 0.8344 (134.5), 0.7796 (159.2), 0.7125 (189.4) -->
+    <polyline points="90,136 220,135 350,159 480,189" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <circle cx="90" cy="136" r="3" fill="#f59e0b" />
+    <circle cx="220" cy="135" r="3" fill="#f59e0b" />
+    <circle cx="350" cy="159" r="3" fill="#f59e0b" />
+    <circle cx="480" cy="189" r="3" fill="#f59e0b" />
+
+    <!-- CNN: 0.8935 (107.9), 0.8840 (112.2), 0.8530 (126.1), 0.7844 (157.0) -->
+    <polyline points="90,108 220,112 350,126 480,157" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2" />
+    <circle cx="90" cy="108" r="3" fill="#ef4444" />
+    <circle cx="220" cy="112" r="3" fill="#ef4444" />
+    <circle cx="350" cy="126" r="3" fill="#ef4444" />
+    <circle cx="480" cy="157" r="3" fill="#ef4444" />
+  </g>
+
+  <!-- ==================== SUBPLOT 2: BIT-FLIP NOISE ==================== -->
+  <g transform="translate(710, 100)">
+    <rect width="580" height="300" rx="10" fill="url(#plotBg)" stroke="#334155" stroke-width="1" />
+    <text x="25" y="32" font-size="14" font-weight="bold" fill="#f8fafc">(b) Bit-Flip Noise (X-gate Errors)</text>
+
+    <!-- Coordinate box: y representing 0.40 to 1.00 (height 180, scale 300) -->
+    <!-- y = 240 - (acc - 0.40) * 300 -->
+    <!-- Grid -->
+    <g stroke="#334155" stroke-width="0.8" stroke-dasharray="3,3">
+      <line x1="70" y1="60" x2="520" y2="60" />   <!-- 1.00 -->
+      <line x1="70" y1="105" x2="520" y2="105" /> <!-- 0.85 -->
+      <line x1="70" y1="150" x2="520" y2="150" /> <!-- 0.70 -->
+      <line x1="70" y1="195" x2="520" y2="195" /> <!-- 0.55 -->
+      <line x1="70" y1="240" x2="520" y2="240" /> <!-- 0.40 -->
+
+      <line x1="90" y1="60" x2="90" y2="240" />
+      <line x1="220" y1="60" x2="220" y2="240" />
+      <line x1="350" y1="60" x2="350" y2="240" />
+      <line x1="480" y1="60" x2="480" y2="240" />
+    </g>
+
+    <!-- Y labels -->
+    <g font-size="10" fill="#94a3b8" text-anchor="end">
+      <text x="62" y="64">1.00</text>
+      <text x="62" y="109">0.85</text>
+      <text x="62" y="154">0.70</text>
+      <text x="62" y="199">0.55</text>
+      <text x="62" y="244">0.40</text>
+    </g>
+
+    <!-- X labels -->
+    <g font-size="11" fill="#94a3b8" text-anchor="middle">
+      <text x="90" y="260">p = 0.0</text>
+      <text x="220" y="260">p = 0.1</text>
+      <text x="350" y="260">p = 0.2</text>
+      <text x="480" y="260">p = 0.3</text>
+    </g>
+
+    <!-- Proposed: 0.9005 (89.8), 0.8769 (96.9), 0.8558 (103.3), 0.8405 (107.8) -->
+    <polyline points="90,90 220,97 350,103 480,108" fill="none" stroke="#10b981" stroke-width="3" />
+    <circle cx="90" cy="90" r="4" fill="#10b981" />
+    <circle cx="220" cy="97" r="4" fill="#10b981" />
+    <circle cx="350" cy="103" r="4" fill="#10b981" />
+    <circle cx="480" cy="108" r="5" fill="#10b981" />
+    <text x="495" y="110" font-size="10" font-weight="bold" fill="#34d399">0.8405</text>
+
+    <!-- HQNN: 0.8320 (110.4), 0.6775 (156.8), 0.6523 (164.3), 0.6399 (168.0) -->
+    <polyline points="90,110 220,157 350,164 480,168" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <circle cx="90" cy="110" r="3" fill="#f59e0b" />
+    <circle cx="220" cy="157" r="3" fill="#f59e0b" />
+    <circle cx="350" cy="164" r="3" fill="#f59e0b" />
+    <circle cx="480" cy="168" r="3" fill="#f59e0b" />
+    <text x="495" y="171" font-size="10" fill="#fbbf24">0.6399</text>
+
+    <!-- QNN: 0.8350 (109.5), 0.7115 (146.5), 0.6124 (176.3), 0.4615 (221.5) -->
+    <polyline points="90,110 220,147 350,176 480,222" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2" />
+    <circle cx="90" cy="110" r="3" fill="#ef4444" />
+    <circle cx="220" cy="147" r="3" fill="#ef4444" />
+    <circle cx="350" cy="176" r="3" fill="#ef4444" />
+    <circle cx="480" cy="222" r="4" fill="#ef4444" />
+    <text x="495" y="225" font-size="10" fill="#f87171">0.4615</text>
+  </g>
+
+  <!-- ==================== SUBPLOT 3: PHASE-FLIP NOISE ==================== -->
+  <g transform="translate(60, 430)">
+    <rect width="580" height="300" rx="10" fill="url(#plotBg)" stroke="#334155" stroke-width="1" />
+    <text x="25" y="32" font-size="14" font-weight="bold" fill="#f8fafc">(c) Phase-Flip Noise (Z-gate Errors)</text>
+
+    <!-- y representing 0.60 to 1.00 (height 180, scale 450) -->
+    <!-- Grid -->
+    <g stroke="#334155" stroke-width="0.8" stroke-dasharray="3,3">
+      <line x1="70" y1="60" x2="520" y2="60" />
+      <line x1="70" y1="105" x2="520" y2="105" />
+      <line x1="70" y1="150" x2="520" y2="150" />
+      <line x1="70" y1="195" x2="520" y2="195" />
+      <line x1="70" y1="240" x2="520" y2="240" />
+
+      <line x1="90" y1="60" x2="90" y2="240" />
+      <line x1="220" y1="60" x2="220" y2="240" />
+      <line x1="350" y1="60" x2="350" y2="240" />
+      <line x1="480" y1="60" x2="480" y2="240" />
+    </g>
+
+    <!-- Y labels -->
+    <g font-size="10" fill="#94a3b8" text-anchor="end">
+      <text x="62" y="64">1.00</text>
+      <text x="62" y="109">0.90</text>
+      <text x="62" y="154">0.80</text>
+      <text x="62" y="199">0.70</text>
+      <text x="62" y="244">0.60</text>
+    </g>
+
+    <!-- X labels -->
+    <g font-size="11" fill="#94a3b8" text-anchor="middle">
+      <text x="90" y="260">p = 0.0</text>
+      <text x="220" y="260">p = 0.1</text>
+      <text x="350" y="260">p = 0.2</text>
+      <text x="480" y="260">p = 0.3</text>
+    </g>
+
+    <!-- Proposed: 0.9005 (105), 0.8836 (112), 0.8618 (122), 0.8602 (123) -->
+    <polyline points="90,105 220,112 350,122 480,123" fill="none" stroke="#10b981" stroke-width="3" />
+    <circle cx="90" cy="105" r="4" fill="#10b981" />
+    <circle cx="220" cy="112" r="4" fill="#10b981" />
+    <circle cx="350" cy="122" r="4" fill="#10b981" />
+    <circle cx="480" cy="123" r="5" fill="#10b981" />
+    <text x="495" y="125" font-size="10" font-weight="bold" fill="#34d399">0.8602</text>
+
+    <!-- HQNN: 0.8320 (136), 0.8279 (137), 0.8254 (139), 0.8267 (138) -->
+    <polyline points="90,136 220,137 350,139 480,138" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <circle cx="90" cy="136" r="3" fill="#f59e0b" />
+    <circle cx="220" cy="137" r="3" fill="#f59e0b" />
+    <circle cx="350" cy="139" r="3" fill="#f59e0b" />
+    <circle cx="480" cy="138" r="3" fill="#f59e0b" />
+    <text x="495" y="141" font-size="10" fill="#fbbf24">0.8267</text>
+  </g>
+
+  <!-- ==================== SUBPLOT 4: DEPOLARIZING NOISE ==================== -->
+  <g transform="translate(710, 430)">
+    <rect width="580" height="300" rx="10" fill="url(#plotBg)" stroke="#334155" stroke-width="1" />
+    <text x="25" y="32" font-size="14" font-weight="bold" fill="#f8fafc">(d) Depolarizing Noise (Complete State Scrambling)</text>
+
+    <!-- y representing 0.50 to 1.00 (height 180, scale 360) -->
+    <!-- Grid -->
+    <g stroke="#334155" stroke-width="0.8" stroke-dasharray="3,3">
+      <line x1="70" y1="60" x2="520" y2="60" />   <!-- 1.00 -->
+      <line x1="70" y1="105" x2="520" y2="105" /> <!-- 0.875 -->
+      <line x1="70" y1="150" x2="520" y2="150" /> <!-- 0.75 -->
+      <line x1="70" y1="195" x2="520" y2="195" /> <!-- 0.625 -->
+      <line x1="70" y1="240" x2="520" y2="240" /> <!-- 0.50 -->
+
+      <line x1="90" y1="60" x2="90" y2="240" />
+      <line x1="220" y1="60" x2="220" y2="240" />
+      <line x1="350" y1="60" x2="350" y2="240" />
+      <line x1="480" y1="60" x2="480" y2="240" />
+    </g>
+
+    <!-- Y labels -->
+    <g font-size="10" fill="#94a3b8" text-anchor="end">
+      <text x="62" y="64">1.00</text>
+      <text x="62" y="109">0.875</text>
+      <text x="62" y="154">0.75</text>
+      <text x="62" y="199">0.625</text>
+      <text x="62" y="244">0.50</text>
+    </g>
+
+    <!-- X labels -->
+    <g font-size="11" fill="#94a3b8" text-anchor="middle">
+      <text x="90" y="260">p = 0.0</text>
+      <text x="220" y="260">p = 0.1</text>
+      <text x="350" y="260">p = 0.2</text>
+      <text x="480" y="260">p = 0.3</text>
+    </g>
+
+    <!-- Proposed: 0.9005 (96), 0.8639 (109), 0.8664 (108), 0.8327 (120) -->
+    <polyline points="90,96 220,109 350,108 480,120" fill="none" stroke="#10b981" stroke-width="3" />
+    <circle cx="90" cy="96" r="4" fill="#10b981" />
+    <circle cx="220" cy="109" r="4" fill="#10b981" />
+    <circle cx="350" cy="108" r="4" fill="#10b981" />
+    <circle cx="480" cy="120" r="5" fill="#10b981" />
+    <text x="495" y="122" font-size="10" font-weight="bold" fill="#34d399">0.8327</text>
+
+    <!-- HQNN: 0.8320 (120), 0.7021 (167), 0.6502 (186), 0.6059 (202) -->
+    <polyline points="90,120 220,167 350,186 480,202" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <circle cx="90" cy="120" r="3" fill="#f59e0b" />
+    <circle cx="220" cy="167" r="3" fill="#f59e0b" />
+    <circle cx="350" cy="186" r="3" fill="#f59e0b" />
+    <circle cx="480" cy="202" r="3" fill="#f59e0b" />
+    <text x="495" y="204" font-size="10" fill="#fbbf24">0.6059</text>
+
+    <!-- QNN: 0.8350 (119), 0.7552 (148), 0.6944 (170), 0.5904 (207) -->
+    <polyline points="90,119 220,148 350,170 480,207" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2" />
+    <circle cx="90" cy="119" r="3" fill="#ef4444" />
+    <circle cx="220" cy="148" r="3" fill="#ef4444" />
+    <circle cx="350" cy="170" r="3" fill="#ef4444" />
+    <circle cx="480" cy="207" r="4" fill="#ef4444" />
+    <text x="495" y="210" font-size="10" fill="#f87171">0.5904</text>
+  </g>
+</svg>

@@ -113,13 +113,18 @@ def train(model: nn.Module,
           device: Optional[torch.device] = None,
           save_dir: str = "results",
           model_name: str = "qc_cnn_parallel",
-          dataset_name: str = "mnist") -> Dict:
+          dataset_name: str = "mnist",
+          resume: bool = True) -> Dict:
     """
     Full training loop matching paper Table 4:
       - Optimizer : Adam, lr=0.01
       - Loss      : CrossEntropyLoss
       - Epochs    : 50
       - Seed      : 42
+
+    Supports checkpoint-based resume: if training is interrupted (error,
+    disconnection, crash), re-running the same command will automatically
+    resume from the last completed epoch instead of starting over.
 
     Parameters
     ----------
@@ -133,6 +138,7 @@ def train(model: nn.Module,
     save_dir     : directory to save checkpoints and results
     model_name   : identifier string for file names
     dataset_name : dataset identifier for file names
+    resume       : if True, resume from checkpoint if one exists (default True)
 
     Returns
     -------
@@ -150,21 +156,74 @@ def train(model: nn.Module,
     save_path = Path(save_dir) / dataset_name
     save_path.mkdir(parents=True, exist_ok=True)
 
+    checkpoint_path = save_path / f"{model_name}_checkpoint.pt"
+
+    # ------------------------------------------------------------------
+    # Resume from checkpoint if available
+    # ------------------------------------------------------------------
+    start_epoch = 1
     history = {
         "train_loss": [], "train_acc": [],
         "test_loss" : [], "test_acc" : [], "test_f1"  : [],
         "epoch_time": [],
     }
-
     best_acc     = 0.0
     best_weights = None
+
+    if resume and checkpoint_path.exists():
+        try:
+            ckpt = torch.load(checkpoint_path, map_location=device,
+                              weights_only=False)
+            start_epoch  = ckpt["epoch"] + 1
+            history      = ckpt["history"]
+            best_acc     = ckpt["best_acc"]
+            best_weights = ckpt["best_weights"]
+            model.load_state_dict(ckpt["model_state_dict"])
+            model = model.to(device)
+            optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+            print(f"\n  ⟳ Resuming from checkpoint — epoch {start_epoch}/{num_epochs}")
+            print(f"    (best_acc so far: {best_acc:.4f})")
+        except Exception as e:
+            print(f"\n  ⚠ Failed to load checkpoint ({e}). Starting from scratch.")
+            start_epoch = 1
+            history = {
+                "train_loss": [], "train_acc": [],
+                "test_loss" : [], "test_acc" : [], "test_f1"  : [],
+                "epoch_time": [],
+            }
+            best_acc     = 0.0
+            best_weights = None
+
+    # If all epochs are already done, skip training entirely
+    if start_epoch > num_epochs:
+        print(f"\n  ✓ Training already completed ({num_epochs} epochs). Skipping.")
+        if best_weights is not None:
+            model.load_state_dict(best_weights)
+        fin_loss, fin_acc, fin_f1, preds, labels = _eval_epoch(
+            model, test_loader, loss_fn, device)
+        cm = confusion_matrix(labels, preds)
+        summary = {
+            "model"       : model_name,
+            "dataset"     : dataset_name,
+            "best_test_acc": float(best_acc),
+            "final_test_acc": float(fin_acc),
+            "final_test_f1" : float(fin_f1),
+            "final_test_loss": float(fin_loss),
+            "total_train_time_s": sum(history["epoch_time"]),
+        }
+        # Clean up checkpoint since training is done
+        if checkpoint_path.exists():
+            checkpoint_path.unlink()
+        return history, summary, model
 
     print(f"\n{'='*60}")
     print(f"  Training: {model_name.upper()}  |  Dataset: {dataset_name}")
     print(f"  Epochs={num_epochs}, LR={lr}, Seed={seed}, Device={device}")
+    if start_epoch > 1:
+        print(f"  Resuming from epoch {start_epoch}")
     print(f"{'='*60}")
 
-    for epoch in range(1, num_epochs + 1):
+    for epoch in range(start_epoch, num_epochs + 1):
         t0 = time.time()
 
         tr_loss, tr_acc = _train_epoch(model, train_loader, optimizer, loss_fn, device)
@@ -183,12 +242,24 @@ def train(model: nn.Module,
               f"Test  loss={te_loss:.4f} acc={te_acc:.4f} F1={te_f1:.4f} | "
               f"Time={epoch_t:.1f}s")
 
-        # Save best model checkpoint
+        # Save best model weights
         if te_acc > best_acc:
             best_acc     = te_acc
             best_weights = {k: v.clone() for k, v in model.state_dict().items()}
             torch.save(best_weights,
                        save_path / f"{model_name}_best.pt")
+
+        # ------------------------------------------------------------------
+        # Save epoch checkpoint (enables resume after crash/disconnect)
+        # ------------------------------------------------------------------
+        torch.save({
+            "epoch":                epoch,
+            "model_state_dict":     model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "history":              history,
+            "best_acc":             best_acc,
+            "best_weights":         best_weights,
+        }, checkpoint_path)
 
     # Restore best weights and run final evaluation
     model.load_state_dict(best_weights)
@@ -212,6 +283,11 @@ def train(model: nn.Module,
     }
     with open(save_path / f"{model_name}_summary.json", "w") as f:
         json.dump(summary, f, indent=2)
+
+    # Clean up checkpoint — training completed successfully
+    if checkpoint_path.exists():
+        checkpoint_path.unlink()
+        print(f"  ✓ Checkpoint cleaned up (training complete)")
 
     print(f"\n  ✓ Best test accuracy : {best_acc:.4f}")
     print(f"  ✓ Final macro-F1     : {fin_f1:.4f}")

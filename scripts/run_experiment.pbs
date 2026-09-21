@@ -1,0 +1,82 @@
+#!/bin/bash
+#====================================================================
+# PBS Job Script — QC-CNN-Parallel Experiments
+#====================================================================
+# Submit with:   qsub run_experiment.pbs
+# Check status:  qstat -u $USER
+# Cancel job:    qdel <JOB_ID>
+#
+# The checkpoint system (added to trainer.py) ensures that if the job
+# hits the walltime limit or crashes, you can re-submit the same
+# script and it will resume from where it left off.
+#====================================================================
+
+#--- PBS Directives ---------------------------------------------------
+#PBS -N qc_cnn_exp                          # Job name
+#PBS -l select=1:ncpus=4:ngpus=1:mem=16gb   # 1 node, 4 CPUs, 1 GPU, 16GB RAM
+#PBS -l walltime=48:00:00                    # 48-hour walltime (adjust as needed)
+#PBS -q gpu                                  # GPU queue (change to your cluster's queue name)
+#PBS -o logs/pbs_output.log                  # stdout log
+#PBS -e logs/pbs_error.log                   # stderr log
+#PBS -M it_25201815@your_university.edu      # Email (CHANGE THIS)
+#PBS -m abe                                  # Email on abort/begin/end
+
+#--- Environment Setup ------------------------------------------------
+# Change to the submission directory
+cd $PBS_O_WORKDIR
+
+# Create logs directory if it doesn't exist
+mkdir -p logs
+
+# Load modules — UNCOMMENT and EDIT to match your cluster's modules
+# module load python/3.10
+# module load cuda/12.0
+# module load anaconda3
+
+# Activate your conda/venv environment — UNCOMMENT the one you use:
+# source activate quantum_env
+# conda activate quantum_env
+# source ~/venvs/quantum/bin/activate
+
+echo "======================================================================"
+echo "  PBS Job: $PBS_JOBID"
+echo "  Running on node: $(hostname)"
+echo "  Started at: $(date)"
+echo "  Working dir: $(pwd)"
+echo "  GPU info:"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo "  (no nvidia-smi)"
+echo "======================================================================"
+
+#--- Run Experiment ---------------------------------------------------
+# CHOOSE which experiment to run by uncommenting ONE of these:
+
+# Experiment 2: Classification (fastest to validate — start here)
+python run_all.py --exp 2 --dataset mnist
+
+# Experiment 2: All datasets
+# python run_all.py --exp 2
+
+# Experiment 1: Circuit Selection (very long — ~11 circuits × 70 epochs × 2 datasets)
+# python run_all.py --exp 1
+
+# Experiment 3: Noise Robustness
+# python run_all.py --exp 3
+
+# Experiment 4: Ablation Study
+# python run_all.py --exp 4
+
+# Experiment 5: Scalability Study — Part A only
+# python run_all.py --exp 5 --part A
+
+# Experiment 5: Scalability Study — Part B only
+# python run_all.py --exp 5 --part B
+
+# Run ALL experiments sequentially
+# python run_all.py --exp 1 2 3 4 5
+
+#--- Done -------------------------------------------------------------
+echo ""
+echo "======================================================================"
+echo "  Job finished at: $(date)"
+echo "  Exit code: $?"
+echo "======================================================================"

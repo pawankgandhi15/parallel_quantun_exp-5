@@ -42,7 +42,7 @@ from utils.circuit_metrics  import run_circuit_analysis
 SEED          = 42
 LR            = 0.01
 BATCH_SIZE    = 32
-NUM_EPOCHS    = 50      # same 50 epochs as main experiment
+NUM_EPOCHS    = 70      # same 70 epochs as main experiment
 N_SIMS        = 5000   # circuit analysis: 5,000 simulations
 RESULTS_DIR   = Path("results/experiment1")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -254,7 +254,8 @@ class SimpleHybrid(nn.Module):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS):
+def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
+                    resume: bool = True):
     set_seed(SEED)
     device = torch.device("cpu")
 
@@ -265,22 +266,45 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS):
     # Table 2 is the independent numerical circuit study described in the
     # paper. The previous implementation claimed to reproduce it but never
     # executed its metrics.
+    table2_path = RESULTS_DIR / "table2_circuit_metrics.json"
     table2_results = {}
     if run_metrics:
-        circuits = {
-            name: {"fn": fn, "num_params": n_params}
-            for name, (fn, n_params) in CIRCUIT_DEFS.items()
-        }
-        table2_results = run_circuit_analysis(circuits, n_sims=n_sims)
-        with open(RESULTS_DIR / "table2_circuit_metrics.json", "w") as f:
-            json.dump(table2_results, f, indent=2)
+        # Resume: skip Table 2 if results already exist
+        if resume and table2_path.exists():
+            print("  ⟳ Table 2 metrics already computed — loading from checkpoint.")
+            with open(table2_path, "r") as f:
+                table2_results = json.load(f)
+        else:
+            circuits = {
+                name: {"fn": fn, "num_params": n_params}
+                for name, (fn, n_params) in CIRCUIT_DEFS.items()
+            }
+            table2_results = run_circuit_analysis(circuits, n_sims=n_sims)
+            with open(table2_path, "w") as f:
+                json.dump(table2_results, f, indent=2)
 
     train_mnist,   test_mnist   = get_mnist(batch_size=BATCH_SIZE)
     train_fashion, test_fashion = get_fashion_mnist(batch_size=BATCH_SIZE)
 
-    results_table3 = {}   # Table 3: classification accuracy per circuit
+    # Resume: load partial Table 3 results if they exist
+    table3_path = RESULTS_DIR / "table3_circuit_classification.json"
+    results_table3 = {}
+    if resume and table3_path.exists():
+        try:
+            with open(table3_path, "r") as f:
+                results_table3 = json.load(f)
+            if results_table3:
+                print(f"  ⟳ Loaded {len(results_table3)} completed circuit(s) "
+                      f"from checkpoint.")
+        except Exception:
+            results_table3 = {}
 
     for circuit_name, (qnode, n_params) in QNODES.items():
+        # Skip circuits already evaluated on resume
+        if resume and circuit_name in results_table3:
+            print(f"\n--- Circuit: {circuit_name} — ✓ already completed, skipping ---")
+            continue
+
         print(f"\n--- Circuit: {circuit_name} ({n_params} params) ---")
         row = {}
         for ds_name, (tr_loader, te_loader) in [
@@ -304,9 +328,9 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS):
 
         results_table3[circuit_name] = row
 
-    # Save Table 3 results
-    with open(RESULTS_DIR / "table3_circuit_classification.json", "w") as f:
-        json.dump(results_table3, f, indent=2)
+        # Save incrementally after each circuit (checkpoint)
+        with open(table3_path, "w") as f:
+            json.dump(results_table3, f, indent=2)
 
     # Print comparison against paper Table 3
     print("\n" + "=" * 60)
@@ -344,5 +368,8 @@ if __name__ == "__main__":
                         help="Skip the 5,000-simulation Table 2 analysis.")
     parser.add_argument("--n-sims", type=int, default=N_SIMS,
                         help="Simulations per Table 2 metric (paper: 5000).")
+    parser.add_argument("--no-resume", action="store_true",
+                        help="Ignore checkpoints and start from scratch.")
     args = parser.parse_args()
-    run_experiment1(run_metrics=not args.skip_metrics, n_sims=args.n_sims)
+    run_experiment1(run_metrics=not args.skip_metrics, n_sims=args.n_sims,
+                    resume=not args.no_resume)

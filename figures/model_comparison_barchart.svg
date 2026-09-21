@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 680" width="100%" height="100%" style="background:#090d16; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="highlightBar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="compBar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1350" height="680" fill="#090d16" />
+
+  <!-- Title -->
+  <g transform="translate(60, 45)">
+    <text x="0" y="0" font-size="24" font-weight="bold" fill="#f8fafc">Model Parameter Efficiency &amp; Performance Comparison</text>
+    <text x="0" y="24" font-size="13" fill="#94a3b8">Comparison of Convolutional Parameter Count (lower is better) vs. MNIST Accuracy (higher is better) across 7 architectures</text>
+  </g>
+
+  <!-- ==================== LEFT PANEL: CONVOLUTIONAL PARAMETERS ==================== -->
+  <g transform="translate(60, 100)">
+    <rect width="590" height="470" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1" />
+    <text x="30" y="36" font-size="15" font-weight="bold" fill="#f8fafc">Convolutional Trainable Parameters</text>
+    <text x="30" y="56" font-size="11" fill="#94a3b8">Fewer parameters indicate higher hardware efficiency on NISQ QPUs</text>
+
+    <!-- Bars: x max=600 params -> scale: 350px width -->
+    <!-- Bar height 30, gap 18 -->
+    <g transform="translate(180, 80)">
+      <!-- Axes line -->
+      <line x1="0" y1="0" x2="0" y2="330" stroke="#475569" stroke-width="1.5" />
+
+      <!-- Model 1: QC-ResNet (512) -->
+      <text x="-15" y="24" font-size="12" fill="#cbd5e1" text-anchor="end">QC-ResNet</text>
+      <rect x="0" y="5" width="298" height="26" rx="4" fill="url(#compBar)" />
+      <text x="308" y="23" font-size="12" font-weight="bold" fill="#93c5fd">512</text>
+
+      <!-- Model 2: Classical CNN (464) -->
+      <text x="-15" y="66" font-size="12" fill="#cbd5e1" text-anchor="end">Classical CNN</text>
+      <rect x="0" y="47" width="270" height="26" rx="4" fill="url(#compBar)" />
+      <text x="280" y="65" font-size="12" font-weight="bold" fill="#93c5fd">464</text>
+
+      <!-- Model 3: VCNN (456) -->
+      <text x="-15" y="108" font-size="12" fill="#cbd5e1" text-anchor="end">VCNN</text>
+      <rect x="0" y="89" width="266" height="26" rx="4" fill="url(#compBar)" />
+      <text x="276" y="107" font-size="12" font-weight="bold" fill="#93c5fd">456</text>
+
+      <!-- Model 4: HQNN-Quanv (448) -->
+      <text x="-15" y="150" font-size="12" fill="#cbd5e1" text-anchor="end">HQNN-Quanv</text>
+      <rect x="0" y="131" width="261" height="26" rx="4" fill="url(#compBar)" />
+      <text x="271" y="149" font-size="12" font-weight="bold" fill="#93c5fd">448</text>
+
+      <!-- Model 5: QC-CNN (448) -->
+      <text x="-15" y="192" font-size="12" fill="#cbd5e1" text-anchor="end">QC-CNN</text>
+      <rect x="0" y="173" width="261" height="26" rx="4" fill="url(#compBar)" />
+      <text x="271" y="191" font-size="12" font-weight="bold" fill="#93c5fd">448</text>
+
+      <!-- Model 6: QC-Inception (304) -->
+      <text x="-15" y="234" font-size="12" fill="#cbd5e1" text-anchor="end">QC-Inception</text>
+      <rect x="0" y="215" width="177" height="26" rx="4" fill="url(#compBar)" />
+      <text x="187" y="233" font-size="12" font-weight="bold" fill="#93c5fd">304</text>
+
+      <!-- Model 7: Proposed (136) -->
+      <text x="-15" y="280" font-size="13" font-weight="bold" fill="#34d399" text-anchor="end">Proposed QC-CNN</text>
+      <rect x="0" y="259" width="80" height="32" rx="4" fill="url(#highlightBar)" stroke="#34d399" stroke-width="1.5" />
+      <text x="90" y="280" font-size="14" font-weight="bold" fill="#34d399">136  (-73% vs. QC-ResNet)</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT PANEL: ACCURACY COMPARISON ==================== -->
+  <g transform="translate(700, 100)">
+    <rect width="590" height="470" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1" />
+    <text x="30" y="36" font-size="15" font-weight="bold" fill="#f8fafc">MNIST Test Accuracy</text>
+    <text x="30" y="56" font-size="11" fill="#94a3b8">Baseline clean accuracy without artificial noise</text>
+
+    <!-- Accuracy bars: range 0.75 to 0.95 -> 20% span over 320px -->
+    <!-- x = (acc - 0.75) / 0.20 * 320 -->
+    <g transform="translate(180, 80)">
+      <line x1="0" y1="0" x2="0" y2="330" stroke="#475569" stroke-width="1.5" />
+
+      <!-- Model 1: QC-ResNet (88.10%) -> 209.6px -->
+      <text x="-15" y="24" font-size="12" fill="#cbd5e1" text-anchor="end">QC-ResNet</text>
+      <rect x="0" y="5" width="209" height="26" rx="4" fill="url(#compBar)" />
+      <text x="219" y="23" font-size="12" fill="#cbd5e1">88.10%</text>
+
+      <!-- Model 2: Classical CNN (89.35%) -> 229.6px -->
+      <text x="-15" y="66" font-size="12" fill="#cbd5e1" text-anchor="end">Classical CNN</text>
+      <rect x="0" y="47" width="230" height="26" rx="4" fill="url(#compBar)" />
+      <text x="240" y="65" font-size="12" fill="#cbd5e1">89.35%</text>
+
+      <!-- Model 3: VCNN (86.40%) -> 182.4px -->
+      <text x="-15" y="108" font-size="12" fill="#cbd5e1" text-anchor="end">VCNN</text>
+      <rect x="0" y="89" width="182" height="26" rx="4" fill="url(#compBar)" />
+      <text x="192" y="107" font-size="12" fill="#cbd5e1">86.40%</text>
+
+      <!-- Model 4: HQNN-Quanv (83.20%) -> 131.2px -->
+      <text x="-15" y="150" font-size="12" fill="#cbd5e1" text-anchor="end">HQNN-Quanv</text>
+      <rect x="0" y="131" width="131" height="26" rx="4" fill="url(#compBar)" />
+      <text x="141" y="149" font-size="12" fill="#cbd5e1">83.20%</text>
+
+      <!-- Model 5: QC-CNN (85.12%) -> 161.9px -->
+      <text x="-15" y="192" font-size="12" fill="#cbd5e1" text-anchor="end">QC-CNN</text>
+      <rect x="0" y="173" width="162" height="26" rx="4" fill="url(#compBar)" />
+      <text x="172" y="191" font-size="12" fill="#cbd5e1">85.12%</text>
+
+      <!-- Model 6: QC-Inception (87.50%) -> 200px -->
+      <text x="-15" y="234" font-size="12" fill="#cbd5e1" text-anchor="end">QC-Inception</text>
+      <rect x="0" y="215" width="200" height="26" rx="4" fill="url(#compBar)" />
+      <text x="210" y="233" font-size="12" fill="#cbd5e1">87.50%</text>
+
+      <!-- Model 7: Proposed (90.05%) -> 240.8px -->
+      <text x="-15" y="280" font-size="13" font-weight="bold" fill="#34d399" text-anchor="end">Proposed QC-CNN</text>
+      <rect x="0" y="259" width="241" height="32" rx="4" fill="url(#highlightBar)" stroke="#34d399" stroke-width="1.5" />
+      <text x="251" y="280" font-size="14" font-weight="bold" fill="#34d399">90.05%  (Best in Paper)</text>
+    </g>
+  </g>
+
+  <!-- Footer Insight Banner -->
+  <g transform="translate(60, 595)">
+    <rect width="1230" height="55" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="20" y="23" font-size="12" font-weight="bold" fill="#38bdf8">Key Takeaway:</text>
+    <text x="20" y="42" font-size="11" fill="#cbd5e1">QC-CNN-Parallel achieves the HIGHEST accuracy (90.05%) while using ONLY 136 convolutional parameters (less than half of the next closest model, QC-Inception at 304, and ~73% fewer than QC-ResNet at 512).</text>
+  </g>
+</svg>

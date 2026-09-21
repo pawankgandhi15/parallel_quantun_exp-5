@@ -31,6 +31,8 @@ The feature maps are **concatenated** channel-wise and passed to a 3-layer fully
 
 ## 🏗️ Architecture
 
+![QC-CNN-Parallel Architecture](figures/qc_cnn_parallel_architecture.svg)
+
 ```
 Input image [B, 1, 28, 28]
              |
@@ -67,6 +69,8 @@ Input image [B, 1, 28, 28]
 ---
 
 ## ⚛️ Quantum Circuit (Circuit 11)
+
+![PQC Circuit 11 Schematic](figures/pqc_circuit11_schematic.svg)
 
 The 4-qubit PQC uses **16 trainable parameters** arranged in two variational blocks:
 
@@ -122,33 +126,73 @@ Circuit 11 was selected via a **3-metric evaluation** (Table 2, paper):
 ## 📁 Repository Structure
 
 ```
-parallel_quantum/
-├── README.md                        # This file
-├── ARCHITECTURE.md                  # Detailed model architecture
-├── METHODOLOGY.md                   # Full mathematical derivations
-├── DATASETS.md                      # Dataset preparation and splits
-├── EXPERIMENT_SETUP.md              # Experimental configurations
-├── RESULTS.md                       # Paper results + reproduction template
-├── IMPROVEMENT.md                   # Notes for future improvements
-├── Quantum Engineering .pdf         # Source research paper (2026)
-├── qc-cnn-parallel.py               # Standalone smoke test script
-└── implementation/
+QC-CNN-Parallel1/
+├── README.md                            # Main project overview & quickstart
+├── LICENSE                              # MIT License
+├── .gitignore                           # Git ignore rules
+├── cur_arc.md                           # Current architecture & experiments specification
+├── cur_imple.md                         # Complete implementation analysis & report
+├── qc-cnn-parallel.py                   # Standalone smoke test script
+│
+├── docs/                                # Centralized technical documentation
+│   ├── ARCHITECTURE.md                  # Baseline theoretical architecture specification
+│   ├── cur_arc.md                       # Current architecture & experiments specification
+│   ├── cur_imple.md                     # Mirror of complete implementation analysis
+│   ├── EXPERIMENT_SETUP.md              # Experimental configurations & hyperparams
+│   ├── DATASETS.md                      # Dataset preparation and split procedures
+│   ├── RESULTS.md                       # Complete paper benchmark tables & reproduction
+│   ├── IMPROVEMENT.md                   # Scalability & future research directions
+│   ├── CHAT_SUMMARY.md                  # Development history and conversation log
+│   └── paper/                           # Paper assets
+│       ├── Quantum Engineering .pdf     # Original research paper (Liu & Lou, 2026)
+│       └── pdf_text.txt                 # Extracted paper text for search
+│
+├── figures/                             # Visual assets, architectures, and benchmark plots
+│   ├── README.md                        # Figures catalog and descriptions
+│   ├── qc_cnn_parallel_architecture.svg # High-res vector architecture flow
+│   ├── qc_cnn_parallel_architecture.jpg # 16:9 render of dual-branch pipeline
+│   ├── pqc_circuit11_schematic.svg      # Vector schematic of Circuit 11
+│   ├── pqc_circuit11_diagram.jpg        # 16:9 render of quantum circuit
+│   ├── shallow_vs_deep_philosophy.svg   # Vector comparison: width vs. depth
+│   ├── shallow_parallel_vs_deep_design.jpg # Render: barren plateau resolution
+│   ├── noise_robustness_analysis.svg    # Vector 4-panel noise robustness chart
+│   ├── noise_robustness_comparison.jpg  # Render: noise robustness curves
+│   └── model_comparison_barchart.svg    # Vector comparison of model parameters & acc
+│
+├── notebooks/                           # Interactive Jupyter notebooks
+│   ├── QC_CNN_Parallel_Experiments.ipynb # Main experiment reproduction notebook
+│   └── qc_cnn_kaggle_notebook.ipynb     # Kaggle GPU execution notebook
+│
+├── scripts/                             # Cluster execution & utility scripts
+│   ├── monitor_server.py                # Real-time HTTP dashboard for notebook runs
+│   ├── fix_token.py                     # GitHub token configuration utility
+│   ├── run_experiment.pbs               # PBS cluster batch submission script
+│   └── submit_all.sh                    # Multi-experiment shell runner
+│
+└── implementation/                      # Core Python package & experiment suite
     ├── __init__.py
-    ├── requirements.txt             # Python dependencies
-    ├── run_all.py                   # Run all 3 experiments sequentially
-    ├── models/
-    │   ├── quantum_circuit.py       # 4-qubit PQC (Circuit 11) definition
-    │   └── qc_cnn_parallel.py       # Full hybrid model (PyTorch nn.Module)
-    ├── datasets/                    # Dataset loaders (MNIST, Fashion-MNIST, Overhead-MNIST)
-    ├── experiments/
-    │   ├── experiment1_circuit_selection.py   # PQC expressibility study
-    │   ├── experiment2_classification.py      # Main classification benchmark
-    │   └── experiment3_noise_robustness.py    # Noise channel simulations
-    ├── training/                    # Training loops and utilities
-    ├── utils/
-    │   ├── circuit_metrics.py       # Expressibility, entanglement, discreteness
-    │   └── plotting.py              # Visualization utilities
-    └── results/                     # Output figures and CSV logs
+    ├── requirements.txt                 # Python dependencies
+    ├── run_all.py                       # CLI entry point to run all 5 experiments
+    ├── models/                          # PyTorch nn.Module & PennyLane QNodes
+    │   ├── qc_cnn_parallel.py           # Main QC-CNN-Parallel model
+    │   ├── quantum_circuit.py           # Circuit 11 definition & QNode
+    │   ├── scalable_quantum_circuit.py  # N-qubit scalable circuit variant
+    │   └── ablation_models.py           # Branch ablation models
+    ├── datasets/                        # Dataloaders with balanced subsampling
+    │   └── dataloader.py                # MNIST, Fashion-MNIST, Overhead-MNIST loaders
+    ├── experiments/                     # Five reproducible paper experiments
+    │   ├── experiment1_circuit_selection.py  # PQC expressibility & discreteness
+    │   ├── experiment2_classification.py     # Main classification benchmark
+    │   ├── experiment3_noise_robustness.py   # Mixed-state noise simulations
+    │   ├── experiment4_ablation_study.py     # Quantum vs classical branch ablation
+    │   └── experiment5_scalability_study.py  # Qubit count & depth scalability
+    ├── training/                        # Training loop and checkpointing
+    │   └── trainer.py                   # PyTorch training engine
+    ├── utils/                           # Evaluation metrics and plotting
+    │   ├── circuit_metrics.py           # Expressibility, entanglement, discreteness
+    │   └── plotting.py                  # Training curve & confusion matrix plots
+    ├── data/                            # Downloaded dataset cache
+    └── results/                         # Output weights, figures, and CSV logs
 ```
 
 ---

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" width="100%" height="100%" style="background:#090d16; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="diffBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="820" fill="url(#diffBg)" />
+
+  <!-- Header -->
+  <g transform="translate(60, 45)">
+    <text x="0" y="0" font-size="24" font-weight="bold" fill="#f8fafc">Architecture Specification vs. Current Implementation Matrix</text>
+    <text x="0" y="24" font-size="13" fill="#94a3b8">Comprehensive discrepancy analysis comparing docs/ARCHITECTURE.md against current QC-CNN-Parallel1 software</text>
+  </g>
+
+  <!-- Table Container -->
+  <g transform="translate(60, 95)">
+    <!-- Header Row -->
+    <rect width="1280" height="42" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="20" y="26" font-size="12" font-weight="bold" fill="#94a3b8">DIMENSION</text>
+    <text x="240" y="26" font-size="12" font-weight="bold" fill="#60a5fa">DOCS/ARCHITECTURE.MD (PAPER BASELINE)</text>
+    <text x="640" y="26" font-size="12" font-weight="bold" fill="#34d399">CURRENT CODEBASE IMPLEMENTATION</text>
+    <text x="1040" y="26" font-size="12" font-weight="bold" fill="#c084fc">RESEARCH &amp; SOFTWARE IMPACT</text>
+
+    <!-- Rows (y start = 50, row height = 75) -->
+    
+    <!-- Row 1: Model Scope -->
+    <g transform="translate(0, 48)">
+      <rect width="1280" height="72" rx="4" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">1. Model Scope</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Architectural breadth</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">Single model specified</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">QCCNNParallel only</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">6 full executable model classes</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">QCCNNParallel, ClassicalCNN, 3 ablations, Scalable</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Enables comparative benchmarking,</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">ablation, and scalability sweeps</text>
+    </g>
+
+    <!-- Row 2: Quantum Circuit -->
+    <g transform="translate(0, 126)">
+      <rect width="1280" height="72" rx="4" fill="#111827" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">2. Quantum Circuit</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">PQC adaptability</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">Static 4-qubit, 2-layer Circuit 11</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">Fixed 16 parameters</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Dual: Canonical + Dynamic Generator</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">Arbitrary N qubits (2..8) and depth L (1..5)</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Allows empirical mapping of</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">barren plateau threshold</text>
+    </g>
+
+    <!-- Row 3: Quantum Noise -->
+    <g transform="translate(0, 204)">
+      <rect width="1280" height="72" rx="4" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">3. Noise Simulation</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Hardware fidelity</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">Pure-state default.qubit only</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">Assumes zero decoherence</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Full mixed-state default.mixed</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">Bit-flip, phase-flip, depolarizing at p ∈ [0, 0.3]</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Full reproduction of paper Tables 5-8</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">under real NISQ noise conditions</text>
+    </g>
+
+    <!-- Row 4: Training Engine -->
+    <g transform="translate(0, 282)">
+      <rect width="1280" height="72" rx="4" fill="#111827" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">4. Training Engine</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Optimization pipeline</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">15 lines of conceptual pseudocode</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">Generic Adam lr=0.01 text</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Production Trainer class</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">Checkpointing (best.pt), macro-F1, confusion matrix</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Full automated reproducibility and</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">training artifact generation</text>
+    </g>
+
+    <!-- Row 5: Data Ingestion -->
+    <g transform="translate(0, 360)">
+      <rect width="1280" height="72" rx="4" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">5. Data Ingestion</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Dataset processing</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">Mentions normalized [0, 1] tensors</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">No subsampling specification</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Class-balanced dataloaders</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">Table 1: exact 10k train / 2k test splits</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Matches paper experimental protocol</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">across MNIST, Fashion, Overhead</text>
+    </g>
+
+    <!-- Row 6: Conv Parameters -->
+    <g transform="translate(0, 438)">
+      <rect width="1280" height="72" rx="4" fill="#111827" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">6. Conv Parameters</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Accounting rigor</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">Reports 136 parameters</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">(Follows paper Table 4 literally)</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Explicit .count_parameters()</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">136 classical + 16 quantum = 152 total conv</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Eliminates literature ambiguity over</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">quantum angle parameter counting</text>
+    </g>
+
+    <!-- Row 7: Experimental Suite -->
+    <g transform="translate(0, 516)">
+      <rect width="1280" height="72" rx="4" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">7. Experiments</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Execution harness</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">3 conceptual paper experiments</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">No runnable scripts</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">5 executable scripts + CLI</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">run_all.py, PBS cluster scripts, web monitor</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Automates single-command</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">scientific reproduction</text>
+    </g>
+
+    <!-- Row 8: Visual Diagrams -->
+    <g transform="translate(0, 594)">
+      <rect width="1280" height="72" rx="4" fill="#111827" stroke="#1e293b" stroke-width="1" />
+      <text x="20" y="32" font-size="12" font-weight="bold" fill="#f8fafc">8. Visual Assets</text>
+      <text x="20" y="50" font-size="10" fill="#94a3b8">Documentation graphics</text>
+
+      <text x="240" y="32" font-size="11" fill="#cbd5e1">ASCII text boxes</text>
+      <text x="240" y="50" font-size="11" fill="#93c5fd">Monochrome terminal style</text>
+
+      <text x="640" y="32" font-size="11" font-weight="bold" fill="#34d399">Dedicated figures/ directory</text>
+      <text x="640" y="50" font-size="10" fill="#a7f3d0">High-res 16:9 renders and vector SVGs</text>
+
+      <text x="1040" y="32" font-size="11" fill="#cbd5e1">Ready for research papers,</text>
+      <text x="1040" y="50" font-size="10" fill="#c084fc">slide presentations, and web</text>
+    </g>
+  </g>
+</svg>
