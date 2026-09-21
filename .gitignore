@@ -30,8 +30,9 @@ results/**/*.npy
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# Environments
+# Environments & Secrets
 .env
+scripts/fix_token.py
 .venv
 env/
 venv/
