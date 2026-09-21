@@ -20,12 +20,11 @@
 The feature maps are **concatenated** channel-wise and passed to a 3-layer fully-connected classification head.
 
 ### Key Highlights
-
-- ✅ **Lowest convolutional parameter count** (136 conv. params) among 7 compared models
-- ✅ **90.05% accuracy** on MNIST (no-noise baseline)
-- ✅ **4.89% improvement** over existing hybrid quantum CNNs on average
-- ✅ **6.24% improvement** over classical CNNs on average
-- ✅ **Noise-robust** — maintains high accuracy under bit-flip, phase-flip, and depolarizing channels
+ 
+- ✅ **Lowest convolutional parameter count** (136 conv. params vs. 448–512 in literature baselines)
+- 🎯 **Target Benchmark Accuracy:** 90.05% on MNIST (Quantum Engineering 2026 paper baseline)
+- 🔬 **Robust Noise Architecture:** Parallel dual-branch design preventing catastrophic degradation under bit-flip, phase-flip, and depolarizing channels
+- 🚀 **Full Reproduction Suite:** 5 automated experiment pipelines implemented for local GPU, Kaggle/Colab, and PBS HPC clusters
 
 ---
 
@@ -91,42 +90,46 @@ Circuit 11 was selected via a **3-metric evaluation** (Table 2, paper):
 
 ---
 
-## 📊 Results
+## 📊 Experimental Results & Benchmarks
 
-### Classification Accuracy (No-Noise Baseline)
+> ℹ️ **Status of Reproduction Experiments:** The values under **Paper Benchmark** are the published ground-truth targets from *Quantum Engineering (2026), Article 6643049*. Our local and cluster reproduction experiments are configured and queued for execution. When runs complete, empirical values will be automatically recorded under **Our Reproduction**.
 
-| Model | Conv. Params | MNIST Acc. |
-|---|---:|---:|
-| Classical CNN (LeNet-5) | 464 | 0.8935 |
-| QC-CNN (Henderson et al.) | 448 | — |
-| HQNN-Quanv (Senokosov et al.) | 448 | 0.8320 |
-| VCNN (Huang et al.) | 456 | — |
-| QC-ResNet (Shi et al.) | 512 | — |
-| QC-Inception (Wang et al.) | 304 | — |
-| **QC-CNN-Parallel (Proposed)** | **136** | **0.9005** |
+### Classification Accuracy (MNIST Benchmark vs. Reproduction)
 
-### Noise Robustness (MNIST, Proposed vs. Baselines)
+| Model | Conv. Params | Paper Benchmark (QE 2026) | Our Reproduction (Empirical) | Status |
+|---|---:|---:|:---:|:---:|
+| Classical CNN (LeNet-5) | 464 | 0.8935 | *[Pending]* | Classical Baseline |
+| HQNN-Quanv (Senokosov et al.) | 448 | 0.8320 | *[Pending]* | Sequential Hybrid Baseline |
+| QC-CNN (Henderson et al.) | 448 | — | *[Pending]* | Hybrid Baseline |
+| VCNN (Huang et al.) | 456 | — | *[Pending]* | Variational Baseline |
+| QC-ResNet (Shi et al.) | 512 | — | *[Pending]* | Residual Baseline |
+| QC-Inception (Wang et al.) | 304 | — | *[Pending]* | Inception Baseline |
+| **QC-CNN-Parallel (Proposed)** | **136** | **0.9005** | *[In Progress]* | Primary Target |
 
-#### Bit-Flip Noise (Table 6)
-| Model | No noise | Error 0.1 | Error 0.2 | Error 0.3 |
-|---|---:|---:|---:|---:|
-| **Proposed** | **0.9005** | **0.8769** | **0.8558** | **0.8405** |
-| HQNN-Quanv | 0.8320 | 0.6775 | 0.6523 | 0.6399 |
-| QNN | 0.8350 | 0.7115 | 0.6124 | 0.4615 |
+### Noise Robustness (MNIST, Paper vs. Reproduction)
 
-#### Depolarizing Noise (Table 8)
-| Model | No noise | Error 0.1 | Error 0.2 | Error 0.3 |
-|---|---:|---:|---:|---:|
-| **Proposed** | **0.9005** | **0.8639** | **0.8664** | **0.8327** |
-| HQNN-Quanv | 0.8320 | 0.7021 | 0.6502 | 0.6059 |
-| QNN | 0.8350 | 0.7552 | 0.6944 | 0.5904 |
+#### Bit-Flip Noise Channel (Target: Table 6, QE 2026)
+| Model | Source | No Noise ($p=0$) | Error $p=0.1$ | Error $p=0.2$ | Error $p=0.3$ |
+|---|---|---:|---:|---:|---:|
+| **QC-CNN-Parallel (Paper Target)** | QE 2026, Table 6 | **0.9005** | **0.8769** | **0.8558** | **0.8405** |
+| **QC-CNN-Parallel (Our Reproduction)** | *Empirical Run* | *[Pending]* | *[Pending]* | *[Pending]* | *[Pending]* |
+| HQNN-Quanv (Senokosov et al.) | QE 2026, Table 6 | 0.8320 | 0.6775 | 0.6523 | 0.6399 |
+| QNN Baseline | QE 2026, Table 6 | 0.8350 | 0.7115 | 0.6124 | 0.4615 |
+
+#### Depolarizing Noise Channel (Target: Table 8, QE 2026)
+| Model | Source | No Noise ($p=0$) | Error $p=0.1$ | Error $p=0.2$ | Error $p=0.3$ |
+|---|---|---:|---:|---:|---:|
+| **QC-CNN-Parallel (Paper Target)** | QE 2026, Table 8 | **0.9005** | **0.8639** | **0.8664** | **0.8327** |
+| **QC-CNN-Parallel (Our Reproduction)** | *Empirical Run* | *[Pending]* | *[Pending]* | *[Pending]* | *[Pending]* |
+| HQNN-Quanv (Senokosov et al.) | QE 2026, Table 8 | 0.8320 | 0.7021 | 0.6502 | 0.6059 |
+| QNN Baseline | QE 2026, Table 8 | 0.8350 | 0.7552 | 0.6944 | 0.5904 |
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-QC-CNN-Parallel1/
+parallel_quantun_exp-5/
 ├── README.md                            # Main project overview & quickstart
 ├── LICENSE                              # MIT License
 ├── .gitignore                           # Git ignore rules
