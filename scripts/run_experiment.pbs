@@ -51,7 +51,7 @@ echo "======================================================================"
 # CHOOSE which experiment to run by uncommenting ONE of these:
 
 # Experiment 2: Classification (fastest to validate — start here)
-python run_all.py --exp 2 --dataset mnist
+# python run_all.py --exp 2 --dataset mnist
 
 # Experiment 2: All datasets
 # python run_all.py --exp 2
@@ -72,7 +72,7 @@ python run_all.py --exp 2 --dataset mnist
 # python run_all.py --exp 5 --part B
 
 # Run ALL experiments sequentially
-# python run_all.py --exp 1 2 3 4 5
+python run_all.py --exp 1 2 3 4 5
 
 #--- Done -------------------------------------------------------------
 echo ""
