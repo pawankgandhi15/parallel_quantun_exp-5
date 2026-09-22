@@ -1,0 +1,68 @@
+{
+  "RX-Linear": {
+    "num_params": 4,
+    "expressibility": 71.7568,
+    "entanglement": 0.0,
+    "discreteness": 0.0
+  },
+  "RX-Circle": {
+    "num_params": 4,
+    "expressibility": 71.7568,
+    "entanglement": 0.0,
+    "discreteness": 0.0
+  },
+  "RX-All-to-All": {
+    "num_params": 4,
+    "expressibility": 71.7568,
+    "entanglement": 0.0,
+    "discreteness": 0.0
+  },
+  "RY-Linear": {
+    "num_params": 4,
+    "expressibility": 0.6871,
+    "entanglement": 0.9027,
+    "discreteness": 0.397
+  },
+  "RY-Circle": {
+    "num_params": 4,
+    "expressibility": 0.6678,
+    "entanglement": 1.2836,
+    "discreteness": 0.3697
+  },
+  "RY-All-to-All": {
+    "num_params": 4,
+    "expressibility": 0.7029,
+    "entanglement": 0.5935,
+    "discreteness": 0.5079
+  },
+  "RZ-Linear": {
+    "num_params": 4,
+    "expressibility": 0.6715,
+    "entanglement": 1.2389,
+    "discreteness": 0.0
+  },
+  "RZ-Circle": {
+    "num_params": 4,
+    "expressibility": 0.6881,
+    "entanglement": 1.5635,
+    "discreteness": 0.0
+  },
+  "RZ-All-to-All": {
+    "num_params": 4,
+    "expressibility": 0.726,
+    "entanglement": 1.1916,
+    "discreteness": 0.0
+  },
+  "Circuit-10": {
+    "num_params": 28,
+    "expressibility": 0.0032,
+    "entanglement": 1.4303,
+    "discreteness": 0.0515
+  },
+  "Circuit-11": {
+    "num_params": 16,
+    "expressibility": 0.0126,
+    "entanglement": 1.1127,
+    "discreteness": 0.1547
+  }
+}
