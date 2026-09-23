@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 580" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.1" />
+    </filter>
+  </defs>
+
+  <!-- ==================== (a) CIRCUIT 10 ==================== -->
+  <g transform="translate(60, 20)">
+    <!-- Wires 0..3 -->
+    <text x="15" y="44" font-size="13">0</text>
+    <line x1="35" y1="40" x2="880" y2="40" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="94" font-size="13">1</text>
+    <line x1="35" y1="90" x2="880" y2="90" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="144" font-size="13">2</text>
+    <line x1="35" y1="140" x2="880" y2="140" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="194" font-size="13">3</text>
+    <line x1="35" y1="190" x2="880" y2="190" stroke="#1e293b" stroke-width="1.2" />
+
+    <!-- Initial Rx, Rz on all 4 wires -->
+    <!-- Wire 0 -->
+    <rect x="65" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="110" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 1 -->
+    <rect x="65" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="110" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 2 -->
+    <rect x="65" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="110" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 3 -->
+    <rect x="65" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="110" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Entangling block with controlled Rx gates -->
+    <!-- Column 1: Control on 3, target Rx on 2 and 1 -->
+    <circle cx="180" cy="190" r="3.5" fill="#1e293b" />
+    <line x1="180" y1="90" x2="180" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="163" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="180" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 2: Control on 3, target Rx on 0 -->
+    <circle cx="230" cy="190" r="3.5" fill="#1e293b" />
+    <line x1="230" y1="40" x2="230" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="213" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="230" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 3: Control on 2, target on 3 -->
+    <circle cx="280" cy="140" r="3.5" fill="#1e293b" />
+    <line x1="280" y1="140" x2="280" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="263" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="280" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 4: Control on 2, target on 1 -->
+    <circle cx="330" cy="140" r="3.5" fill="#1e293b" />
+    <line x1="330" y1="90" x2="330" y2="140" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="313" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="330" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 5: Control on 1, target on 0 and 3 -->
+    <circle cx="380" cy="90" r="3.5" fill="#1e293b" />
+    <line x1="380" y1="40" x2="380" y2="90" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="363" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="380" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <circle cx="430" cy="90" r="3.5" fill="#1e293b" />
+    <line x1="430" y1="90" x2="430" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="413" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="430" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 6: Control on 1, target on 2 -->
+    <circle cx="480" cy="90" r="3.5" fill="#1e293b" />
+    <line x1="480" y1="90" x2="480" y2="140" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="463" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="480" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Column 7: Control on 0, target on 3, 2, 1 -->
+    <circle cx="530" cy="40" r="3.5" fill="#1e293b" />
+    <line x1="530" y1="40" x2="530" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="513" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="530" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <circle cx="570" cy="40" r="3.5" fill="#1e293b" />
+    <line x1="570" y1="40" x2="570" y2="140" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="553" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="570" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <circle cx="610" cy="40" r="3.5" fill="#1e293b" />
+    <line x1="610" y1="40" x2="610" y2="90" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="593" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="610" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Barrier -->
+    <line x1="645" y1="20" x2="645" y2="210" stroke="#1e293b" stroke-width="1" />
+    <line x1="648" y1="20" x2="648" y2="210" stroke="#1e293b" stroke-width="1" />
+
+    <!-- Terminal Rx, Rz on all 4 wires -->
+    <!-- Wire 0 -->
+    <rect x="670" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="687" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="715" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="732" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 1 -->
+    <rect x="670" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="687" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="715" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="732" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 2 -->
+    <rect x="670" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="687" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="715" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="732" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Wire 3 -->
+    <rect x="670" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="687" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+    <rect x="715" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="732" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">z</tspan></text>
+
+    <!-- Subcaption -->
+    <text x="450" y="240" font-size="14" font-weight="bold" text-anchor="middle">(a) Circuit 10 (Sim et al., 28 parameters)</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="50" y1="270" x2="950" y2="270" stroke="#cbd5e1" stroke-width="1" />
+
+  <!-- ==================== (b) CIRCUIT 11 ==================== -->
+  <g transform="translate(140, 290)">
+    <!-- Wires 0..3 -->
+    <text x="15" y="44" font-size="13">0</text>
+    <line x1="35" y1="40" x2="680" y2="40" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="94" font-size="13">1</text>
+    <line x1="35" y1="90" x2="680" y2="90" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="144" font-size="13">2</text>
+    <line x1="35" y1="140" x2="680" y2="140" stroke="#1e293b" stroke-width="1.2" />
+
+    <text x="15" y="194" font-size="13">3</text>
+    <line x1="35" y1="190" x2="680" y2="190" stroke="#1e293b" stroke-width="1.2" />
+
+    <!-- LAYER 1: Ry, Rx + Circle CRX (0->1, 1->2, 2->3, 3->0) -->
+    <!-- Wire 0: Ry, Rx -->
+    <rect x="65" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="110" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 1: Ry, Rx -->
+    <rect x="65" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="110" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 2: Ry, Rx -->
+    <rect x="65" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="110" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 3: Ry, Rx -->
+    <rect x="65" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="82" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="110" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="127" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Circle CRX gates -->
+    <!-- 0->1 -->
+    <circle cx="175" cy="40" r="3.5" fill="#1e293b" />
+    <line x1="175" y1="40" x2="175" y2="90" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="158" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="175" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 1->2 -->
+    <circle cx="215" cy="90" r="3.5" fill="#1e293b" />
+    <line x1="215" y1="90" x2="215" y2="140" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="198" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="215" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 2->3 -->
+    <circle cx="255" cy="140" r="3.5" fill="#1e293b" />
+    <line x1="255" y1="140" x2="255" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="238" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="255" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 3->0 -->
+    <circle cx="295" cy="190" r="3.5" fill="#1e293b" />
+    <line x1="295" y1="40" x2="295" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="278" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="295" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Barrier -->
+    <line x1="335" y1="20" x2="335" y2="210" stroke="#1e293b" stroke-width="1.2" />
+    <line x1="339" y1="20" x2="339" y2="210" stroke="#1e293b" stroke-width="1.2" />
+
+    <!-- LAYER 2: Ry, Rx + Shifted Circle CRX (1->2, 2->3, 3->0, 0->1) -->
+    <!-- Wire 0: Ry, Rx -->
+    <rect x="360" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="377" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="405" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="422" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 1: Ry, Rx -->
+    <rect x="360" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="377" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="405" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="422" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 2: Ry, Rx -->
+    <rect x="360" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="377" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="405" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="422" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Wire 3: Ry, Rx -->
+    <rect x="360" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="377" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">y</tspan></text>
+    <rect x="405" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="422" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Shifted Circle CRX gates -->
+    <!-- 1->2 (starts at qubit 1!) -->
+    <circle cx="470" cy="90" r="3.5" fill="#1e293b" />
+    <line x1="470" y1="90" x2="470" y2="140" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="453" y="126" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="470" y="145" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 2->3 -->
+    <circle cx="510" cy="140" r="3.5" fill="#1e293b" />
+    <line x1="510" y1="140" x2="510" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="493" y="176" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="510" y="195" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 3->0 -->
+    <circle cx="550" cy="190" r="3.5" fill="#1e293b" />
+    <line x1="550" y1="40" x2="550" y2="190" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="533" y="26" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="550" y="45" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- 0->1 -->
+    <circle cx="590" cy="40" r="3.5" fill="#1e293b" />
+    <line x1="590" y1="40" x2="590" y2="90" stroke="#1e293b" stroke-width="1.2" />
+    <rect x="573" y="76" width="34" height="28" rx="6" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="590" y="95" font-size="13" text-anchor="middle">R<tspan baseline-shift="sub" font-size="9">x</tspan></text>
+
+    <!-- Subcaption -->
+    <text x="370" y="240" font-size="14" font-weight="bold" text-anchor="middle">(b) Circuit 11 (Proposed, Shifted-Circle, 16 parameters)</text>
+  </g>
+</svg>

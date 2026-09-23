@@ -1,252 +1,261 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780" width="100%" height="100%" style="background:#0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif;">
   <defs>
-    <!-- Gradients -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b0f19" />
-      <stop offset="100%" stop-color="#111827" />
-    </linearGradient>
-    <linearGradient id="classicalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#064e3b" />
-      <stop offset="100%" stop-color="#047857" />
-    </linearGradient>
-    <linearGradient id="quantumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1b4b" />
-      <stop offset="100%" stop-color="#4338ca" />
-    </linearGradient>
-    <linearGradient id="denseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#312e81" />
-      <stop offset="100%" stop-color="#1e293b" />
-    </linearGradient>
-    <linearGradient id="fusionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f766e" />
-      <stop offset="100%" stop-color="#0369a1" />
-    </linearGradient>
-    
-    <!-- Glow filters -->
-    <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-    
     <!-- Markers -->
-    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#38bdf8" />
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#222222" />
     </marker>
-    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#34d399" />
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#b45309" />
     </marker>
-    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#a78bfa" />
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#15803d" />
     </marker>
-    <marker id="arrowWhite" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
-    </marker>
+    <!-- Drop Shadow for Subtle Depth -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.12" />
+    </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="1400" height="780" fill="url(#bgGrad)" />
-
-  <!-- Title Header -->
-  <g transform="translate(50, 45)">
-    <text x="0" y="0" font-size="26" font-weight="bold" fill="#f8fafc" letter-spacing="0.5">QC-CNN-Parallel Architecture</text>
-    <text x="0" y="26" font-size="14" fill="#94a3b8">Parallel Hybrid Quantum-Classical Convolutional Network (Liu &amp; Lou, Quantum Engineering 2026)</text>
+  <!-- ==================== 1. INPUT IMAGE WITH PATCH ==================== -->
+  <g transform="translate(60, 160)">
+    <!-- Base Image Container with Grayscale Pattern simulating Overhead/MNIST -->
+    <rect x="0" y="0" width="110" height="110" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
+    <!-- Stylized Grayscale Image Content -->
+    <path d="M 5,20 Q 30,5 55,25 T 105,15 L 105,95 Q 75,105 45,90 T 5,95 Z" fill="#cbd5e1" opacity="0.6" />
+    <path d="M 15,35 Q 40,25 70,50 T 95,85" stroke="#64748b" stroke-width="8" fill="none" stroke-linecap="round" />
+    <path d="M 25,75 Q 55,60 85,70" stroke="#475569" stroke-width="6" fill="none" stroke-linecap="round" />
+    <circle cx="35" cy="40" r="10" fill="#475569" />
+    <polygon points="65,25 80,45 55,45" fill="#334155" />
+    <rect x="15" y="80" width="30" height="15" fill="#64748b" rx="2" />
+    <rect x="70" y="70" width="25" height="25" fill="#334155" rx="2" />
+    <!-- Highlighted Purple 2x2 Patch -->
+    <rect x="42" y="42" width="26" height="26" fill="#6b21a8" stroke="#4c1d95" stroke-width="1.5" filter="url(#shadow)" />
+    <!-- Image Border -->
+    <rect x="0" y="0" width="110" height="110" fill="none" stroke="#1e293b" stroke-width="1.5" />
   </g>
 
-  <!-- Legend & Badges -->
-  <g transform="translate(980, 30)">
-    <rect x="0" y="0" width="370" height="50" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
-    <circle cx="20" cy="25" r="7" fill="#34d399" />
-    <text x="35" y="29" font-size="12" fill="#cbd5e1">Classical (136 params)</text>
-    <circle cx="170" cy="25" r="7" fill="#a78bfa" />
-    <text x="185" y="29" font-size="12" fill="#cbd5e1">Quantum PQC (16 params)</text>
-    <rect x="310" y="17" width="45" height="16" rx="4" fill="#0284c7" />
-    <text x="318" y="29" font-size="10" font-weight="bold" fill="#ffffff">WIDTH</text>
+  <!-- Diverging Branch Arrows -->
+  <path d="M 175, 190 C 210, 175 230, 140 260, 125" fill="none" stroke="#222" stroke-width="1.2" marker-end="url(#arrow)" />
+  <path d="M 175, 235 C 210, 255 240, 290 280, 310" fill="none" stroke="#222" stroke-width="1.2" marker-end="url(#arrow)" />
+
+  <!-- ==================== 2. QUANTUM FILTER BRANCH (TOP) ==================== -->
+  <g transform="translate(265, 60)">
+    <!-- 4 Input Wires -->
+    <circle cx="0" cy="30" r="2.5" fill="#b45309" />
+    <line x1="0" y1="30" x2="25" y2="30" stroke="#b45309" stroke-width="1.4" />
+    <circle cx="0" cy="50" r="2.5" fill="#b45309" />
+    <line x1="0" y1="50" x2="25" y2="50" stroke="#b45309" stroke-width="1.4" />
+    <circle cx="0" cy="70" r="2.5" fill="#b45309" />
+    <line x1="0" y1="70" x2="25" y2="70" stroke="#b45309" stroke-width="1.4" />
+    <circle cx="0" cy="90" r="2.5" fill="#b45309" />
+    <line x1="0" y1="90" x2="25" y2="90" stroke="#b45309" stroke-width="1.4" />
+
+    <!-- Unitary Box U -->
+    <rect x="25" y="15" width="120" height="90" rx="14" fill="#fff" stroke="#b45309" stroke-width="1.8" filter="url(#shadow)" />
+    <text x="85" y="68" font-size="24" font-style="italic" fill="#b45309" text-anchor="middle" font-weight="bold">U</text>
+
+    <!-- Connecting Wires from U to Measurement -->
+    <line x1="145" y1="30" x2="160" y2="30" stroke="#b45309" stroke-width="1.4" />
+    <line x1="145" y1="50" x2="160" y2="50" stroke="#b45309" stroke-width="1.4" />
+    <line x1="145" y1="70" x2="160" y2="70" stroke="#b45309" stroke-width="1.4" />
+    <line x1="145" y1="90" x2="160" y2="90" stroke="#b45309" stroke-width="1.4" />
+
+    <!-- 4 Measurement Boxes [M] -->
+    <g transform="translate(160, 20)">
+      <rect x="0" y="0" width="22" height="18" rx="4" fill="#fff" stroke="#b45309" stroke-width="1.4" />
+      <text x="11" y="14" font-size="12" fill="#b45309" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
+    </g>
+    <g transform="translate(160, 40)">
+      <rect x="0" y="0" width="22" height="18" rx="4" fill="#fff" stroke="#b45309" stroke-width="1.4" />
+      <text x="11" y="14" font-size="12" fill="#b45309" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
+    </g>
+    <g transform="translate(160, 60)">
+      <rect x="0" y="0" width="22" height="18" rx="4" fill="#fff" stroke="#b45309" stroke-width="1.4" />
+      <text x="11" y="14" font-size="12" fill="#b45309" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
+    </g>
+    <g transform="translate(160, 80)">
+      <rect x="0" y="0" width="22" height="18" rx="4" fill="#fff" stroke="#b45309" stroke-width="1.4" />
+      <text x="11" y="14" font-size="12" fill="#b45309" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
+    </g>
+
+    <!-- Branch Label -->
+    <text x="85" y="130" font-size="15" fill="#1e293b" text-anchor="middle">Quantum filter</text>
+
+    <!-- Arrow from M to Quantum Feature Maps -->
+    <path d="M 185, 55 L 235, 80" fill="none" stroke="#222" stroke-width="1.2" marker-end="url(#arrow)" />
   </g>
 
-  <!-- ==================== STAGE 1: INPUT ==================== -->
-  <g transform="translate(50, 250)">
-    <!-- Box -->
-    <rect x="0" y="0" width="130" height="180" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
-    <text x="65" y="30" font-size="14" font-weight="bold" fill="#38bdf8" text-anchor="middle">INPUT IMAGE</text>
-    
-    <!-- Image Canvas representation -->
-    <rect x="25" y="45" width="80" height="80" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1.5" />
-    <!-- Mini digits / grid -->
-    <path d="M 45 60 L 65 60 L 65 105 M 55 105 L 75 105" stroke="#94a3b8" stroke-width="3" fill="none" stroke-linecap="round" />
-    <text x="65" y="145" font-size="12" font-weight="bold" fill="#f8fafc" text-anchor="middle">28 × 28</text>
-    <text x="65" y="165" font-size="11" fill="#94a3b8" text-anchor="middle">[B, 1, 28, 28]</text>
-  </g>
-
-  <!-- Fork arrows -->
-  <!-- Classical branch fork -->
-  <path d="M 180 310 L 220 310 L 220 180 L 260 180" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrowGreen)" />
-  <!-- Quantum branch fork -->
-  <path d="M 180 370 L 220 370 L 220 500 L 260 500" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#arrowPurple)" />
-
-  <!-- ==================== STAGE 2A: CLASSICAL BRANCH (TOP) ==================== -->
-  <g transform="translate(265, 100)">
-    <rect x="0" y="0" width="430" height="170" rx="14" fill="#064e3b" fill-opacity="0.3" stroke="#10b981" stroke-width="2" />
-    <text x="20" y="28" font-size="14" font-weight="bold" fill="#34d399">CLASSICAL CONVOLUTIONAL BRANCH</text>
-    <text x="350" y="28" font-size="12" fill="#6ee7b7">136 Params</text>
-
-    <!-- Conv2D Node -->
-    <g transform="translate(20, 45)">
-      <rect x="0" y="0" width="180" height="100" rx="8" fill="#0f172a" stroke="#34d399" stroke-width="1.5" />
-      <text x="15" y="25" font-size="13" font-weight="bold" fill="#f8fafc">Conv2D (1 → 8)</text>
-      <text x="15" y="45" font-size="11" fill="#94a3b8">Kernel: 4 × 4</text>
-      <text x="15" y="62" font-size="11" fill="#94a3b8">Stride: 2 | Padding: 1</text>
-      <text x="15" y="80" font-size="11" fill="#6ee7b7">Activation: ReLU</text>
-    </g>
-
-    <!-- Arrow inside -->
-    <line x1="205" y1="95" x2="235" y2="95" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)" />
-
-    <!-- Feature Maps -->
-    <g transform="translate(240, 45)">
-      <rect x="0" y="0" width="170" height="100" rx="8" fill="#0f172a" stroke="#059669" stroke-width="1.5" />
-      <text x="15" y="25" font-size="13" font-weight="bold" fill="#34d399">Classical Feature Map</text>
-      <text x="15" y="50" font-size="16" font-weight="bold" fill="#f8fafc">8 channels</text>
-      <text x="15" y="70" font-size="12" fill="#94a3b8">Spatial: 14 × 14</text>
-      <text x="15" y="88" font-size="11" font-weight="bold" fill="#38bdf8">Shape: [B, 8, 14, 14]</text>
-    </g>
-  </g>
-
-  <!-- ==================== STAGE 2B: QUANTUM BRANCH (BOTTOM) ==================== -->
-  <g transform="translate(265, 390)">
-    <rect x="0" y="0" width="430" height="230" rx="14" fill="#1e1b4b" fill-opacity="0.35" stroke="#8b5cf6" stroke-width="2" />
-    <text x="20" y="28" font-size="14" font-weight="bold" fill="#c084fc">QUANTUM CONVOLUTIONAL BRANCH</text>
-    <text x="355" y="28" font-size="12" fill="#a78bfa">16 Params</text>
-
-    <!-- 2x2 Sliding Window Box -->
-    <g transform="translate(15, 45)">
-      <rect x="0" y="0" width="115" height="165" rx="8" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
-      <text x="10" y="24" font-size="12" font-weight="bold" fill="#818cf8">2×2 Window</text>
-      <text x="10" y="44" font-size="11" fill="#94a3b8">Stride: 2</text>
-      <text x="10" y="60" font-size="11" fill="#94a3b8">196 Patches</text>
-      
-      <!-- Mini 2x2 visual -->
-      <g transform="translate(18, 72)">
-        <rect x="0" y="0" width="36" height="36" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
-        <line x1="18" y1="0" x2="18" y2="36" stroke="#818cf8" stroke-width="1" />
-        <line x1="0" y1="18" x2="36" y2="18" stroke="#818cf8" stroke-width="1" />
-        <text x="9" y="13" font-size="9" fill="#c084fc" text-anchor="middle">p0</text>
-        <text x="27" y="13" font-size="9" fill="#c084fc" text-anchor="middle">p1</text>
-        <text x="9" y="30" font-size="9" fill="#c084fc" text-anchor="middle">p2</text>
-        <text x="27" y="30" font-size="9" fill="#c084fc" text-anchor="middle">p3</text>
-      </g>
-      <text x="10" y="128" font-size="10" fill="#a5b4fc">θ = pixel × π</text>
-      <text x="10" y="146" font-size="10" fill="#94a3b8">Angle Encode</text>
-    </g>
-
-    <!-- Arrow to PQC -->
-    <line x1="135" y1="125" x2="155" y2="125" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowPurple)" />
-
-    <!-- PQC Circuit 11 Box -->
-    <g transform="translate(160, 45)">
-      <rect x="0" y="0" width="125" height="165" rx="8" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5" />
-      <text x="10" y="24" font-size="12" font-weight="bold" fill="#a78bfa">PQC Circuit 11</text>
-      <text x="10" y="44" font-size="11" fill="#cbd5e1">4 Qubits</text>
-      <text x="10" y="62" font-size="11" fill="#94a3b8">H + RY Encode</text>
-      <text x="10" y="80" font-size="11" fill="#94a3b8">2× RY Rotations</text>
-      <text x="10" y="98" font-size="11" fill="#94a3b8">2× CRX Circles</text>
-      <text x="10" y="116" font-size="11" fill="#c084fc">(Shifted Circle)</text>
-      <text x="10" y="136" font-size="11" fill="#38bdf8">Measure: ⟨Z_i⟩</text>
-      <text x="10" y="152" font-size="10" fill="#a78bfa">16 Shared Wts</text>
-    </g>
-
-    <!-- Arrow to Output -->
-    <line x1="290" y1="125" x2="310" y2="125" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowPurple)" />
-
-    <!-- Quantum Feature Maps -->
-    <g transform="translate(315, 45)">
-      <rect x="0" y="0" width="100" height="165" rx="8" fill="#0f172a" stroke="#7c3aed" stroke-width="1.5" />
-      <text x="10" y="24" font-size="12" font-weight="bold" fill="#c084fc">Q-Features</text>
-      <text x="10" y="55" font-size="15" font-weight="bold" fill="#f8fafc">4 channels</text>
-      <text x="10" y="75" font-size="11" fill="#94a3b8">[-1, 1] range</text>
-      <text x="10" y="100" font-size="11" fill="#94a3b8">Spatial:</text>
-      <text x="10" y="118" font-size="12" font-weight="bold" fill="#f8fafc">14 × 14</text>
-      <text x="10" y="148" font-size="10" font-weight="bold" fill="#38bdf8">[B, 4, 14, 14]</text>
+  <!-- Quantum Feature Maps Stack (Orange 2.5D Stack) -->
+  <g transform="translate(510, 115)">
+    <!-- Layer 4 (back) -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#fef3c7" stroke="#b45309" stroke-width="1.3" transform="translate(0, 0)" />
+    <!-- Layer 3 -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#fef3c7" stroke="#b45309" stroke-width="1.3" transform="translate(7, 8)" />
+    <!-- Layer 2 -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#fef3c7" stroke="#b45309" stroke-width="1.3" transform="translate(14, 16)" />
+    <!-- Layer 1 (front) -->
+    <g transform="translate(21, 24)">
+      <polygon points="0,0 55,0 55,65 0,65" fill="#fffbeb" stroke="#b45309" stroke-width="1.4" filter="url(#shadow)" />
+      <!-- Grid lines inside front map -->
+      <line x1="18" y1="0" x2="18" y2="65" stroke="#fde68a" stroke-width="1" />
+      <line x1="36" y1="0" x2="36" y2="65" stroke="#fde68a" stroke-width="1" />
+      <line x1="0" y1="21" x2="55" y2="21" stroke="#fde68a" stroke-width="1" />
+      <line x1="0" y1="43" x2="55" y2="43" stroke="#fde68a" stroke-width="1" />
+      <!-- Highlighted cell -->
+      <rect x="20" y="23" width="14" height="16" fill="#b45309" />
     </g>
   </g>
 
-  <!-- ==================== STAGE 3: CONCATENATION ==================== -->
-  <!-- Classical path to concat -->
-  <path d="M 700 185 L 750 185 L 750 320 L 780 320" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrowGreen)" />
-  <!-- Quantum path to concat -->
-  <path d="M 700 505 L 750 505 L 750 360 L 780 360" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#arrowPurple)" />
+  <!-- ==================== 3. CLASSICAL FILTER BRANCH (BOTTOM) ==================== -->
+  <g transform="translate(300, 260)">
+    <!-- 4x4 Classical Kernel Filter Grid -->
+    <rect x="0" y="0" width="80" height="80" fill="#fff" stroke="#15803d" stroke-width="1.6" filter="url(#shadow)" />
+    <!-- Horizontal lines -->
+    <line x1="0" y1="20" x2="80" y2="20" stroke="#15803d" stroke-width="1.2" />
+    <line x1="0" y1="40" x2="80" y2="40" stroke="#15803d" stroke-width="1.2" />
+    <line x1="0" y1="60" x2="80" y2="60" stroke="#15803d" stroke-width="1.2" />
+    <!-- Vertical lines -->
+    <line x1="20" y1="0" x2="20" y2="80" stroke="#15803d" stroke-width="1.2" />
+    <line x1="40" y1="0" x2="40" y2="80" stroke="#15803d" stroke-width="1.2" />
+    <line x1="60" y1="0" x2="60" y2="80" stroke="#15803d" stroke-width="1.2" />
 
-  <g transform="translate(785, 270)">
-    <rect x="0" y="0" width="130" height="140" rx="12" fill="#0284c7" fill-opacity="0.25" stroke="#38bdf8" stroke-width="2" />
-    <circle cx="65" cy="40" r="18" fill="#0369a1" stroke="#38bdf8" stroke-width="2" />
-    <text x="65" y="47" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">⧺</text>
-    <text x="65" y="78" font-size="12" font-weight="bold" fill="#f8fafc" text-anchor="middle">CONCATENATE</text>
-    <text x="65" y="96" font-size="11" fill="#94a3b8" text-anchor="middle">8 + 4 = 12 channels</text>
-    <text x="65" y="118" font-size="12" font-weight="bold" fill="#38bdf8" text-anchor="middle">[B, 12, 14, 14]</text>
+    <!-- Label -->
+    <text x="40" y="105" font-size="15" fill="#1e293b" text-anchor="middle">4 × 4</text>
+    <text x="40" y="123" font-size="15" fill="#1e293b" text-anchor="middle">Classical filter</text>
+
+    <!-- Arrow from Classical Filter to Classical Feature Maps -->
+    <path d="M 85, 45 L 180, 50" fill="none" stroke="#222" stroke-width="1.2" marker-end="url(#arrow)" />
   </g>
 
-  <!-- Arrow to Flatten -->
-  <line x1="920" y1="340" x2="955" y2="340" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowCyan)" />
-
-  <!-- ==================== STAGE 4: CLASSIFICATION HEAD ==================== -->
-  <g transform="translate(960, 180)">
-    <rect x="0" y="0" width="390" height="320" rx="14" fill="#1e293b" fill-opacity="0.6" stroke="#475569" stroke-width="2" />
-    <text x="25" y="30" font-size="14" font-weight="bold" fill="#f8fafc">CLASSIFICATION HEAD (DENSE LAYERS)</text>
-    <text x="250" y="30" font-size="12" fill="#94a3b8">310,090 Params</text>
-
-    <!-- Flatten block -->
-    <g transform="translate(20, 50)">
-      <rect x="0" y="0" width="350" height="42" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1" />
-      <text x="15" y="26" font-size="12" font-weight="bold" fill="#cbd5e1">Flatten Layer:</text>
-      <text x="110" y="26" font-size="12" fill="#38bdf8">12 × 14 × 14 → [B, 2352]</text>
-    </g>
-
-    <!-- Dense 1 -->
-    <g transform="translate(20, 105)">
-      <rect x="0" y="0" width="350" height="48" rx="6" fill="#0f172a" stroke="#6366f1" stroke-width="1.2" />
-      <text x="15" y="24" font-size="12" font-weight="bold" fill="#f8fafc">Linear(2352 → 128) + ReLU</text>
-      <text x="15" y="40" font-size="11" fill="#818cf8">301,184 params (97.1% of total)</text>
-      <text x="260" y="30" font-size="12" font-weight="bold" fill="#38bdf8">[B, 128]</text>
-    </g>
-
-    <!-- Dense 2 -->
-    <g transform="translate(20, 165)">
-      <rect x="0" y="0" width="350" height="48" rx="6" fill="#0f172a" stroke="#6366f1" stroke-width="1.2" />
-      <text x="15" y="24" font-size="12" font-weight="bold" fill="#f8fafc">Linear(128 → 64) + ReLU</text>
-      <text x="15" y="40" font-size="11" fill="#818cf8">8,256 params</text>
-      <text x="270" y="30" font-size="12" font-weight="bold" fill="#38bdf8">[B, 64]</text>
-    </g>
-
-    <!-- Dense 3 / Logits -->
-    <g transform="translate(20, 225)">
-      <rect x="0" y="0" width="350" height="52" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
-      <text x="15" y="25" font-size="12" font-weight="bold" fill="#f8fafc">Linear(64 → C=10) (Logits)</text>
-      <text x="15" y="43" font-size="11" fill="#34d399">650 params | CrossEntropyLoss</text>
-      <text x="275" y="33" font-size="13" font-weight="bold" fill="#34d399">[B, 10]</text>
+  <!-- Classical Feature Maps Stack (Green 2.5D Stack, 8 Channels) -->
+  <g transform="translate(540, 240)">
+    <!-- Layer 4 (back) -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#f0fdf4" stroke="#15803d" stroke-width="1.3" transform="translate(0, 0)" />
+    <!-- Layer 3 -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#f0fdf4" stroke="#15803d" stroke-width="1.3" transform="translate(6, 7)" />
+    <!-- Layer 2 -->
+    <polygon points="0,0 55,0 55,65 0,65" fill="#f0fdf4" stroke="#15803d" stroke-width="1.3" transform="translate(12, 14)" />
+    <!-- Layer 1 (front) -->
+    <g transform="translate(18, 21)">
+      <polygon points="0,0 55,0 55,65 0,65" fill="#f0fdf4" stroke="#15803d" stroke-width="1.4" filter="url(#shadow)" />
+      <!-- Grid lines inside front map -->
+      <line x1="18" y1="0" x2="18" y2="65" stroke="#bbf7d0" stroke-width="1" />
+      <line x1="36" y1="0" x2="36" y2="65" stroke="#bbf7d0" stroke-width="1" />
+      <line x1="0" y1="21" x2="55" y2="21" stroke="#bbf7d0" stroke-width="1" />
+      <line x1="0" y1="43" x2="55" y2="43" stroke="#bbf7d0" stroke-width="1" />
+      <!-- Highlighted green cell -->
+      <rect x="20" y="23" width="14" height="16" fill="#15803d" />
     </g>
   </g>
 
-  <!-- ==================== FOOTER / HIGHLIGHT CARDS ==================== -->
-  <g transform="translate(50, 660)">
-    <!-- Card 1 -->
-    <rect x="0" y="0" width="410" height="85" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
-    <text x="15" y="25" font-size="12" font-weight="bold" fill="#38bdf8">⚡ Key Architecture Innovation</text>
-    <text x="15" y="46" font-size="11" fill="#cbd5e1">Parallel Width vs. Sequential Depth avoids barren plateaus</text>
-    <text x="15" y="65" font-size="11" fill="#94a3b8">Var[∂L/∂θ] is preserved with shallow 2-layer PQC</text>
+  <!-- ==================== 4. FUSION / FLATTEN ==================== -->
+  <!-- Connecting line joining Quantum and Classical map stacks -->
+  <path d="M 525, 175 C 500, 205 520, 245 545, 265" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3" />
 
-    <!-- Card 2 -->
-    <rect x="445" y="0" width="410" height="85" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
-    <text x="15" y="25" font-size="12" font-weight="bold" fill="#34d399">🎯 Parameter Efficiency</text>
-    <text x="15" y="46" font-size="11" fill="#cbd5e1">Only 136 classical + 16 quantum = 152 conv parameters</text>
-    <text x="15" y="65" font-size="11" fill="#94a3b8">Lowest conv param count among all 7 paper models</text>
+  <!-- Hollow 3D Arrow pointing to Flatten -->
+  <g transform="translate(640, 210)">
+    <polygon points="0,6 24,6 24,0 40,11 24,22 24,16 0,16" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+    <text x="20" y="38" font-size="14" fill="#1e293b" text-anchor="middle">Flatten</text>
+  </g>
 
-    <!-- Card 3 -->
-    <rect x="890" y="0" width="410" height="85" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
-    <text x="15" y="25" font-size="12" font-weight="bold" fill="#c084fc">🛡️ Noise Robustness</text>
-    <text x="15" y="46" font-size="11" fill="#cbd5e1">Retains 84.05% under p=0.3 Bit-flip (vs 63.99% HQNN)</text>
-    <text x="15" y="65" font-size="11" fill="#94a3b8">+4.89% avg accuracy over existing hybrid quantum CNNs</text>
+  <!-- ==================== 5. FULLY CONNECTED LAYERS ==================== -->
+  <!-- Flatten Feature Representation (Tall Slender Box) -->
+  <g transform="translate(705, 95)">
+    <rect x="0" y="0" width="18" height="240" fill="#fff" stroke="#0f172a" stroke-width="1.5" filter="url(#shadow)" />
+  </g>
+
+  <!-- Arrow Flatten -> Fully1 -->
+  <g transform="translate(735, 210)">
+    <polygon points="0,6 20,6 20,0 34,11 20,22 20,16 0,16" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+  </g>
+
+  <!-- Fully 1 (Dense 128) -->
+  <g transform="translate(780, 115)">
+    <rect x="0" y="0" width="18" height="200" fill="#fff" stroke="#0f172a" stroke-width="1.5" filter="url(#shadow)" />
+    <text x="9" y="222" font-size="14" fill="#1e293b" text-anchor="middle">Fully1</text>
+  </g>
+
+  <!-- Arrow Fully1 -> Fully2 -->
+  <g transform="translate(810, 210)">
+    <polygon points="0,6 20,6 20,0 34,11 20,22 20,16 0,16" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+  </g>
+
+  <!-- Fully 2 (Dense 64) -->
+  <g transform="translate(855, 135)">
+    <rect x="0" y="0" width="18" height="160" fill="#fff" stroke="#0f172a" stroke-width="1.5" filter="url(#shadow)" />
+    <text x="9" y="182" font-size="14" fill="#1e293b" text-anchor="middle">Fully2</text>
+  </g>
+
+  <!-- Arrow Fully2 -> Output -->
+  <g transform="translate(885, 210)">
+    <polygon points="0,6 20,6 20,0 34,11 20,22 20,16 0,16" fill="#fff" stroke="#1e293b" stroke-width="1.3" />
+  </g>
+
+  <!-- Output (Dense 10) -->
+  <g transform="translate(930, 150)">
+    <rect x="0" y="0" width="18" height="130" fill="#fff" stroke="#0f172a" stroke-width="1.5" filter="url(#shadow)" />
+    <text x="9" y="152" font-size="14" fill="#1e293b" text-anchor="middle">Output</text>
+  </g>
+
+  <!-- ==================== 6. CLASSIFICATION LABELS ==================== -->
+  <g transform="translate(965, 142)">
+    <!-- 10 Horizontal Output Arrows & Labels -->
+    <!-- 1. Car -->
+    <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+    <text x="35" y="10" font-size="12.5" fill="#334155">Car</text>
+
+    <!-- 2. Harbor -->
+    <g transform="translate(0, 16)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Harbor</text>
+    </g>
+
+    <!-- 3. Helicopter -->
+    <g transform="translate(0, 32)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Helicopter</text>
+    </g>
+
+    <!-- 4. Oil_gas_field -->
+    <g transform="translate(0, 48)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Oil\_gas\_field</text>
+    </g>
+
+    <!-- 5. Parking_lot -->
+    <g transform="translate(0, 64)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Parking\_lot</text>
+    </g>
+
+    <!-- 6. Plane -->
+    <g transform="translate(0, 80)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Plane</text>
+    </g>
+
+    <!-- 7. Runway_mark -->
+    <g transform="translate(0, 96)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Runway\_mark</text>
+    </g>
+
+    <!-- 8. Ship (Highlighted Target in Red) -->
+    <g transform="translate(0, 112)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#b91c1c" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" font-weight="bold" fill="#b91c1c">Ship</text>
+    </g>
+
+    <!-- 9. Stadium -->
+    <g transform="translate(0, 128)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Stadium</text>
+    </g>
+
+    <!-- 10. Storage_tank -->
+    <g transform="translate(0, 144)">
+      <polygon points="0,4 18,4 18,0 28,6 18,12 18,8 0,8" fill="#fff" stroke="#334155" stroke-width="1" />
+      <text x="35" y="10" font-size="12.5" fill="#334155">Storage\_tank</text>
+    </g>
   </g>
 </svg>

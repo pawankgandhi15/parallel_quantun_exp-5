@@ -1,246 +1,204 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 620" width="100%" height="100%" style="background:#090d16; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 420" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif;">
   <defs>
-    <linearGradient id="circBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#090d16" />
-      <stop offset="100%" stop-color="#0f172a" />
-    </linearGradient>
-    <filter id="gateShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.4" />
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1e293b" />
+    </marker>
+    <!-- Drop Shadow for subtle academic depth -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1" flood-color="#000000" flood-opacity="0.1" />
     </filter>
   </defs>
 
-  <rect width="1350" height="620" fill="url(#circBg)" />
-
-  <!-- Title & Metadata -->
-  <g transform="translate(60, 40)">
-    <text x="0" y="0" font-size="24" font-weight="bold" fill="#f8fafc">Circuit 11 — 4-Qubit Parameterized Quantum Circuit (PQC)</text>
-    <text x="0" y="24" font-size="13" fill="#94a3b8">Selected via Expressibility (0.0071), Entanglement (0.5463), and Discreteness (0.0191) | 16 Trainable Parameters</text>
+  <!-- ==================== 1. INPUT DATA (2x2 Patch) ==================== -->
+  <g transform="translate(60, 110)">
+    <!-- 28x28 Image placeholder (blue-gray) -->
+    <rect x="0" y="20" width="80" height="80" fill="#cbd5e1" stroke="#475569" stroke-width="1.2" />
+    <!-- 2x2 Patch highlighted top-left -->
+    <rect x="10" y="30" width="32" height="32" fill="#fff" stroke="#1e293b" stroke-width="1.2" />
+    <line x1="26" y1="30" x2="26" y2="62" stroke="#1e293b" stroke-width="1" />
+    <line x1="10" y1="46" x2="42" y2="46" stroke="#1e293b" stroke-width="1" />
+    <text x="18" y="42" font-size="10" font-family="'Times New Roman', serif" text-anchor="middle">X<tspan baseline-shift="sub" font-size="7">1</tspan></text>
+    <text x="34" y="42" font-size="10" font-family="'Times New Roman', serif" text-anchor="middle">X<tspan baseline-shift="sub" font-size="7">2</tspan></text>
+    <text x="18" y="58" font-size="10" font-family="'Times New Roman', serif" text-anchor="middle">X<tspan baseline-shift="sub" font-size="7">3</tspan></text>
+    <text x="34" y="58" font-size="10" font-family="'Times New Roman', serif" text-anchor="middle">X<tspan baseline-shift="sub" font-size="7">4</tspan></text>
+    <!-- Label -->
+    <text x="40" y="125" font-size="14" fill="#0f172a" text-anchor="middle">Input data</text>
   </g>
 
-  <!-- Stage Column Banners -->
-  <g transform="translate(0, 85)">
-    <!-- Stage 1 -->
-    <rect x="140" y="0" width="150" height="26" rx="4" fill="#0284c7" fill-opacity="0.2" />
-    <text x="215" y="18" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">1. ANGLE ENCODING</text>
+  <!-- Angle equations & routing paths -->
+  <!-- Wire 0 (X1) -->
+  <text x="185" y="80" font-size="13" font-style="italic" fill="#0f172a">θ<tspan baseline-shift="sub" font-size="9" font-style="normal">1</tspan> = X<tspan baseline-shift="sub" font-size="9" font-style="normal">1</tspan> * π</text>
+  <path d="M 98, 140 C 130, 95 180, 85 240, 85 L 290, 85" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arrow)" />
 
-    <!-- Stage 2 -->
-    <rect x="310" y="0" width="110" height="26" rx="4" fill="#6366f1" fill-opacity="0.2" />
-    <text x="365" y="18" font-size="11" font-weight="bold" fill="#818cf8" text-anchor="middle">2. ROTATION 1</text>
+  <!-- Wire 1 (X2) -->
+  <text x="185" y="128" font-size="13" font-style="italic" fill="#0f172a">θ<tspan baseline-shift="sub" font-size="9" font-style="normal">2</tspan> = X<tspan baseline-shift="sub" font-size="9" font-style="normal">2</tspan> * π</text>
+  <path d="M 102, 145 C 135, 130 180, 135 240, 135 L 290, 135" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arrow)" />
 
-    <!-- Stage 3 -->
-    <rect x="440" y="0" width="220" height="26" rx="4" fill="#8b5cf6" fill-opacity="0.2" />
-    <text x="550" y="18" font-size="11" font-weight="bold" fill="#c084fc" text-anchor="middle">3. ENTANGLING 1 (CIRCLE)</text>
+  <!-- Wire 2 (X3) -->
+  <text x="185" y="195" font-size="13" font-style="italic" fill="#0f172a">θ<tspan baseline-shift="sub" font-size="9" font-style="normal">3</tspan> = X<tspan baseline-shift="sub" font-size="9" font-style="normal">3</tspan> * π</text>
+  <path d="M 98, 160 C 130, 185 180, 195 240, 195 L 290, 195" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arrow)" />
 
-    <!-- Stage 4 -->
-    <rect x="680" y="0" width="110" height="26" rx="4" fill="#6366f1" fill-opacity="0.2" />
-    <text x="735" y="18" font-size="11" font-weight="bold" fill="#818cf8" text-anchor="middle">4. ROTATION 2</text>
+  <!-- Wire 3 (X4) -->
+  <text x="185" y="248" font-size="13" font-style="italic" fill="#0f172a">θ<tspan baseline-shift="sub" font-size="9" font-style="normal">4</tspan> = X<tspan baseline-shift="sub" font-size="9" font-style="normal">4</tspan> * π</text>
+  <path d="M 102, 165 C 135, 235 180, 245 240, 245 L 290, 245" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arrow)" />
 
-    <!-- Stage 5 -->
-    <rect x="810" y="0" width="240" height="26" rx="4" fill="#ec4899" fill-opacity="0.2" />
-    <text x="930" y="18" font-size="11" font-weight="bold" fill="#f472b6" text-anchor="middle">5. ENTANGLING 2 (SHIFTED CIRCLE)</text>
+  <!-- ==================== 2. QUANTUM CIRCUIT WIRES ==================== -->
+  <!-- Wire 0 -->
+  <text x="270" y="119" font-size="14" fill="#0f172a">|0⟩</text>
+  <line x1="290" y1="115" x2="800" y2="115" stroke="#1e293b" stroke-width="1.3" />
 
-    <!-- Stage 6 -->
-    <rect x="1070" y="0" width="140" height="26" rx="4" fill="#10b981" fill-opacity="0.2" />
-    <text x="1140" y="18" font-size="11" font-weight="bold" fill="#34d399" text-anchor="middle">6. MEASUREMENT</text>
+  <!-- Wire 1 -->
+  <text x="270" y="169" font-size="14" fill="#0f172a">|0⟩</text>
+  <line x1="290" y1="165" x2="800" y2="165" stroke="#1e293b" stroke-width="1.3" />
+
+  <!-- Wire 2 -->
+  <text x="270" y="219" font-size="14" fill="#0f172a">|0⟩</text>
+  <line x1="290" y1="215" x2="800" y2="215" stroke="#1e293b" stroke-width="1.3" />
+
+  <!-- Wire 3 -->
+  <text x="270" y="269" font-size="14" fill="#0f172a">|0⟩</text>
+  <line x1="290" y1="265" x2="800" y2="265" stroke="#1e293b" stroke-width="1.3" />
+
+  <!-- ==================== 3. ENCODING LAYER Ue(x) ==================== -->
+  <g transform="translate(305, 0)">
+    <rect x="0" y="98" width="50" height="34" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="148" width="50" height="34" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="198" width="50" height="34" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="248" width="50" height="34" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="1.2" filter="url(#shadow)" />
   </g>
+  <text x="330" y="325" font-size="14" fill="#0f172a" text-anchor="middle">Encoding <tspan font-style="italic">U</tspan><tspan baseline-shift="sub" font-size="10">e</tspan>(x)</text>
 
-  <!-- Qubit Wire Horizontal Lines -->
-  <!-- Wire 0: y=160, Wire 1: y=240, Wire 2: y=320, Wire 3: y=400 -->
-  <g stroke="#334155" stroke-width="2">
-    <line x1="110" y1="170" x2="1220" y2="170" />
-    <line x1="110" y1="260" x2="1220" y2="260" />
-    <line x1="110" y1="350" x2="1220" y2="350" />
-    <line x1="110" y1="440" x2="1220" y2="440" />
-  </g>
+  <!-- Barrier (Double Line) -->
+  <line x1="375" y1="90" x2="375" y2="290" stroke="#1e293b" stroke-width="1.2" />
+  <line x1="380" y1="90" x2="380" y2="290" stroke="#1e293b" stroke-width="1.2" />
 
-  <!-- Qubit Wire Labels -->
-  <g font-size="15" font-weight="bold" fill="#e2e8f0">
-    <text x="60" y="176">|q₀⟩</text>
-    <text x="60" y="266">|q₁⟩</text>
-    <text x="60" y="356">|q₂⟩</text>
-    <text x="60" y="446">|q₃⟩</text>
-  </g>
-
-  <!-- ==================== STAGE 1: ENCODING (H + RY(x_i)) ==================== -->
-  <!-- q0 -->
-  <g transform="translate(150, 150)" filter="url(#gateShadow)">
-    <rect width="36" height="40" rx="6" fill="#0369a1" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="18" y="25" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
-  </g>
-  <g transform="translate(200, 146)" filter="url(#gateShadow)">
-    <rect width="76" height="48" rx="6" fill="#0f766e" stroke="#2dd4bf" stroke-width="1.5" />
-    <text x="38" y="24" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(x₀)</text>
-    <text x="38" y="39" font-size="9" fill="#99f6e4" text-anchor="middle">pixel 0</text>
-  </g>
-
-  <!-- q1 -->
-  <g transform="translate(150, 240)" filter="url(#gateShadow)">
-    <rect width="36" height="40" rx="6" fill="#0369a1" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="18" y="25" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
-  </g>
-  <g transform="translate(200, 236)" filter="url(#gateShadow)">
-    <rect width="76" height="48" rx="6" fill="#0f766e" stroke="#2dd4bf" stroke-width="1.5" />
-    <text x="38" y="24" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(x₁)</text>
-    <text x="38" y="39" font-size="9" fill="#99f6e4" text-anchor="middle">pixel 1</text>
+  <!-- ==================== 4. PQC U(theta) ==================== -->
+  <!-- Expression Layer 1 (Tan/Peach rounded boxes) -->
+  <g transform="translate(400, 0)">
+    <rect x="0" y="98" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="148" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="198" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="248" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
   </g>
 
-  <!-- q2 -->
-  <g transform="translate(150, 330)" filter="url(#gateShadow)">
-    <rect width="36" height="40" rx="6" fill="#0369a1" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="18" y="25" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
-  </g>
-  <g transform="translate(200, 326)" filter="url(#gateShadow)">
-    <rect width="76" height="48" rx="6" fill="#0f766e" stroke="#2dd4bf" stroke-width="1.5" />
-    <text x="38" y="24" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(x₂)</text>
-    <text x="38" y="39" font-size="9" fill="#99f6e4" text-anchor="middle">pixel 2</text>
+  <!-- Entangled Layer 1 (Circular CRX: 0->1, 1->2, 2->3, 3->0) -->
+  <g transform="translate(470, 0)">
+    <!-- Gate 0->1 -->
+    <line x1="20" y1="115" x2="20" y2="165" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="20" cy="115" r="3.5" fill="#1e293b" />
+    <rect x="6" y="148" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 1->2 -->
+    <line x1="55" y1="165" x2="55" y2="215" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="55" cy="165" r="3.5" fill="#1e293b" />
+    <rect x="41" y="198" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 2->3 -->
+    <line x1="90" y1="215" x2="90" y2="265" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="90" cy="215" r="3.5" fill="#1e293b" />
+    <rect x="76" y="248" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 3->0 (feedback ring) -->
+    <line x1="125" y1="115" x2="125" y2="265" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="125" cy="265" r="3.5" fill="#1e293b" />
+    <rect x="111" y="98" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
   </g>
 
-  <!-- q3 -->
-  <g transform="translate(150, 420)" filter="url(#gateShadow)">
-    <rect width="36" height="40" rx="6" fill="#0369a1" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="18" y="25" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
-  </g>
-  <g transform="translate(200, 416)" filter="url(#gateShadow)">
-    <rect width="76" height="48" rx="6" fill="#0f766e" stroke="#2dd4bf" stroke-width="1.5" />
-    <text x="38" y="24" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(x₃)</text>
-    <text x="38" y="39" font-size="9" fill="#99f6e4" text-anchor="middle">pixel 3</text>
+  <!-- Expression Layer 2 (Tan/Peach rounded boxes) -->
+  <g transform="translate(635, 0)">
+    <rect x="0" y="98" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="148" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="198" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
+    <rect x="0" y="248" width="48" height="34" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="1.2" filter="url(#shadow)" />
   </g>
 
-  <!-- ==================== STAGE 2: ROTATION 1 (RY(θ0..θ3)) ==================== -->
-  <g transform="translate(325, 146)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₀)</text>
-  </g>
-  <g transform="translate(325, 236)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₁)</text>
-  </g>
-  <g transform="translate(325, 326)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₂)</text>
-  </g>
-  <g transform="translate(325, 416)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₃)</text>
+  <!-- Entangled Layer 2 (Shifted Circular CRX: 1->2, 2->3, 3->0, 0->1) -->
+  <g transform="translate(705, 0)">
+    <!-- Gate 1->2 -->
+    <line x1="15" y1="165" x2="15" y2="215" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="15" cy="165" r="3.5" fill="#1e293b" />
+    <rect x="1" y="198" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 2->3 -->
+    <line x1="45" y1="215" x2="45" y2="265" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="45" cy="215" r="3.5" fill="#1e293b" />
+    <rect x="31" y="248" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 3->0 -->
+    <line x1="75" y1="115" x2="75" y2="265" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="75" cy="265" r="3.5" fill="#1e293b" />
+    <rect x="61" y="98" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
+
+    <!-- Gate 0->1 -->
+    <line x1="95" y1="115" x2="95" y2="165" stroke="#1e293b" stroke-width="1.2" />
+    <circle cx="95" cy="115" r="3.5" fill="#1e293b" />
+    <rect x="81" y="148" width="28" height="34" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2" filter="url(#shadow)" />
   </g>
 
-  <!-- ==================== STAGE 3: ENTANGLING 1 (CIRCLE) ==================== -->
-  <!-- CRX θ4: q0 -> q1 -->
-  <circle cx="470" cy="170" r="5" fill="#c084fc" />
-  <line x1="470" y1="170" x2="470" y2="240" stroke="#c084fc" stroke-width="2" />
-  <g transform="translate(442, 240)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#581c87" stroke="#c084fc" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#f5d0fe" text-anchor="middle">RX(θ₄)</text>
-  </g>
+  <!-- PQC Label Underneath -->
+  <text x="590" y="325" font-size="14" fill="#0f172a" text-anchor="middle">PQC <tspan font-style="italic">U</tspan>(θ)</text>
 
-  <!-- CRX θ5: q1 -> q2 -->
-  <circle cx="520" cy="260" r="5" fill="#c084fc" />
-  <line x1="520" y1="260" x2="520" y2="330" stroke="#c084fc" stroke-width="2" />
-  <g transform="translate(492, 330)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#581c87" stroke="#c084fc" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#f5d0fe" text-anchor="middle">RX(θ₅)</text>
-  </g>
+  <!-- Double Barrier Before Measurement -->
+  <line x1="820" y1="90" x2="820" y2="290" stroke="#1e293b" stroke-width="1.2" />
+  <line x1="825" y1="90" x2="825" y2="290" stroke="#1e293b" stroke-width="1.2" />
 
-  <!-- CRX θ6: q2 -> q3 -->
-  <circle cx="570" cy="350" r="5" fill="#c084fc" />
-  <line x1="570" y1="350" x2="570" y2="420" stroke="#c084fc" stroke-width="2" />
-  <g transform="translate(542, 420)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#581c87" stroke="#c084fc" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#f5d0fe" text-anchor="middle">RX(θ₆)</text>
-  </g>
+  <!-- ==================== 5. MEASUREMENT BLOCKS [M] ==================== -->
+  <g transform="translate(845, 0)">
+    <line x1="-20" y1="115" x2="0" y2="115" stroke="#1e293b" stroke-width="1.3" />
+    <line x1="-20" y1="165" x2="0" y2="165" stroke="#1e293b" stroke-width="1.3" />
+    <line x1="-20" y1="215" x2="0" y2="215" stroke="#1e293b" stroke-width="1.3" />
+    <line x1="-20" y1="265" x2="0" y2="265" stroke="#1e293b" stroke-width="1.3" />
 
-  <!-- CRX θ7: q3 -> q0 (wrap circle) -->
-  <circle cx="620" cy="440" r="5" fill="#c084fc" />
-  <line x1="620" y1="170" x2="620" y2="440" stroke="#c084fc" stroke-width="2" stroke-dasharray="4,2" />
-  <g transform="translate(592, 150)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#581c87" stroke="#c084fc" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#f5d0fe" text-anchor="middle">RX(θ₇)</text>
-  </g>
+    <!-- Black Measurement Blocks with White M -->
+    <rect x="0" y="101" width="28" height="28" rx="4" fill="#0f172a" />
+    <text x="14" y="120" font-size="14" fill="#fff" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
 
-  <!-- ==================== STAGE 4: ROTATION 2 (RY(θ8..θ11)) ==================== -->
-  <g transform="translate(700, 146)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₈)</text>
-  </g>
-  <g transform="translate(700, 236)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₉)</text>
-  </g>
-  <g transform="translate(700, 326)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₁₀)</text>
-  </g>
-  <g transform="translate(700, 416)" filter="url(#gateShadow)">
-    <rect width="70" height="48" rx="6" fill="#4338ca" stroke="#818cf8" stroke-width="1.5" />
-    <text x="35" y="28" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">RY(θ₁₁)</text>
-  </g>
+    <rect x="0" y="151" width="28" height="28" rx="4" fill="#0f172a" />
+    <text x="14" y="170" font-size="14" fill="#fff" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
 
-  <!-- ==================== STAGE 5: ENTANGLING 2 (SHIFTED CIRCLE) ==================== -->
-  <!-- Shifted starts q1 -> q2 -->
-  <!-- CRX θ12: q1 -> q2 -->
-  <circle cx="840" cy="260" r="5" fill="#f472b6" />
-  <line x1="840" y1="260" x2="840" y2="330" stroke="#f472b6" stroke-width="2" />
-  <g transform="translate(812, 330)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#831843" stroke="#f472b6" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#fce7f3" text-anchor="middle">RX(θ₁₂)</text>
-  </g>
+    <rect x="0" y="201" width="28" height="28" rx="4" fill="#0f172a" />
+    <text x="14" y="220" font-size="14" fill="#fff" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
 
-  <!-- CRX θ13: q2 -> q3 -->
-  <circle cx="890" cy="350" r="5" fill="#f472b6" />
-  <line x1="890" y1="350" x2="890" y2="420" stroke="#f472b6" stroke-width="2" />
-  <g transform="translate(862, 420)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#831843" stroke="#f472b6" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#fce7f3" text-anchor="middle">RX(θ₁₃)</text>
+    <rect x="0" y="251" width="28" height="28" rx="4" fill="#0f172a" />
+    <text x="14" y="270" font-size="14" fill="#fff" text-anchor="middle" font-family="'Times New Roman', serif">M</text>
   </g>
+  <text x="859" y="325" font-size="14" fill="#0f172a" text-anchor="middle">Measurement</text>
 
-  <!-- CRX θ14: q3 -> q0 (wrap) -->
-  <circle cx="940" cy="440" r="5" fill="#f472b6" />
-  <line x1="940" y1="170" x2="940" y2="440" stroke="#f472b6" stroke-width="2" stroke-dasharray="4,2" />
-  <g transform="translate(912, 150)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#831843" stroke="#f472b6" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#fce7f3" text-anchor="middle">RX(θ₁₄)</text>
-  </g>
+  <!-- Global Label: Quantum filter -->
+  <text x="590" y="355" font-size="16" font-weight="bold" fill="#0f172a" text-anchor="middle">Quantum filter</text>
 
-  <!-- CRX θ15: q0 -> q1 (shifted finish) -->
-  <circle cx="1000" cy="170" r="5" fill="#f472b6" />
-  <line x1="1000" y1="170" x2="1000" y2="240" stroke="#f472b6" stroke-width="2" />
-  <g transform="translate(972, 240)" filter="url(#gateShadow)">
-    <rect width="56" height="40" rx="6" fill="#831843" stroke="#f472b6" stroke-width="1.5" />
-    <text x="28" y="24" font-size="10" font-weight="bold" fill="#fce7f3" text-anchor="middle">RX(θ₁₅)</text>
-  </g>
+  <!-- ==================== 6. OUTPUT MULTI-CHANNEL FEATURE MAPS ==================== -->
+  <g transform="translate(945, 90)">
+    <!-- Output Stack (4 channels: blue, yellow, green, red) -->
+    <!-- Layer 4 (Blue/Slate) -->
+    <rect x="0" y="0" width="70" height="70" fill="#93c5fd" stroke="#1e293b" stroke-width="1.2" />
+    <!-- Layer 3 (Green) -->
+    <rect x="8" y="10" width="70" height="70" fill="#86efac" stroke="#1e293b" stroke-width="1.2" />
+    <!-- Layer 2 (Yellow) -->
+    <rect x="16" y="20" width="70" height="70" fill="#fef08a" stroke="#1e293b" stroke-width="1.2" />
+    <!-- Layer 1 (Red / Front) -->
+    <g transform="translate(24, 30)">
+      <rect x="0" y="0" width="70" height="70" fill="#fca5a5" stroke="#1e293b" stroke-width="1.4" filter="url(#shadow)" />
+      <!-- Grid lines inside front map -->
+      <line x1="14" y1="0" x2="14" y2="70" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="28" y1="0" x2="28" y2="70" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="42" y1="0" x2="42" y2="70" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="56" y1="0" x2="56" y2="70" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="0" y1="14" x2="70" y2="14" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="0" y1="28" x2="70" y2="28" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="0" y1="42" x2="70" y2="42" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <line x1="0" y1="56" x2="70" y2="56" stroke="#b91c1c" stroke-width="0.8" opacity="0.4" />
+      <!-- Top-left highlighted red cell -->
+      <rect x="2" y="2" width="10" height="10" fill="#dc2626" />
+    </g>
 
-  <!-- ==================== STAGE 6: MEASUREMENT (Pauli-Z) ==================== -->
-  <g transform="translate(1090, 146)" filter="url(#gateShadow)">
-    <rect width="85" height="48" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
-    <text x="42" y="24" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">⟨Z₀⟩</text>
-    <text x="42" y="39" font-size="9" fill="#a7f3d0" text-anchor="middle">[-1, 1]</text>
-  </g>
-  <g transform="translate(1090, 236)" filter="url(#gateShadow)">
-    <rect width="85" height="48" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
-    <text x="42" y="24" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">⟨Z₁⟩</text>
-    <text x="42" y="39" font-size="9" fill="#a7f3d0" text-anchor="middle">[-1, 1]</text>
-  </g>
-  <g transform="translate(1090, 326)" filter="url(#gateShadow)">
-    <rect width="85" height="48" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
-    <text x="42" y="24" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">⟨Z₂⟩</text>
-    <text x="42" y="39" font-size="9" fill="#a7f3d0" text-anchor="middle">[-1, 1]</text>
-  </g>
-  <g transform="translate(1090, 416)" filter="url(#gateShadow)">
-    <rect width="85" height="48" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
-    <text x="42" y="24" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">⟨Z₃⟩</text>
-    <text x="42" y="39" font-size="9" fill="#a7f3d0" text-anchor="middle">[-1, 1]</text>
-  </g>
+    <!-- Dotted lines connecting Measurement to Output Feature Maps -->
+    <path d="M -70, 25 C -40, 25 -40, 45 24, 32" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" />
+    <path d="M -70, 75 C -40, 75 -40, 60 24, 45" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" />
+    <path d="M -70, 125 C -40, 125 -30, 95 24, 60" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" />
+    <path d="M -70, 175 C -40, 175 -20, 120 24, 75" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" />
 
-  <!-- Output labels -->
-  <text x="1200" y="175" font-size="12" fill="#34d399">Channel 0</text>
-  <text x="1200" y="265" font-size="12" fill="#34d399">Channel 1</text>
-  <text x="1200" y="355" font-size="12" fill="#34d399">Channel 2</text>
-  <text x="1200" y="445" font-size="12" fill="#34d399">Channel 3</text>
-
-  <!-- Footer Technical Note -->
-  <g transform="translate(60, 520)">
-    <rect x="0" y="0" width="1230" height="65" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
-    <text x="20" y="24" font-size="12" font-weight="bold" fill="#f472b6">Key Insight (Eq. 24, Liu &amp; Lou 2026):</text>
-    <text x="20" y="45" font-size="11" fill="#cbd5e1">The shift in Entangling Layer 2 (starting at q₁ instead of q₀) breaks structural symmetry with Layer 1, preventing overlapping entanglement patterns and maximizing expressive capacity without adding extra circuit depth.</text>
+    <!-- Label -->
+    <text x="60" y="145" font-size="14" fill="#0f172a" text-anchor="middle">Output data</text>
   </g>
 </svg>
