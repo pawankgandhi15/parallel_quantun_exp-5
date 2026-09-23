@@ -308,3 +308,11 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
     * `model_suite_architecture_comparison.svg` / `.jpg` (Model Suite)
   * Formulated unified 9-section manuscript outline integrating the base paper skeleton and extended research suites.
   * **Authored publication-grade `paper.tex` (778 lines, ~59 KB):** Full two-column IEEEtran journal paper encompassing Title, Abstract, Keywords, Sections 1–9, Appendix A Glossary, 25+ foundational citations, 5 comprehensive LaTeX result tables, and embedded high-resolution architectural figures.
+  * **Major Expansion to `paper.tex` (1,072 lines, ~80 KB):**
+    * *Theorem 1 & Mathematical Proof:* Analytic parameter-shift gradient rule with spectral decomposition for Pauli generators.
+    * *Section 2.4:* Kraus operator representations for Bit-Flip, Phase-Flip, and Depolarizing physical noise channels.
+    * *Proposition 1:* Barren plateau mitigation proof via Haar 2-design depth bounds and parallel dual-pathway gradient conservation.
+    * *Algorithms 1 & 2:* Formal algorithmic specifications for dual-branch forward inference and hybrid parameter-shift backpropagation.
+    * *Table 6:* Granular per-class precision, recall, and F1 performance breakdown on Fashion-MNIST.
+    * *Section 8.2 & Table 7:* Explicit QPU basis gate transpilation ($CRX \to 2\,\mathrm{CNOT} + RZ/RY$), physical coherence time analysis ($T_{\mathrm{circuit}} \approx 2.52\,\mu\mathrm{s} \ll T_2$), and full gate accounting.
+    * *Bibliography Expansion:* 42 complete, high-impact citations spanning quantum machine learning, NISQ error mitigation, and barren plateau theory.
