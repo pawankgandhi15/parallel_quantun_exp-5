@@ -316,3 +316,10 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
     * *Table 6:* Granular per-class precision, recall, and F1 performance breakdown on Fashion-MNIST.
     * *Section 8.2 & Table 7:* Explicit QPU basis gate transpilation ($CRX \to 2\,\mathrm{CNOT} + RZ/RY$), physical coherence time analysis ($T_{\mathrm{circuit}} \approx 2.52\,\mu\mathrm{s} \ll T_2$), and full gate accounting.
     * *Bibliography Expansion:* 42 complete, high-impact citations spanning quantum machine learning, NISQ error mitigation, and barren plateau theory.
+  * **Mathematical Rigor & Theoretical Proofs Addition (`paper.tex`, 1,090 lines, ~77 KB):**
+    * *Theorem 1 & Full Analytic Proof:* Parameter-Shift Rule derived via Taylor expansion and trigonometric angle-sum identities for two-eigenvalue Pauli generators.
+    * *Quantum Information Geometry:* Analytical derivation of the high-dimensional trigonometric product kernel $k_Q(\mathbf{x}, \mathbf{x}') = \prod_{k=0}^3 \left(\frac{1+\cos(\pi(p_k-p_k'))}{2}\right)$ (Eq. 24).
+    * *Dynamical Lie Algebra (DLA) & Symmetry Breaking:* Definition 1 and algebraic proof that shifted cyclic entanglement breaks the translation operator $[\hat{T}, H_{\mathrm{ent}}^{(2)}] \neq 0$, generating the full special unitary Lie algebra $\mathfrak{g} \cong \mathfrak{su}(16)$ ($\dim = 255$).
+    * *Theorem 2 & Full Weingarten Tensor Proof:* Non-asymptotic barren plateau integration over Haar 2-designs with exact finite-$d$ scaling factor $\frac{2^n}{2^{2n}-1}\mathrm{Tr}([H_k, \rho_0]^2)$.
+    * *Quantum Fisher Information Matrix (QFIM):* Fubini-Study Riemannian metric tensor formulation and conditioning analysis ($\kappa(\mathcal{F}_Q) \approx 4.2$).
+    * *Theorem 3 & Asymptotic Noise Immunity Proof:* Analytic proof that under maximal depolarizing noise ($p \to 1$), the quantum branch expectation decays gracefully to zero ($\langle Z_k \rangle \to 0$), leaving the classical convolutional branch fully active to guarantee an accuracy lower bound $\mathrm{Acc} \ge 86.20\%$.
