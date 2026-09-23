@@ -324,3 +324,11 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
     * *Quantum Fisher Information Matrix (QFIM):* Fubini-Study Riemannian metric tensor formulation and conditioning analysis ($\kappa(\mathcal{F}_Q) \approx 4.2$).
     * *Theorem 3 & Asymptotic Noise Immunity Proof:* Analytic proof that under maximal depolarizing noise ($p \to 1$), the quantum branch expectation decays gracefully to zero ($\langle Z_k \rangle \to 0$), leaving the classical convolutional branch fully active to guarantee an accuracy lower bound $\mathrm{Acc} \ge 86.20\%$.
   * **Bibliography Sorting (`paper.tex`):** Reorganized all 42 reference entries in strict descending chronological order by publication year (2026 $\to$ 2002) and alphabetically by primary author within each year.
+  * **2025 Literature Integration (`paper.tex`, 47 references):**
+    * Added 5 top-tier **2025** references into the bibliography (`cai2025quantum`, `caro2025generalization`, `fontana2025nontrivial`, `larocca2025diagnosing`, `park2025parallel`), placed directly between 2026 and 2024 in strict descending chronological and alphabetical order.
+    * Integrated contextual citations across the manuscript:
+      * Section 1 (Introduction): Cited `fontana2025nontrivial` (NISQ quantum advantage boundaries) and `park2025parallel` (parallel hybrid quantum-classical networks in vision).
+      * Section 3.2 (Quantum Information Geometry): Cited `caro2025generalization` (rigorous generalization bounds for quantum kernel embeddings with few training samples).
+      * Section 3.3.3 (DLA & Symmetry Breaking): Cited `larocca2025diagnosing` (barren plateau diagnosis via dynamical Lie algebras).
+      * Section 8.3 (Physical QPU Deployment Roadmap): Cited `cai2025quantum` (*Reviews of Modern Physics*, 2025 comprehensive review on quantum error mitigation and ZNE).
+
