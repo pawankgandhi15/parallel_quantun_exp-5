@@ -356,3 +356,6 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
     * Audited all 9 tables: verified all single-column tables utilize `\resizebox{\columnwidth}{!}` and the two-column table utilizes `table*` with `\resizebox{\textwidth}{!}`.
     * Audited all 6 figures: verified all single-column figures use `width=\columnwidth` and full-width figures use `width=\textwidth`.
     * Confirmed 100% integrity: 75 labels, 27 references, 0 missing labels, 47 bibliography items strictly sorted descending (2025 $\to$ 2002), 0 unused citations.
+  * **Front Matter & Back Matter Cleanups:**
+    * Removed `\thanks` footnotes containing manuscript received dates, funding disclosures, and institutional affiliation metadata per user instruction.
+    * Removed `\begin{IEEEbiography}` blocks at the end of the manuscript for a clean submission format ending after the bibliography.
