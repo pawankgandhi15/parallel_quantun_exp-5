@@ -43,7 +43,7 @@ Hybrid Quantum-Classical Computing, Parameterized Quantum Circuits (PQCs), Quant
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\IEEEPARstart{T}{he} realization of quantum advantage in machine learning represents a major frontier in modern computational science \cite{biamonte2017quantum, schuld2015introduction, dunjko2018machine}. Parameterized Quantum Circuits (PQCs), often termed variational quantum circuits (VQCs), function as trainable hypothesis classes capable of embedding classical data into exponentially large Hilbert spaces \cite{havlicek2019supervised, cerezo2021variational, lloyd2020quantum}. By optimizing gate parameters via classical feedback loops, Variational Quantum Algorithms (VQAs) have been actively deployed across chemistry simulation \cite{kandala2017hardware}, combinatorial optimization \cite{farhi2014quantum}, and visual pattern recognition \cite{cong2019quantum, henderson2020quanvolutional}.
+\IEEEPARstart{T}{he} realization of quantum advantage in machine learning represents a major frontier in modern computational science \cite{biamonte2017quantum, schuld2015introduction, dunjko2018machine}. Early foundations in quantum classification established algorithmic speedups for linear equations \cite{harrow2009quantum}, nearest-neighbor metric learning \cite{wiebe2012quantum}, and support vector machines \cite{rebentrost2014quantum}. Parameterized Quantum Circuits (PQCs), often termed variational quantum circuits (VQCs), function as trainable hypothesis classes capable of embedding classical data into exponentially large Hilbert spaces \cite{havlicek2019supervised, cerezo2021variational, lloyd2020quantum}. By optimizing gate parameters via classical feedback loops, Variational Quantum Algorithms (VQAs) have been actively deployed across chemistry simulation \cite{kandala2017hardware, mcardle2020quantum, tilly2022variational}, combinatorial optimization \cite{farhi2014quantum}, and visual pattern recognition \cite{cong2019quantum, henderson2020quanvolutional}.
 
 Despite their theoretical representational power, practical implementations on Noisy Intermediate-Scale Quantum (NISQ) hardware face severe structural bottlenecks \cite{preskill2018quantum, bharti2022noisy, fontana2025nontrivial}. Foremost among these is the \textit{barren plateau phenomenon} \cite{mcclean2018barren, cerezo2021cost, holmes2022connecting, arris2021barren}. As demonstrated by McClean \textit{et al.}, when a random or deeply parameterized ansatz acts on $n$ qubits, the variance of the cost function partial derivative decays exponentially as:
 \begin{equation}
@@ -138,7 +138,7 @@ CRX(\theta) = \begin{bmatrix}
 \subsection{The Three-Stage Quantum Circuit Paradigm}
 The execution workflow of any variational quantum feature extractor follows a formal three-stage process \cite{schuld2021machine}:
 \begin{enumerate}
-    \item \textbf{State Preparation (Feature Encoding $U_e(\mathbf{x})$):} Classical input data $\mathbf{x} \in \mathbb{R}^d$ is mapped to a quantum state $|\psi(\mathbf{x})\rangle = U_e(\mathbf{x}) |0\rangle^{\otimes n}$.
+    \item \textbf{State Preparation (Feature Encoding $U_e(\mathbf{x})$):} Classical input data $\mathbf{x} \in \mathbb{R}^d$ is mapped to a quantum state $|\psi(\mathbf{x})\rangle = U_e(\mathbf{x}) |0\rangle^{\otimes n}$ via rotational embeddings or uniformly controlled single-qubit rotations \cite{mottonen2004transformation}.
     \item \textbf{Parameterized Transformation (Variational Ansatz $U(\boldsymbol{\theta})$):} Trainable unitary operations parameterize the state space:
     \begin{equation}
     |\psi(\mathbf{x}, \boldsymbol{\theta})\rangle = U(\boldsymbol{\theta}) |\psi(\mathbf{x})\rangle = \prod_{l=1}^L U_{\mathrm{ent}}^{(l)}(\boldsymbol{\theta}_{\mathrm{ent}}^{(l)}) U_{\mathrm{rot}}^{(l)}(\boldsymbol{\theta}_{\mathrm{rot}}^{(l)}) |\psi(\mathbf{x})\rangle.
@@ -457,7 +457,7 @@ Substituting $d = 2^n$ and a single-qubit Pauli observable $M = Z_k$ (where $\ma
 This completes the proof.
 \end{proof}
 
-\textit{Application to QC-CNN-Parallel:} For $n=4$ qubits ($d=16$), the 2-design saturation requires circuit depth $L^* \ge \Omega(n^2) = 16$. Because Circuit~11 is restricted to $L=2$, the frame potential $\mathcal{F}_{\mathrm{Circuit11}} \gg \mathcal{F}_{\mathrm{Haar}}$, preventing convergence to a 2-design. Hence, Eq.~\eqref{eq:variance_decay_proof} does not collapse exponentially, maintaining $\mathrm{Disc} = 0.0191 \gg 0$.
+\textit{Application to QC-CNN-Parallel:} For $n=4$ qubits ($d=16$), the 2-design saturation requires circuit depth $L^* \ge \Omega(n^2) = 16$ following unitary design complexity bounds \cite{haferkamp2022linear}. Because Circuit~11 is restricted to $L=2$, the frame potential $\mathcal{F}_{\mathrm{Circuit11}} \gg \mathcal{F}_{\mathrm{Haar}}$, preventing convergence to a 2-design. Hence, Eq.~\eqref{eq:variance_decay_proof} does not collapse exponentially, maintaining $\mathrm{Disc} = 0.0191 \gg 0$.
 
 Furthermore, total network gradient norm satisfies:
 \begin{equation}
@@ -540,18 +540,21 @@ We benchmark models across three visual image classification datasets:
 
 To balance statistical significance with QPU simulation complexity, we implement the strict class-balanced subsampling protocol specified in the literature: exactly 1,000 training images per class (10,000 total training samples) and 200 testing images per class (2,000 total test samples).
 
+\subsection{Simulation Infrastructure \& Hybrid Autodiff Framework}
+All hybrid quantum-classical computations, variational state-vector evaluations, and parameter-shift gradient derivations are implemented using the PennyLane quantum software ecosystem \cite{bergholm2018pennylane} integrated with PyTorch. Quantum circuits are executed via PennyLane's high-performance C++ backend (`lightning.qubit`).
+
 \section{Empirical Benchmark Protocols}
 \label{sec:protocols}
 
 \subsection{Mathematical Definitions of Evaluation Indicators}
 To identify the optimal variational ansatz, 11 distinct 4-qubit quantum architectures are evaluated across three mathematical performance indicators:
 \begin{enumerate}
-    \item \textbf{Expressibility ($\mathrm{Expr} \downarrow$):} Quantifies the divergence between sampled fidelity distribution $P_{\mathrm{PQC}}(F)$ and the Haar measure $P_{\mathrm{Haar}}(F) = 15(1-F)^{14}$ (for $d=16$):
+    \item \textbf{Expressibility ($\mathrm{Expr} \downarrow$):} Introduced by Sim, Johnson, and Aspuru-Guzik \cite{sim2019expressibility}, this metric quantifies the divergence between sampled fidelity distribution $P_{\mathrm{PQC}}(F)$ and the Haar measure $P_{\mathrm{Haar}}(F) = 15(1-F)^{14}$ (for $d=16$):
     \begin{equation}
     \mathrm{Expr} = D_{\mathrm{KL}}\left( P_{\mathrm{PQC}}(F) \,\|\, P_{\mathrm{Haar}}(F) \right) = \sum_{b=1}^{B} P(F_b) \ln \frac{P(F_b)}{P_{\mathrm{Haar}}(F_b)}.
     \label{eq:expressibility_metric}
     \end{equation}
-    \item \textbf{Meyer-Wallach Entanglement ($\mathrm{Ent} \uparrow$):} Evaluated from the linear entropy of single-qubit reduced states:
+    \item \textbf{Meyer-Wallach Entanglement ($\mathrm{Ent} \uparrow$):} Evaluated via the Meyer-Wallach global entanglement measure \cite{meyer2002global} from the linear entropy of single-qubit reduced states:
     \begin{equation}
     Q(|\psi\rangle) = 2 \left( 1 - \frac{1}{4} \sum_{k=0}^{3} \mathrm{Tr}\left(\rho_k^2\right) \right), \quad \rho_k = \mathrm{Tr}_{\setminus k} |\psi\rangle\langle\psi|.
     \label{eq:meyer_wallach}
@@ -588,7 +591,7 @@ RY-All-to-All & 4 & Fully Connected Pairs & 0.3454 & 0.4520 & 0.1260 & 0.8006 & 
 RZ-Linear & 4 & Linear ($0 \to 1 \to 2 \to 3$) & 0.1721 & 0.6248 & $2.7 \times 10^{-33}$ & 0.5496 & Barren Plateau Trapped \\
 RZ-Circle & 4 & Circle ($0 \to 1 \to 2 \to 3 \to 0$) & 0.1670 & 0.7924 & $3.6 \times 10^{-33}$ & 0.5481 & Barren Plateau Trapped \\
 RZ-All-to-All & 4 & Fully Connected Pairs & 0.1759 & 0.5653 & 0.0154 & 0.7249 & Baseline Match \\
-Circuit 10 (Sim \textit{et al.}) & 28 & All-to-All Controlled Gates & \textbf{0.0013} & \textbf{0.7180} & 0.0208 & \textbf{0.8254} & High Complexity \\
+Circuit 10 (Sim \textit{et al.} \cite{sim2019expressibility}) & 28 & All-to-All Controlled Gates & \textbf{0.0013} & \textbf{0.7180} & 0.0208 & \textbf{0.8254} & High Complexity \\
 \textbf{Circuit 11 (Proposed)} & \textbf{16} & \textbf{Shifted-Circle Loop} & \textbf{0.0071} & \textbf{0.5463} & \textbf{0.0191} & \textbf{0.8057} & \textbf{Optimal NISQ Trade-off} \\
 \bottomrule
 \end{tabular}
@@ -836,13 +839,13 @@ T_{\mathrm{circuit}} \approx (12 \times 200\,\mathrm{ns}) + (4 \times 30\,\mathr
 Given typical $T_1$ relaxation times of $100$--$300\,\mu\mathrm{s}$ and $T_2$ dephasing times of $80$--$200\,\mu\mathrm{s}$ on contemporary IBM Falcon/Heron QPUs, $T_{\mathrm{circuit}} \ll T_2$. Thus, Circuit~11 executes well within the physical quantum coherence window, preventing environmental state decoherence.
 
 \subsection{HPC Acceleration \& Multi-Threading}
-To execute this workload efficiently in simulation, our codebase leverages OpenMP multi-threading within PennyLane's C++ state-vector backend (`lightning.qubit`) combined with batch parallel dispatch across high-performance compute nodes. On a dual AMD EPYC 7763 64-core system, forward batch evaluation completes in $48\,\mathrm{ms}$, rendering extensive multi-dataset benchmarking feasible.
+To execute this workload efficiently in simulation, our codebase leverages OpenMP multi-threading within PennyLane's C++ state-vector backend (`lightning.qubit`) \cite{bergholm2018pennylane} combined with batch parallel dispatch across high-performance compute nodes. On a dual AMD EPYC 7763 64-core system, forward batch evaluation completes in $48\,\mathrm{ms}$, rendering extensive multi-dataset benchmarking feasible.
 
 \subsection{Physical NISQ QPU Deployment Roadmap}
 For deployment on real physical QPUs (such as IBM Quantum Heron or Eagle processors via `pennylane-qiskit`), the following optimizations are required:
 \begin{enumerate}
     \item \textbf{Basis Gate Transpilation:} Because Circuit~11 uses cyclic nearest-neighbor connections ($0 \to 1 \to 2 \to 3 \to 0$), it maps directly onto square heavy-hex QPU topologies with minimal SWAP overhead.
-    \item \textbf{Zero-Noise Extrapolation (ZNE):} Under high gate error rates, expectation values can be extrapolated to the zero-noise limit by pulse stretching or unitary folding \cite{temme2017error, cai2025quantum}.
+    \item \textbf{Zero-Noise Extrapolation (ZNE) \& Error Mitigation:} Under high gate error rates, expectation values can be extrapolated to the zero-noise limit or mitigated through pulse stretching, unitary folding, and exponential error mitigation techniques \cite{temme2017error, endo2018practical, koczor2021exponential, cai2025quantum}.
     \item \textbf{Selective Patch Pruning:} In visual images, over $40\%$ of $2 \times 2$ background patches are uniform ($p_k \approx 0$). Bypassing the QPU for zero-variance patches ($\sigma^2(\mathbf{P}_{i,j}) < \tau$) reduces QPU invocation calls by $45\%$, providing an immediate path to physical hardware execution.
 \end{enumerate}
 

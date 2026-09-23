@@ -330,5 +330,14 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
       * Section 1 (Introduction): Cited `fontana2025nontrivial` (NISQ quantum advantage boundaries) and `park2025parallel` (parallel hybrid quantum-classical networks in vision).
       * Section 3.2 (Quantum Information Geometry): Cited `caro2025generalization` (rigorous generalization bounds for quantum kernel embeddings with few training samples).
       * Section 3.3.3 (DLA & Symmetry Breaking): Cited `larocca2025diagnosing` (barren plateau diagnosis via dynamical Lie algebras).
-      * Section 8.3 (Physical QPU Deployment Roadmap): Cited `cai2025quantum` (*Reviews of Modern Physics*, 2025 comprehensive review on quantum error mitigation and ZNE).
-
+  * **Comprehensive Citation Verification & In-Text Integration (`paper.tex`):**
+    * Audited every single reference key against in-text `\cite{...}` calls, achieving a **100% 1-to-1 bijection** (47 total references $\leftrightarrow$ 47 cited keys; 0 missing, 0 unused).
+    * Integrated rigorous citations for all previously unlinked entries:
+      * `sim2019expressibility`: Cited in Section 5.1 and Table 1 for the expressibility metric $D_{\mathrm{KL}}$ and Circuit 10 ansatz.
+      * `meyer2002global`: Cited in Section 5.1 for the Meyer-Wallach multiparticle entanglement measure.
+      * `bergholm2018pennylane`: Cited in Section 4.3 (Simulation Infrastructure) and Section 8.2 (HPC backend) for PennyLane automatic differentiation and quantum state-vector simulation.
+      * `haferkamp2022linear`: Cited in Section 3.6 (Theorem 2 application) for unitary 2-design complexity bounds.
+      * `mottonen2004transformation`: Cited in Section 2.2 for quantum state preparation and uniformly controlled rotations.
+      * `endo2018practical` & `koczor2021exponential`: Cited in Section 8.3 for practical and exponential error mitigation alongside ZNE.
+      * `harrow2009quantum`, `wiebe2012quantum`, `rebentrost2014quantum`: Cited in Section 1 for foundational quantum machine learning and classification algorithms.
+      * `mcardle2020quantum` & `tilly2022variational`: Cited in Section 1 for foundational VQA and quantum chemistry algorithms.
