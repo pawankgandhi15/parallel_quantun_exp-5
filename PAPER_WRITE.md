@@ -341,3 +341,7 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
       * `endo2018practical` & `koczor2021exponential`: Cited in Section 8.3 for practical and exponential error mitigation alongside ZNE.
       * `harrow2009quantum`, `wiebe2012quantum`, `rebentrost2014quantum`: Cited in Section 1 for foundational quantum machine learning and classification algorithms.
       * `mcardle2020quantum` & `tilly2022variational`: Cited in Section 1 for foundational VQA and quantum chemistry algorithms.
+  * **Equation Formatting & Column-Width Overflow Overhaul (`paper.tex`):**
+    * Systematically refactored all mathematical expressions exceeding the IEEE two-column width (~3.5 inches / ~88 mm) using multi-line `align` environments, line breaks (`\nonumber \\`), and horizontal indentation (`\quad`).
+    * Fixed the Haar expectation integral overflow in Theorem 2 (Eq. 48) that collided with the right-hand column.
+    * Refactored Weingarten 2-design variance integrations, total network gradient norm lower bound, Lindblad master equation, Circuit 11 cyclic entangling topologies ($U_{\mathrm{ent}}^{(1)}$ and $U_{\mathrm{ent}}^{(2)}$), single-qubit rotations ($RX, RY, RZ$), and CRX basis gate transpilation into compact, properly aligned multi-line blocks.
