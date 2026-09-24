@@ -10,7 +10,7 @@
 #--- PBS Directives ---------------------------------------------------
 #PBS -N qc_cnn_exp
 #PBS -l select=1:ncpus=4:ngpus=1:mem=16gb
-#PBS -l walltime=48:00:00
+#PBS -l walltime=400:00:00
 #PBS -q workq
 #PBS -o logs/pbs_output.log
 #PBS -e logs/pbs_error.log
