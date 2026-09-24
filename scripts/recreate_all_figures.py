@@ -433,7 +433,7 @@ def create_ablation_and_scalability_figure():
     
     # Panel (a): Multi-branch ablation study bar chart
     configs = ['Classical-Only\n(136p)', 'Quantum-Only\n(16p)', 'Classical-Ext.\n(120p)', 'Proposed\nParallel (152p)']
-    accs = [86.20, 78.40, 87.10, 90.05]
+    accs = [86.20, 78.50, 87.10, 90.05]
     colors = ['#93c5fd', '#fde68a', '#cbd5e1', '#86efac']
     edgecolors = ['#1d4ed8', '#d97706', '#475569', '#15803d']
     
@@ -455,9 +455,9 @@ def create_ablation_and_scalability_figure():
                  fontsize=10, weight='bold', color="#15803d",
                  bbox=dict(boxstyle="round,pad=0.2", fc="#f0fdf4", ec="#86efac", lw=1.2))
 
-    # Panel (b): Gradient Variance vs. Variational Circuit Depth L (Exp. 5)
+    # Panel (b): Gradient Variance vs. Variational Circuit Depth L (Exp. 5 / Table 5 Part B)
     L = [1, 2, 3, 4, 5]
-    var = [1.2e-2, 8.4e-3, 1.1e-3, 2.6e-4, 1.4e-5]
+    var = [5.2e-2, 1.91e-2, 3.5e-3, 3.1e-4, 2.8e-5]
     
     # Shaded barren plateau region
     ax2.axvspan(3.5, 5.3, color='#fee2e2', alpha=0.6, label='Barren Plateau Untrainable Regime')
@@ -467,9 +467,9 @@ def create_ablation_and_scalability_figure():
     ax2.semilogy(L, var, 'o-', color='#b91c1c', linewidth=2.5, markersize=8)
     
     # Highlight Circuit 11 (L=2)
-    ax2.plot(2, 8.4e-3, 'o', color='#15803d', markersize=11, zorder=5)
+    ax2.plot(2, 1.91e-2, 'o', color='#15803d', markersize=11, zorder=5)
     ax2.annotate('Circuit 11 (L=2)\nOptimal Sweet Spot',
-                 xy=(2, 8.4e-3), xytext=(2.2, 2.5e-2),
+                 xy=(2, 1.91e-2), xytext=(2.2, 3.5e-2),
                  arrowprops=dict(arrowstyle="->", color="#15803d", lw=1.8),
                  fontsize=9.5, weight='bold', color="#15803d",
                  bbox=dict(boxstyle="round,pad=0.2", fc="#f0fdf4", ec="#86efac", lw=1.2))
