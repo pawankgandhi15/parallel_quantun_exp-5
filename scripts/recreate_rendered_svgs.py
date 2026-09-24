@@ -20,9 +20,10 @@ plt.rcParams.update({
     'savefig.dpi': 300
 })
 
-BASE_FIG_DIR = r'e:\parallel_quantum-5\parallel_quantum\QC-CNN-Parallel1\docs\paper\base_paper_figures'
-FIG_DIR = r'e:\parallel_quantum-5\parallel_quantum\QC-CNN-Parallel1\figures'
-RENDERED_DIR = r'e:\parallel_quantum-5\parallel_quantum\QC-CNN-Parallel1\figures\rendered_svgs'
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+BASE_FIG_DIR = os.path.join(ROOT_DIR, 'docs', 'paper', 'base_paper_figures')
+FIG_DIR = os.path.join(ROOT_DIR, 'figures')
+RENDERED_DIR = os.path.join(FIG_DIR, 'rendered_svgs')
 os.makedirs(RENDERED_DIR, exist_ok=True)
 
 print("Starting generation of genuine research-grade figures for rendered_svgs...")

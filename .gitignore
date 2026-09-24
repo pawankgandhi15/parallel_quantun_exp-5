@@ -58,3 +58,6 @@ logs/
 dist/
 build/
 *.egg-info/
+
+# Temporary extractions
+docs/paper/extracted_figures/

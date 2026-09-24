@@ -20,8 +20,9 @@ plt.rcParams.update({
     'savefig.dpi': 300
 })
 
-FIG_DIR = r'e:\parallel_quantum-5\parallel_quantum\QC-CNN-Parallel1\figures'
-BASE_FIG_DIR = r'e:\parallel_quantum-5\parallel_quantum\QC-CNN-Parallel1\docs\paper\base_paper_figures'
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+FIG_DIR = os.path.join(ROOT_DIR, 'figures')
+BASE_FIG_DIR = os.path.join(ROOT_DIR, 'docs', 'paper', 'base_paper_figures')
 os.makedirs(FIG_DIR, exist_ok=True)
 
 # ==============================================================================
