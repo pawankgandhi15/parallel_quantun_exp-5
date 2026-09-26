@@ -277,7 +277,7 @@ shallow circuits on NISQ devices (paper Section 5, conclusion).
 
 ### 3.1 Quantum Device Setup
 
-File: [qc-cnn-parallel.py](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/qc-cnn-parallel.py) (lines 7-10)
+File: [scripts/quick_smoke_test.py](file:///e:/parallel_quantum-5/scripts/quick_smoke_test.py) (lines 7-10)
 
 ```python
 import pennylane as qml
@@ -295,7 +295,7 @@ dev = qml.device("default.qubit", wires=num_qubits)
 
 ### 3.2 quantum_circuit — The PQC QNode
 
-File: [qc-cnn-parallel.py](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/qc-cnn-parallel.py) (lines 15-66)
+File: [scripts/quick_smoke_test.py](file:///e:/parallel_quantum-5/scripts/quick_smoke_test.py) (lines 15-66)
 
 ```python
 @qml.qnode(dev, interface="torch")
@@ -334,7 +334,7 @@ computed via the **parameter-shift rule** (paper Eq. 17):
 
 ### 3.3 QuantumConvLayer — Sliding Quantum Window
 
-File: [qc-cnn-parallel.py](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/qc-cnn-parallel.py) (lines 72-104)
+File: [scripts/quick_smoke_test.py](file:///e:/parallel_quantum-5/scripts/quick_smoke_test.py) (lines 72-104)
 
 ```python
 class QuantumConvLayer(nn.Module):
@@ -364,7 +364,7 @@ QNode calls per forward pass**. This triple loop is the main computational bottl
 
 ### 3.4 QCCNNParallel — The Full Model
 
-File: [qc-cnn-parallel.py](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/qc-cnn-parallel.py) (lines 110-154)
+File: [scripts/quick_smoke_test.py](file:///e:/parallel_quantum-5/scripts/quick_smoke_test.py) (lines 110-154)
 
 ```python
 class QCCNNParallel(nn.Module):
@@ -674,7 +674,7 @@ return [qml.expval(qml.PauliZ(i)) for i in range(num_qubits)]
 ```
 QC-CNN-Parallel1/
 |
-+-- qc-cnn-parallel.py              <- Main model (architecture smoke test)
++-- scripts/quick_smoke_test.py              <- Main model (architecture smoke test)
 |     quantum_circuit()             <- PQC QNode (Circuit 11)
 |     QuantumConvLayer              <- 2x2 quantum sliding window
 |     QCCNNParallel                 <- Full parallel model

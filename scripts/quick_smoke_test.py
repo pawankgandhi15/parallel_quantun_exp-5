@@ -1,3 +1,13 @@
+"""
+quick_smoke_test.py
+===================
+Standalone verification script for Circuit 11 Parameterized Quantum Circuit (PQC)
+and the QC-CNN-Parallel architecture forward pass.
+
+Usage:
+  python scripts/quick_smoke_test.py
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

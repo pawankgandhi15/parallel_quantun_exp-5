@@ -182,7 +182,7 @@ or computer count, so those values must not be guessed.
 
 ## 1. Current implementation results
 
-The current `qc-cnn-parallel.py` is a smoke test, not a complete training run.
+The current `scripts/quick_smoke_test.py` is a smoke test, not a complete training run.
 It currently:
 
 - Creates random images of shape `[4, 1, 28, 28]`.

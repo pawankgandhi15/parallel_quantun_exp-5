@@ -129,73 +129,76 @@ Circuit 11 was selected via a **3-metric evaluation** (Table 2, paper):
 ## 📁 Repository Structure
 
 ```
-parallel_quantun_exp-5/
+parallel_quantum-5/
 ├── README.md                            # Main project overview & quickstart
 ├── LICENSE                              # MIT License
+├── requirements.txt                     # Main Python dependencies
+├── .env.example                         # Environment configuration template
 ├── .gitignore                           # Git ignore rules
-├── cur_arc.md                           # Current architecture & experiments specification
-├── cur_imple.md                         # Complete implementation analysis & report
-├── qc-cnn-parallel.py                   # Standalone smoke test script
+│
+├── paper/                               # Publication & LaTeX manuscript
+│   ├── README.md                        # Compilation instructions & Overleaf guidelines
+│   ├── paper.tex                        # Primary LaTeX manuscript (IEEEtran)
+│   └── PAPER_WRITE.md                   # Manuscript outline & progress tracker
+│
+├── figures/                             # Visual assets, architectures, and benchmark plots
+│   ├── README.md                        # Figures catalog and descriptions
+│   ├── rendered_svgs/                   # High-res pre-rendered raster figures
+│   └── *.svg, *.jpg, *.png              # Production figures referenced by paper & docs
 │
 ├── docs/                                # Centralized technical documentation
 │   ├── ARCHITECTURE.md                  # Baseline theoretical architecture specification
 │   ├── cur_arc.md                       # Current architecture & experiments specification
-│   ├── cur_imple.md                     # Mirror of complete implementation analysis
+│   ├── cur_imple.md                     # Implementation analysis & paper walkthrough
 │   ├── EXPERIMENT_SETUP.md              # Experimental configurations & hyperparams
 │   ├── DATASETS.md                      # Dataset preparation and split procedures
 │   ├── RESULTS.md                       # Complete paper benchmark tables & reproduction
 │   ├── IMPROVEMENT.md                   # Scalability & future research directions
 │   ├── CHAT_SUMMARY.md                  # Development history and conversation log
-│   └── paper/                           # Paper assets
+│   └── paper/                           # Base reference paper assets
 │       ├── Quantum Engineering .pdf     # Original research paper (Liu & Lou, 2026)
 │       └── pdf_text.txt                 # Extracted paper text for search
-│
-├── figures/                             # Visual assets, architectures, and benchmark plots
-│   ├── README.md                        # Figures catalog and descriptions
-│   ├── qc_cnn_parallel_architecture.svg # High-res vector architecture flow
-│   ├── qc_cnn_parallel_architecture.jpg # 16:9 render of dual-branch pipeline
-│   ├── pqc_circuit11_schematic.svg      # Vector schematic of Circuit 11
-│   ├── pqc_circuit11_diagram.jpg        # 16:9 render of quantum circuit
-│   ├── shallow_vs_deep_philosophy.svg   # Vector comparison: width vs. depth
-│   ├── shallow_parallel_vs_deep_design.jpg # Render: barren plateau resolution
-│   ├── noise_robustness_analysis.svg    # Vector 4-panel noise robustness chart
-│   ├── noise_robustness_comparison.jpg  # Render: noise robustness curves
-│   └── model_comparison_barchart.svg    # Vector comparison of model parameters & acc
 │
 ├── notebooks/                           # Interactive Jupyter notebooks
 │   ├── QC_CNN_Parallel_Experiments.ipynb # Main experiment reproduction notebook
 │   └── qc_cnn_kaggle_notebook.ipynb     # Kaggle GPU execution notebook
 │
-├── scripts/                             # Cluster execution & utility scripts
-│   ├── monitor_server.py                # Real-time HTTP dashboard for notebook runs
-│   ├── fix_token.py                     # GitHub token configuration utility
+├── scripts/                             # Tooling, cluster execution & utilities
+│   ├── export_overleaf.py               # Automated Overleaf upload zip packager
+│   ├── quick_smoke_test.py              # Standalone Circuit 11 & forward pass test
+│   ├── recreate_all_figures.py          # Figure reproduction pipeline
+│   ├── recreate_rendered_svgs.py        # Vector SVG rasterizer
+│   ├── monitor_server.py                # Real-time HTTP dashboard for training
 │   ├── run_experiment.pbs               # PBS cluster batch submission script
 │   └── submit_all.sh                    # Multi-experiment shell runner
 │
-└── implementation/                      # Core Python package & experiment suite
-    ├── __init__.py
-    ├── requirements.txt                 # Python dependencies
-    ├── run_all.py                       # CLI entry point to run all 5 experiments
-    ├── models/                          # PyTorch nn.Module & PennyLane QNodes
-    │   ├── qc_cnn_parallel.py           # Main QC-CNN-Parallel model
-    │   ├── quantum_circuit.py           # Circuit 11 definition & QNode
-    │   ├── scalable_quantum_circuit.py  # N-qubit scalable circuit variant
-    │   └── ablation_models.py           # Branch ablation models
-    ├── datasets/                        # Dataloaders with balanced subsampling
-    │   └── dataloader.py                # MNIST, Fashion-MNIST, Overhead-MNIST loaders
-    ├── experiments/                     # Five reproducible paper experiments
-    │   ├── experiment1_circuit_selection.py  # PQC expressibility & discreteness
-    │   ├── experiment2_classification.py     # Main classification benchmark
-    │   ├── experiment3_noise_robustness.py   # Mixed-state noise simulations
-    │   ├── experiment4_ablation_study.py     # Quantum vs classical branch ablation
-    │   └── experiment5_scalability_study.py  # Qubit count & depth scalability
-    ├── training/                        # Training loop and checkpointing
-    │   └── trainer.py                   # PyTorch training engine
-    ├── utils/                           # Evaluation metrics and plotting
-    │   ├── circuit_metrics.py           # Expressibility, entanglement, discreteness
-    │   └── plotting.py                  # Training curve & confusion matrix plots
-    ├── data/                            # Downloaded dataset cache
-    └── results/                         # Output weights, figures, and CSV logs
+├── implementation/                      # Core Python package & experiment suite
+│   ├── __init__.py
+│   ├── requirements.txt                 # Module-level requirements mirror
+│   ├── run_all.py                       # CLI entry point to run all 5 experiments
+│   ├── models/                          # PyTorch nn.Module & PennyLane QNodes
+│   │   ├── qc_cnn_parallel.py           # Main QC-CNN-Parallel model
+│   │   ├── quantum_circuit.py           # Circuit 11 definition & QNode
+│   │   ├── scalable_quantum_circuit.py  # N-qubit scalable circuit variant
+│   │   └── ablation_models.py           # Branch ablation models
+│   ├── datasets/                        # Dataloaders with balanced subsampling
+│   │   └── dataloader.py                # MNIST, Fashion-MNIST, Overhead-MNIST loaders
+│   ├── experiments/                     # Five reproducible paper experiments
+│   │   ├── experiment1_circuit_selection.py  # PQC expressibility & discreteness
+│   │   ├── experiment2_classification.py     # Main classification benchmark
+│   │   ├── experiment3_noise_robustness.py   # Mixed-state noise simulations
+│   │   ├── experiment4_ablation_study.py     # Quantum vs classical branch ablation
+│   │   └── experiment5_scalability_study.py  # Qubit count & depth scalability
+│   ├── training/                        # Training loop and checkpointing
+│   │   └── trainer.py                   # PyTorch training engine
+│   ├── utils/                           # Evaluation metrics and plotting
+│   │   ├── circuit_metrics.py           # Expressibility, entanglement, discreteness
+│   │   └── plotting.py                  # Training curve & confusion matrix plots
+│   ├── data/                            # Downloaded dataset cache (gitignored)
+│   └── results/                         # Output weights, figures, and CSV logs
+│
+└── exports/                             # Build & distribution packages (gitignored)
+    └── overleaf_package.zip             # Generated on demand via scripts/export_overleaf.py
 ```
 
 ---
@@ -210,8 +213,8 @@ parallel_quantun_exp-5/
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/QC-CNN-Parallel.git
-cd QC-CNN-Parallel/implementation
+git clone https://github.com/pawankgandhi15/parallel_quantun_exp-5.git
+cd parallel_quantun_exp-5
 pip install -r requirements.txt
 ```
 

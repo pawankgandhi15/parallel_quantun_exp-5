@@ -1,7 +1,7 @@
 # Comprehensive Architecture & Experiment Specification (`cur_arc.md`)
 
 > **Document Purpose:**  
-> This document provides an exhaustive, in-depth technical specification of the **current architecture, quantum circuits, model variants, and experimental suites** implemented in the [`QC-CNN-Parallel1`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1) codebase. It also provides a meticulous, component-by-component comparative analysis detailing all differences between the current codebase and the theoretical baseline specified in [`docs/ARCHITECTURE.md`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/docs/ARCHITECTURE.md).
+> This document provides an exhaustive, in-depth technical specification of the **current architecture, quantum circuits, model variants, and experimental suites** implemented in the [`QC-CNN-Parallel1`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1) codebase. It also provides a meticulous, component-by-component comparative analysis detailing all differences between the current codebase and the theoretical baseline specified in [`docs/ARCHITECTURE.md`](file:///e:/parallel_quantum-5/docs/ARCHITECTURE.md).
 
 ---
 
@@ -25,7 +25,7 @@
    - 3.5 [`ClassicalExtendedCNN` (Ablation Model 3)](#35-classicalextendedcnn-ablation-model-3)
    - 3.6 [`ScalableQCCNNParallel` (Scalability Variant)](#36-scalableqccnnparallel-scalability-variant)
 4. [Deep Dive: The Current Experimental Suite](#4-deep-dive-the-current-experimental-suite)
-   - 4.1 [Standalone Smoke Test (`qc-cnn-parallel.py`)](#41-standalone-smoke-test-qc-cnn-parallelpy)
+   - 4.1 [Standalone Smoke Test (`scripts/quick_smoke_test.py`)](#41-standalone-smoke-test-qc-cnn-parallelpy)
    - 4.2 [Experiment 1: Circuit Selection & Performance Indicators](#42-experiment-1-circuit-selection--performance-indicators)
    - 4.3 [Experiment 2: Multi-Dataset Classification Benchmark](#43-experiment-2-multi-dataset-classification-benchmark)
    - 4.4 [Experiment 3: Quantum Noise Channel Robustness Evaluation](#44-experiment-3-quantum-noise-channel-robustness-evaluation)
@@ -86,7 +86,7 @@ Input Image ──┬──► Classical Conv2d (4×4, 8 filters) ────�
 
 ![QC-CNN-Parallel Architecture Dataflow](figures/qc_cnn_parallel_architecture.svg)
 
-The primary model is implemented in [`implementation/models/qc_cnn_parallel.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/qc_cnn_parallel.py) as `class QCCNNParallel(nn.Module)`.
+The primary model is implemented in [`implementation/models/qc_cnn_parallel.py`](file:///e:/parallel_quantum-5/implementation/models/qc_cnn_parallel.py) as `class QCCNNParallel(nn.Module)`.
 
 ```
 ====================================================================================================
@@ -131,7 +131,7 @@ self.classical_conv = nn.Conv2d(
 
 ### 2.3 Quantum Convolutional Branch & Sliding Window Mechanics
 
-The quantum convolutional branch is implemented in `QuantumConvLayer` ([`implementation/models/quantum_circuit.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/quantum_circuit.py)).
+The quantum convolutional branch is implemented in `QuantumConvLayer` ([`implementation/models/quantum_circuit.py`](file:///e:/parallel_quantum-5/implementation/models/quantum_circuit.py)).
 
 - **Patch Extraction:** The input image $[B, 1, 28, 28]$ is divided using a non-overlapping sliding window of size $2 \times 2$ with $\text{stride}=2$.
   For spatial indices $i \in \{0, \dots, 13\}$ and $j \in \{0, \dots, 13\}$:
@@ -246,13 +246,13 @@ implementation/models/
 ```
 
 ### 3.1 `QCCNNParallel` (Primary Proposed Model)
-- **Source:** [`implementation/models/qc_cnn_parallel.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/qc_cnn_parallel.py)
+- **Source:** [`implementation/models/qc_cnn_parallel.py`](file:///e:/parallel_quantum-5/implementation/models/qc_cnn_parallel.py)
 - **Description:** The proposed parallel hybrid model with 8 classical conv channels and 4 quantum PQC channels.
 - **Conv Parameters:** 136 classical + 16 quantum = **152**.
 - **Total Parameters:** **310,242**.
 
 ### 3.2 `ClassicalCNN` (LeNet-5 Adapted Baseline)
-- **Source:** [`implementation/models/qc_cnn_parallel.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/qc_cnn_parallel.py)
+- **Source:** [`implementation/models/qc_cnn_parallel.py`](file:///e:/parallel_quantum-5/implementation/models/qc_cnn_parallel.py)
 - **Description:** A pure classical 2-convolution network adapted from LeNet-5 to match the paper's reported Table 4 budget of exactly **464 convolutional parameters**:
   ```python
   self.classical_conv1 = nn.Conv2d(1, 4, kernel_size=2, stride=2)              # 4*(1*2*2) + 4 = 20
@@ -263,7 +263,7 @@ implementation/models/
 - **Role:** Direct classical benchmark for Experiment 2 (Figures 6–8).
 
 ### 3.3 `ClassicalOnlyCNN` (Ablation Model 1)
-- **Source:** [`implementation/models/ablation_models.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/ablation_models.py)
+- **Source:** [`implementation/models/ablation_models.py`](file:///e:/parallel_quantum-5/implementation/models/ablation_models.py)
 - **Description:** Retains the exact classical branch ($4 \times 4$, 8 filters, stride 2) but completely removes the quantum branch.
 - **Flatten Input:** $8 \times 14 \times 14 = \mathbf{1568}$.
 - **FC1 Shape:** `Linear(1568, 128)` ($1568 \times 128 + 128 = 200,832$).
@@ -272,7 +272,7 @@ implementation/models/
 - **Ablation Purpose:** Evaluates how well the classical branch performs on its own.
 
 ### 3.4 `QuantumOnlyCNN` (Ablation Model 2)
-- **Source:** [`implementation/models/ablation_models.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/ablation_models.py)
+- **Source:** [`implementation/models/ablation_models.py`](file:///e:/parallel_quantum-5/implementation/models/ablation_models.py)
 - **Description:** Retains the exact quantum branch ($2 \times 2$ sliding window, Circuit 11, 4 channels) but completely removes the classical convolution.
 - **Flatten Input:** $4 \times 14 \times 14 = \mathbf{784}$.
 - **FC1 Shape:** `Linear(784, 128)` ($784 \times 128 + 128 = 100,480$).
@@ -281,7 +281,7 @@ implementation/models/
 - **Ablation Purpose:** Evaluates the isolated representation capability of Circuit 11.
 
 ### 3.5 `ClassicalExtendedCNN` (Ablation Model 3)
-- **Source:** [`implementation/models/ablation_models.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/ablation_models.py)
+- **Source:** [`implementation/models/ablation_models.py`](file:///e:/parallel_quantum-5/implementation/models/ablation_models.py)
 - **Description:** A parameter-matched classical comparison model that replaces the 4 quantum channels with 4 additional classical filters (total 12 filters, kernel $3 \times 3$, stride 2, padding 1):
   $$\text{Parameters} = 12 \times (1 \times 3 \times 3) + 12 = 108 + 12 = \mathbf{120} \quad (\approx 152)$$
 - **Flatten Input:** $12 \times 14 \times 14 = \mathbf{2352}$ (identical dense head).
@@ -289,7 +289,7 @@ implementation/models/
 - **Ablation Purpose:** Answers whether quantum features provide superior representational capacity compared to simply giving a classical CNN an equal number of channels and parameters.
 
 ### 3.6 `ScalableQCCNNParallel` (Scalability Variant)
-- **Source:** [`implementation/models/scalable_quantum_circuit.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/scalable_quantum_circuit.py)
+- **Source:** [`implementation/models/scalable_quantum_circuit.py`](file:///e:/parallel_quantum-5/implementation/models/scalable_quantum_circuit.py)
 - **Description:** A generalized architecture supporting an arbitrary number of qubits $N \in \{2, 4, 6, 8\}$ and arbitrary variational depth $L \in \{1, 2, 3, 4, 5\}$.
 - **Dynamic Parameter Allocation:** Total PQC parameters $= N \times 2 \times L$.
 - **Dynamic Head Adjustment:** Automatically computes the patch size, quantum channels ($N$), and flattened feature size to dynamically instantiate `self.fc1 = nn.Linear(fused_features, 128)`.
@@ -299,7 +299,7 @@ implementation/models/
 
 ## 4. Deep Dive: The Current Experimental Suite
 
-The repository contains five complete, reproducible experimental scripts located in [`implementation/experiments/`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/):
+The repository contains five complete, reproducible experimental scripts located in [`implementation/experiments/`](file:///e:/parallel_quantum-5/implementation/experiments/):
 
 ```
 experiments/
@@ -310,8 +310,8 @@ experiments/
 └── experiment5_scalability_study.py  (Scalability: Qubits 2..8, Depth 1..5)
 ```
 
-### 4.1 Standalone Smoke Test (`qc-cnn-parallel.py`)
-- **Location:** [`qc-cnn-parallel.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/qc-cnn-parallel.py)
+### 4.1 Standalone Smoke Test (`scripts/quick_smoke_test.py`)
+- **Location:** [`scripts/quick_smoke_test.py`](file:///e:/parallel_quantum-5/scripts/quick_smoke_test.py)
 - **Workflow:**
   1. Instantiates `QCCNNParallel(num_classes=10)`.
   2. Synthesizes a dummy mini-batch of 4 random images: `torch.rand(4, 1, 28, 28)`.
@@ -322,7 +322,7 @@ experiments/
 - **Purpose:** 10-second validation that PennyLane, PyTorch, CUDA (if available), and autograd hooks are functioning correctly without downloading datasets.
 
 ### 4.2 Experiment 1: Circuit Selection & Performance Indicators
-- **Script:** [`implementation/experiments/experiment1_circuit_selection.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/experiment1_circuit_selection.py)
+- **Script:** [`implementation/experiments/experiment1_circuit_selection.py`](file:///e:/parallel_quantum-5/implementation/experiments/experiment1_circuit_selection.py)
 - **Reproduces:** Paper Section 4.3.1, **Table 2** (Metrics) and **Table 3** (Classification Accuracies).
 - **The 11 Benchmarked PQC Architectures:**
   - 3 Basic Gate Families $\times$ 3 Topologies $= 9$ circuits:
@@ -342,7 +342,7 @@ experiments/
      *Critical Insight:* $RZ$ gate circuits have $\text{Disc} \approx 2.7 \times 10^{-33}$ to $3.6 \times 10^{-33}$ — they hit barren plateaus immediately! Circuit 11 maintains $\text{Disc} = \mathbf{0.0191}$, ensuring robust backpropagation.
 
 ### 4.3 Experiment 2: Multi-Dataset Classification Benchmark
-- **Script:** [`implementation/experiments/experiment2_classification.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/experiment2_classification.py)
+- **Script:** [`implementation/experiments/experiment2_classification.py`](file:///e:/parallel_quantum-5/implementation/experiments/experiment2_classification.py)
 - **Reproduces:** Paper Section 4.3.2, **Table 4**, and **Figures 6, 7, 8**.
 - **Datasets & Balanced Subsampling Protocol:**
   - **MNIST:** $10,000$ training images ($1,000$ per class $\times 10$ classes), $2,000$ test images ($200$ per class).
@@ -360,7 +360,7 @@ experiments/
   - Overhead-MNIST: **82.15%** (`QCCNNParallel`) vs. **79.80%** (`ClassicalCNN`).
 
 ### 4.4 Experiment 3: Quantum Noise Channel Robustness Evaluation
-- **Script:** [`implementation/experiments/experiment3_noise_robustness.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/experiment3_noise_robustness.py)
+- **Script:** [`implementation/experiments/experiment3_noise_robustness.py`](file:///e:/parallel_quantum-5/implementation/experiments/experiment3_noise_robustness.py)
 - **Reproduces:** Paper Section 4.3.3, **Tables 5, 6, 7, 8**.
 - **Simulation Engine:** PennyLane `default.mixed` density-matrix simulator ($\rho \in \mathbb{C}^{16 \times 16}$).
 - **Noise Channels Evaluated (Error Rate $p \in \{0.0, 0.1, 0.2, 0.3\}$):**
@@ -379,7 +379,7 @@ experiments/
 ![Quantum Noise Robustness Analysis](figures/noise_robustness_analysis.svg)
 
 ### 4.5 Experiment 4: Multi-Branch Ablation Study
-- **Script:** [`implementation/experiments/experiment4_ablation_study.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/experiment4_ablation_study.py)
+- **Script:** [`implementation/experiments/experiment4_ablation_study.py`](file:///e:/parallel_quantum-5/implementation/experiments/experiment4_ablation_study.py)
 - **Models Evaluated:**
   1. `ClassicalOnlyCNN` (136 conv params)
   2. `QuantumOnlyCNN` (16 conv params)
@@ -388,7 +388,7 @@ experiments/
 - **Scientific Verification:** Demonstrates that `QCCNNParallel` ($90.05\%$) outperforms both `ClassicalOnlyCNN` ($86.2\%$) and `ClassicalExtendedCNN` ($87.1\%$), confirming that quantum superposition and entanglement provide distinct, non-classical representational value.
 
 ### 4.6 Experiment 5: Qubit Count & Circuit Depth Scalability Sweeps
-- **Script:** [`implementation/experiments/experiment5_scalability_study.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/experiments/experiment5_scalability_study.py)
+- **Script:** [`implementation/experiments/experiment5_scalability_study.py`](file:///e:/parallel_quantum-5/implementation/experiments/experiment5_scalability_study.py)
 - **Part A — Qubit Count Sweep ($N \in \{2, 4, 6, 8\}$, Fixed Depth $L=2$):**
   - Tests hardware efficiency vs. classification accuracy.
   - Highlights that $N=4$ provides the optimal trade-off between patch resolution ($2 \times 2$) and classical simulation throughput.
@@ -399,7 +399,7 @@ experiments/
 ![Ablation & Scalability Multi-Panel Study](figures/ablation_and_scalability_study.svg)
 
 ### 4.7 Master Experiment Runner CLI (`run_all.py`)
-- **Script:** [`implementation/run_all.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/run_all.py)
+- **Script:** [`implementation/run_all.py`](file:///e:/parallel_quantum-5/implementation/run_all.py)
 - **Command-Line Interface:**
   ```bash
   # Fast sanity smoke test (no dataset download required)
@@ -414,12 +414,12 @@ experiments/
 
 ### 4.8 Interactive Notebooks & Execution Infrastructure
 - **Jupyter Notebooks:**
-  - [`notebooks/QC_CNN_Parallel_Experiments.ipynb`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/notebooks/QC_CNN_Parallel_Experiments.ipynb): Full interactive walkthrough containing all 5 experiments, embedded matplotlib plots, and step-by-step documentation.
-  - [`notebooks/qc_cnn_kaggle_notebook.ipynb`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/notebooks/qc_cnn_kaggle_notebook.ipynb): Standalone, zero-setup notebook optimized for Kaggle P100/T4 GPUs.
+  - [`notebooks/QC_CNN_Parallel_Experiments.ipynb`](file:///e:/parallel_quantum-5/notebooks/QC_CNN_Parallel_Experiments.ipynb): Full interactive walkthrough containing all 5 experiments, embedded matplotlib plots, and step-by-step documentation.
+  - [`notebooks/qc_cnn_kaggle_notebook.ipynb`](file:///e:/parallel_quantum-5/notebooks/qc_cnn_kaggle_notebook.ipynb): Standalone, zero-setup notebook optimized for Kaggle P100/T4 GPUs.
 - **HPC Cluster & Server Tools:**
-  - [`scripts/monitor_server.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/scripts/monitor_server.py): Built-in Python HTTP server serving a real-time training dashboard at `http://localhost:5050`.
-  - [`scripts/run_experiment.pbs`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/scripts/run_experiment.pbs): PBS batch submission script with OpenMP multi-threading environment variables for multi-core compute nodes.
-  - [`scripts/submit_all.sh`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/scripts/submit_all.sh): Bash automation script to launch experiments in headless cluster environments.
+  - [`scripts/monitor_server.py`](file:///e:/parallel_quantum-5/scripts/monitor_server.py): Built-in Python HTTP server serving a real-time training dashboard at `http://localhost:5050`.
+  - [`scripts/run_experiment.pbs`](file:///e:/parallel_quantum-5/scripts/run_experiment.pbs): PBS batch submission script with OpenMP multi-threading environment variables for multi-core compute nodes.
+  - [`scripts/submit_all.sh`](file:///e:/parallel_quantum-5/scripts/submit_all.sh): Bash automation script to launch experiments in headless cluster environments.
 
 ---
 
@@ -429,17 +429,17 @@ experiments/
 
 ![Architecture Differences Matrix](figures/architecture_differences_matrix.svg)
 
-| # | Comparison Dimension | Baseline [`docs/ARCHITECTURE.md`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/docs/ARCHITECTURE.md) | Current Codebase Implementation | Practical Impact |
+| # | Comparison Dimension | Baseline [`docs/ARCHITECTURE.md`](file:///e:/parallel_quantum-5/docs/ARCHITECTURE.md) | Current Codebase Implementation | Practical Impact |
 |---|---|---|---|---|
 | **1** | **Architectural Scope** | Describes **1 single model** (`QCCNNParallel`). | Implements **6 distinct model classes** (`QCCNNParallel`, `ClassicalCNN`, `ClassicalOnlyCNN`, `QuantumOnlyCNN`, `ClassicalExtendedCNN`, `ScalableQCCNNParallel`). | Enables complete comparative evaluation, multi-branch ablations, and scalability studies. |
 | **2** | **Quantum Circuit Generality** | Hardcoded 4-qubit, 2-layer Circuit 11. | Dual implementations: static canonical Circuit 11 + dynamic $N$-qubit, $L$-layer generator (`make_scalable_circuit`). | Allows programmatic parameter sweeps across qubit counts and circuit depths. |
 | **3** | **Quantum Noise Simulation** | Mentions pure-state simulation only. | Full mixed-state simulation framework (`dev_mixed`, `make_noisy_circuit`) supporting bit-flip, phase-flip, and depolarizing channels. | Fully reproduces Paper Experiment 3 across error rates $p \in [0.0, 0.3]$. |
-| **4** | **Training Infrastructure** | High-level pseudocode with generic Adam parameters. | Production-grade `Trainer` class ([`training/trainer.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/training/trainer.py)) featuring checkpoint saving (`best.pt`), early stopping, accuracy, loss, macro-F1, and confusion matrix logging. | Full end-to-end training pipeline replacing conceptual pseudocode. |
+| **4** | **Training Infrastructure** | High-level pseudocode with generic Adam parameters. | Production-grade `Trainer` class ([`training/trainer.py`](file:///e:/parallel_quantum-5/implementation/training/trainer.py)) featuring checkpoint saving (`best.pt`), early stopping, accuracy, loss, macro-F1, and confusion matrix logging. | Full end-to-end training pipeline replacing conceptual pseudocode. |
 | **5** | **Dataset & Data Ingestion** | Assumes arbitrary normalized $[0, 1]$ tensors. | `dataloader.py` with exact class-balanced subsampling for MNIST, Fashion-MNIST, and Overhead-MNIST. | Guarantees exact fidelity to the paper's subsampled training protocol (Table 1). |
 | **6** | **Conv Parameter Accounting** | Follows paper Table 4 reporting **136 conv params**. | Implements `.count_parameters()` explicitly reporting classical ($136$), quantum ($16$), total conv ($152$), and total model ($310,242$). | Resolves paper ambiguity where authors excluded PQC angles from conv parameter totals. |
 | **7** | **Experimental Breadth** | References the 3 paper experiments. | Implements **5 runnable experiments** (`exp 1` to `exp 5`), including new ablation and barren plateau scalability sweeps. | Extends research coverage beyond the published paper. |
 | **8** | **Sliding Window Realization** | Conceptual description of loop iteration. | Explicit batched/nested loops in `QuantumConvLayer`, complete with memory profiling and execution bottlenecks documented. | Clear engineering visibility into the 6,272 QNode evaluations per batch. |
-| **9** | **Visual Artifacts** | Monochromatic ASCII flowcharts only. | Dedicated [`figures/`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/) directory with high-res 16:9 renders and vector SVGs. | Publication-quality figures suitable for papers and presentations. |
+| **9** | **Visual Artifacts** | Monochromatic ASCII flowcharts only. | Dedicated [`figures/`](file:///e:/parallel_quantum-5/figures/) directory with high-res 16:9 renders and vector SVGs. | Publication-quality figures suitable for papers and presentations. |
 
 ---
 
@@ -452,7 +452,7 @@ experiments/
 
 ### 5.3 Discrepancy 2: Theoretical Pseudocode vs. Production Training Engine
 - **In `ARCHITECTURE.md`:** Section 7 gives 15 lines of basic Python pseudocode (`def forward(x): ...`). Section 9 mentions `Optimizer: Adam`, `lr=0.01`, `Loss: CrossEntropyLoss`.
-- **In Current Codebase:** [`training/trainer.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/training/trainer.py) contains a full object-oriented `Trainer` class:
+- **In Current Codebase:** [`training/trainer.py`](file:///e:/parallel_quantum-5/implementation/training/trainer.py) contains a full object-oriented `Trainer` class:
   - Tracks running loss, training accuracy, validation loss, validation accuracy, and Macro-F1 score.
   - Saves the best checkpoint based on validation accuracy (`best.pt`).
   - Serializes history to JSON files (`history.json`).
@@ -461,7 +461,7 @@ experiments/
 
 ### 5.4 Discrepancy 3: Generic Tensors vs. Class-Balanced Data Subsampling
 - **In `ARCHITECTURE.md`:** Section 2 specifies input dimensions `[B, 1, 28, 28]` with pixel normalization to $[0, 1]$, but does not discuss how real datasets are split or subsampled.
-- **In Current Codebase:** [`datasets/dataloader.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/datasets/dataloader.py) implements the paper's exact class-balanced subsampling:
+- **In Current Codebase:** [`datasets/dataloader.py`](file:///e:/parallel_quantum-5/implementation/datasets/dataloader.py) implements the paper's exact class-balanced subsampling:
   ```python
   def _balanced_subsample(dataset, samples_per_class, seed=42):
       # Groups indices by class label and draws exactly samples_per_class per category
@@ -470,7 +470,7 @@ experiments/
 
 ### 5.5 Discrepancy 4: Pure-State Simulation vs. Mixed-State Noise Simulation
 - **In `ARCHITECTURE.md`:** Describes state preparation and unitary gate evolution assuming a closed quantum system ($|\psi\rangle$).
-- **In Current Codebase:** [`models/quantum_circuit.py`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/implementation/models/quantum_circuit.py) provides two simulation backends:
+- **In Current Codebase:** [`models/quantum_circuit.py`](file:///e:/parallel_quantum-5/implementation/models/quantum_circuit.py) provides two simulation backends:
   1. Pure-state analytic simulator: `dev_pure = qml.device("default.qubit", wires=4)`.
   2. Mixed-state open-system simulator: `dev_mixed = qml.device("default.mixed", wires=4)` utilizing `make_noisy_circuit` to simulate density matrices $\rho$ under bit-flip, phase-flip, and depolarizing Kraus operators.
 
@@ -495,16 +495,16 @@ experiments/
     $$\text{QNode Calls} = B \times H_{\text{patches}} \times W_{\text{patches}} = 32 \times 14 \times 14 = \mathbf{6,272} \text{ circuit evaluations}$$
   - During backpropagation using the parameter-shift rule ($2 \times 16 = 32$ evaluations per patch):
     $$\text{Backward QNode Calls} = 6,272 \times 32 = \mathbf{200,704} \text{ circuit evaluations per batch}$$
-  - To make this runnable, the codebase includes PBS cluster scripts ([`scripts/run_experiment.pbs`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/scripts/run_experiment.pbs)) with multi-core OpenMP thread allocation (`OMP_NUM_THREADS=8`).
+  - To make this runnable, the codebase includes PBS cluster scripts ([`scripts/run_experiment.pbs`](file:///e:/parallel_quantum-5/scripts/run_experiment.pbs)) with multi-core OpenMP thread allocation (`OMP_NUM_THREADS=8`).
 
 ### 5.9 Discrepancy 8: Visual Asset Integration & Architecture Diagrams
 - **In `ARCHITECTURE.md`:** Uses text-based ASCII representations.
-- **In Current Codebase:** Full visual suite generated in [`figures/`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/):
-  - [`qc_cnn_parallel_architecture.svg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/qc_cnn_parallel_architecture.svg) / [`.jpg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/qc_cnn_parallel_architecture.jpg): Full dual-branch dataflow diagram.
-  - [`pqc_circuit11_schematic.svg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/pqc_circuit11_schematic.svg) / [`.jpg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/pqc_circuit11_diagram.jpg): Exact quantum gate layout.
-  - [`shallow_vs_deep_philosophy.svg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/shallow_vs_deep_philosophy.svg) / [`.jpg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/shallow_parallel_vs_deep_design.jpg): Barren plateau gradient landscape visualization.
-  - [`noise_robustness_analysis.svg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/noise_robustness_analysis.svg) / [`.jpg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/noise_robustness_comparison.jpg): Multi-panel benchmark accuracy curves.
-  - [`model_comparison_barchart.svg`](file:///E:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/model_comparison_barchart.svg): Model parameter vs. accuracy comparison chart.
+- **In Current Codebase:** Full visual suite generated in [`figures/`](file:///e:/parallel_quantum-5/figures/):
+  - [`qc_cnn_parallel_architecture.svg`](file:///e:/parallel_quantum-5/figures/qc_cnn_parallel_architecture.svg) / [`.jpg`](file:///e:/parallel_quantum-5/figures/qc_cnn_parallel_architecture.jpg): Full dual-branch dataflow diagram.
+  - [`pqc_circuit11_schematic.svg`](file:///e:/parallel_quantum-5/figures/pqc_circuit11_schematic.svg) / [`.jpg`](file:///e:/parallel_quantum-5/figures/pqc_circuit11_diagram.jpg): Exact quantum gate layout.
+  - [`shallow_vs_deep_philosophy.svg`](file:///e:/parallel_quantum-5/figures/shallow_vs_deep_philosophy.svg) / [`.jpg`](file:///e:/parallel_quantum-5/figures/shallow_parallel_vs_deep_design.jpg): Barren plateau gradient landscape visualization.
+  - [`noise_robustness_analysis.svg`](file:///e:/parallel_quantum-5/figures/noise_robustness_analysis.svg) / [`.jpg`](file:///e:/parallel_quantum-5/figures/noise_robustness_comparison.jpg): Multi-panel benchmark accuracy curves.
+  - [`model_comparison_barchart.svg`](file:///e:/parallel_quantum-5/figures/model_comparison_barchart.svg): Model parameter vs. accuracy comparison chart.
 
 ---
 
@@ -530,7 +530,7 @@ QC-CNN-Parallel1/
 ├── cur_arc.md                           # 📖 This comprehensive specification document
 ├── cur_imple.md                         # 📝 Complete implementation analysis & paper walk-through
 ├── README.md                            # 🚀 Project entrypoint with embedded vector diagrams
-├── qc-cnn-parallel.py                   # ⚡ Standalone 1-click smoke test script
+├── scripts/quick_smoke_test.py                   # ⚡ Standalone 1-click smoke test script
 ├── LICENSE                              # 📄 MIT License
 ├── .gitignore                           # 🛡️ Git exclusion rules
 │

@@ -27,7 +27,7 @@ The paper uses exactly **three grayscale 28 × 28 datasets** (Table 1, page 7):
 
 ## 1. Dataset currently represented by the code
 
-The file `qc-cnn-parallel.py` does not currently load a real dataset. It creates
+The file `scripts/quick_smoke_test.py` does not currently load a real dataset. It creates
 random dummy images:
 
 ```python

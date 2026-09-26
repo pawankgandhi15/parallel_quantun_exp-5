@@ -3,8 +3,9 @@
 > **Manuscript Title:** *A Scalable Parallel Hybrid Quantum-Classical Convolutional Architecture Using Parameterized Quantum Circuits for Robust Image Classification*  
 > **Target Journal:** *IEEE Transactions on Quantum Engineering* / *Quantum Engineering (Wiley)*  
 > **Base Research Paper:** *Haoxuan Liu & Xiaoping Lou, Quantum Engineering (2026), Article 6643049*  
-> **Active LaTeX File:** [`paper.tex`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/paper.tex)  
-> **Figures Directory:** [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/)  
+> **Active LaTeX File:** [`paper.tex`](paper.tex)  
+> **Figures Directory:** [`../figures/`](file:///e:/parallel_quantum-5/figures/)  
+> **Overleaf Export Script:** [`scripts/export_overleaf.py`](file:///e:/parallel_quantum-5/scripts/export_overleaf.py)  
 > **Current Status:** Blueprint & Visual Assets Approved | Drafting Phase Initiated  
 
 ---
@@ -162,14 +163,14 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
 
 | Figure # | File Path | Subject / Description | LaTeX Macro / Filename | Status |
 |:---:|---|---|---|:---:|
-| **Fig. 1** | [`figures/qc_cnn_parallel_architecture.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/qc_cnn_parallel_architecture.svg) | QC-CNN-Parallel Architecture: Input image with patch $\to$ Quantum filter $U$ + Classical filter $4\times 4 \to$ Flatten $\to$ Fully1 $\to$ Fully2 $\to$ Output (10 classes). | `\includegraphics[width=\columnwidth]{figures/qc_cnn_parallel_architecture}` | **Ready** |
-| **Fig. 2** | [`figures/pqc_circuit11_schematic.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/pqc_circuit11_schematic.svg) | Quantum Circuit of Feature Extraction: $2\times 2$ patch $\to \theta_i \to |0\rangle^{\otimes 4} \to U_e(x) \to$ PQC $U(\theta) \to [M] \to$ Output feature maps. | `\includegraphics[width=\columnwidth]{figures/pqc_circuit11_schematic}` | **Ready** |
-| **Fig. 3** | [`figures/quantum_encoding_and_topologies.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/quantum_encoding_and_topologies.svg) | (A) Quantum Angle Encoding ($[\alpha,\beta;\gamma,\delta] \to H + RY \to \text{Ansatz}$). | `\includegraphics[width=0.85\columnwidth]{figures/quantum_encoding_and_topologies}` | **Ready** |
-| **Fig. 4** | [`figures/quantum_encoding_and_topologies.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/quantum_encoding_and_topologies.svg) | (B) Three Entangling Topologies: *(a) Linear*, *(b) Circle*, *(c) All-to-All*. | Included in Fig. 3 multi-panel | **Ready** |
-| **Fig. 5** | [`figures/circuit10_vs_circuit11.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/circuit10_vs_circuit11.svg) | Entangling Structures Comparison: *(a) Circuit 10* (28 params) vs. *(b) Circuit 11* (16 params, shifted-circle). | `\includegraphics[width=\columnwidth]{figures/circuit10_vs_circuit11}` | **Ready** |
-| **Fig. 6** | [`figures/shallow_vs_deep_philosophy.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/shallow_vs_deep_philosophy.svg) | Design Philosophy: Deep Sequential Barren Plateau Trap vs. Shallow Parallel Preserved Gradients. | `\includegraphics[width=\columnwidth]{figures/shallow_vs_deep_philosophy}` | **Ready** |
-| **Fig. 7** | [`figures/noise_robustness_analysis.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/noise_robustness_analysis.svg) | 4-Panel Noise Robustness Curves: (a) Data Noise, (b) Bit-Flip, (c) Phase-Flip, (d) Depolarizing. | `\includegraphics[width=\textwidth]{figures/noise_robustness_analysis}` | **Ready** |
-| **Fig. 8** | [`figures/ablation_and_scalability_study.svg`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/ablation_and_scalability_study.svg) | (a) Multi-Branch Ablation Study Bar Chart; (b) Gradient Variance vs. Variational Depth ($L \in \{1..5\}$). | `\includegraphics[width=\textwidth]{figures/ablation_and_scalability_study}` | **Ready** |
+| **Fig. 1** | [`figures/qc_cnn_parallel_architecture.svg`](file:///e:/parallel_quantum-5/figures/qc_cnn_parallel_architecture.svg) | QC-CNN-Parallel Architecture: Input image with patch $\to$ Quantum filter $U$ + Classical filter $4\times 4 \to$ Flatten $\to$ Fully1 $\to$ Fully2 $\to$ Output (10 classes). | `\includegraphics[width=\columnwidth]{figures/qc_cnn_parallel_architecture}` | **Ready** |
+| **Fig. 2** | [`figures/pqc_circuit11_schematic.svg`](file:///e:/parallel_quantum-5/figures/pqc_circuit11_schematic.svg) | Quantum Circuit of Feature Extraction: $2\times 2$ patch $\to \theta_i \to |0\rangle^{\otimes 4} \to U_e(x) \to$ PQC $U(\theta) \to [M] \to$ Output feature maps. | `\includegraphics[width=\columnwidth]{figures/pqc_circuit11_schematic}` | **Ready** |
+| **Fig. 3** | [`figures/quantum_encoding_and_topologies.svg`](file:///e:/parallel_quantum-5/figures/quantum_encoding_and_topologies.svg) | (A) Quantum Angle Encoding ($[\alpha,\beta;\gamma,\delta] \to H + RY \to \text{Ansatz}$). | `\includegraphics[width=0.85\columnwidth]{figures/quantum_encoding_and_topologies}` | **Ready** |
+| **Fig. 4** | [`figures/quantum_encoding_and_topologies.svg`](file:///e:/parallel_quantum-5/figures/quantum_encoding_and_topologies.svg) | (B) Three Entangling Topologies: *(a) Linear*, *(b) Circle*, *(c) All-to-All*. | Included in Fig. 3 multi-panel | **Ready** |
+| **Fig. 5** | [`figures/circuit10_vs_circuit11.svg`](file:///e:/parallel_quantum-5/figures/circuit10_vs_circuit11.svg) | Entangling Structures Comparison: *(a) Circuit 10* (28 params) vs. *(b) Circuit 11* (16 params, shifted-circle). | `\includegraphics[width=\columnwidth]{figures/circuit10_vs_circuit11}` | **Ready** |
+| **Fig. 6** | [`figures/shallow_vs_deep_philosophy.svg`](file:///e:/parallel_quantum-5/figures/shallow_vs_deep_philosophy.svg) | Design Philosophy: Deep Sequential Barren Plateau Trap vs. Shallow Parallel Preserved Gradients. | `\includegraphics[width=\columnwidth]{figures/shallow_vs_deep_philosophy}` | **Ready** |
+| **Fig. 7** | [`figures/noise_robustness_analysis.svg`](file:///e:/parallel_quantum-5/figures/noise_robustness_analysis.svg) | 4-Panel Noise Robustness Curves: (a) Data Noise, (b) Bit-Flip, (c) Phase-Flip, (d) Depolarizing. | `\includegraphics[width=\textwidth]{figures/noise_robustness_analysis}` | **Ready** |
+| **Fig. 8** | [`figures/ablation_and_scalability_study.svg`](file:///e:/parallel_quantum-5/figures/ablation_and_scalability_study.svg) | (a) Multi-Branch Ablation Study Bar Chart; (b) Gradient Variance vs. Variational Depth ($L \in \{1..5\}$). | `\includegraphics[width=\textwidth]{figures/ablation_and_scalability_study}` | **Ready** |
 
 ---
 
@@ -267,9 +268,9 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
   - [x] Analyze base paper (*Quantum Engineering*, 2026).
   - [x] Extract exact section hierarchy and mathematical formulations.
   - [x] Redesign all dark-theme SVGs into clean, academic white-background vector graphics matching base paper figures.
-  - [x] Create centralized tracker [`PAPER_WRITE.md`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/PAPER_WRITE.md).
+  - [x] Create centralized tracker [`PAPER_WRITE.md`](PAPER_WRITE.md).
 
-- [x] **Phase 2: Core Manuscript Drafting ([`paper.tex`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/paper.tex))**
+- [x] **Phase 2: Core Manuscript Drafting ([`paper.tex`](paper.tex))**
   - [x] Configure IEEEtran two-column journal preamble and packages.
   - [x] Write Section 1 (Introduction & NISQ Motivation).
   - [x] Write Section 2 (Theoretical Preliminaries & Quantum Gates).
@@ -296,8 +297,8 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
 ## 6. Changelog & Activity Log
 
 * **2026-09-23:**
-  * Created [`PAPER_WRITE.md`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/PAPER_WRITE.md) to track journal writing progress and experimental results.
-  * Completely overhauled [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/figures/) with publication-grade vector graphics on pure white backgrounds (`#ffffff`):
+  * Created [`PAPER_WRITE.md`](PAPER_WRITE.md) to track journal writing progress and experimental results.
+  * Completely overhauled [`figures/`](file:///e:/parallel_quantum-5/figures/) with publication-grade vector graphics on pure white backgrounds (`#ffffff`):
     * `qc_cnn_parallel_architecture.svg` / `.jpg` (Figure 1)
     * `pqc_circuit11_schematic.svg` / `pqc_circuit11_diagram.jpg` (Figure 2)
     * `quantum_encoding_and_topologies.svg` (Figures 3 & 4)
@@ -346,7 +347,7 @@ All figures in [`figures/`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CN
     * Fixed the Haar expectation integral overflow in Theorem 2 (Eq. 48) that collided with the right-hand column.
     * Refactored Weingarten 2-design variance integrations, total network gradient norm lower bound, Lindblad master equation, Circuit 11 cyclic entangling topologies ($U_{\mathrm{ent}}^{(1)}$ and $U_{\mathrm{ent}}^{(2)}$), single-qubit rotations ($RX, RY, RZ$), and CRX basis gate transpilation into compact, properly aligned multi-line blocks.
   * **Exhaustive Document-Wide Layout & Equation Audit:**
-    * Performed line-by-line inspection across all 1,142 lines of [`paper.tex`](file:///e:/parallel_quantum-5/parallel_quantum/QC-CNN-Parallel1/paper.tex).
+    * Performed line-by-line inspection across all 1,142 lines of [`paper.tex`](paper.tex).
     * Tightened single-qubit rotations (Eqs. 5–7) to eliminate double equality signs and prevent equation number collision.
     * Reformatted parameter-shift Taylor series and finite difference equations (Eqs. 14–16) with proper `&=` alignment and multi-line breaks.
     * Streamlined quantum kernel derivation (Eq. 24) to eliminate long product terms.

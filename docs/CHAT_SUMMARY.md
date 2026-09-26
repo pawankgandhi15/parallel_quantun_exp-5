@@ -34,7 +34,7 @@ parallel_quantum/
 ├── METHODOLOGY.md           (17,654 bytes)
 ├── RESULTS.md               (20,782 bytes)
 ├── Quantum Engineering .pdf  (2.9 MB — source paper)
-├── qc-cnn-parallel.py       ( 7,961 bytes — smoke test)
+├── scripts/quick_smoke_test.py       ( 7,961 bytes — smoke test)
 └── implementation/
     ├── __init__.py
     ├── requirements.txt
@@ -241,7 +241,7 @@ All values below were verified from the paper PDF and existing documentation bef
 1. **Push to GitHub** using either Option A or Option B above
 2. **Add a GitHub repository description and topic tags** (e.g., `quantum-computing`, `machine-learning`, `pennylane`, `pytorch`, `image-classification`)
 3. **Fill in reproduction results** in `RESULTS.md` after running the full training pipeline
-4. **Optionally add GitHub Actions** CI to run the smoke test (`qc-cnn-parallel.py`) on push
+4. **Optionally add GitHub Actions** CI to run the smoke test (`scripts/quick_smoke_test.py`) on push
 
 ---
 

@@ -46,7 +46,7 @@ have been confirmed to match the paper:
 | Batch size (main) | **32** | Table 4, page 10 |
 | Batch size (noise exp.) | **100** | Section 4.3.3, page 12 |
 | Epochs | **50** | Table 4, page 10 |
-| Example batch size in code | 4 (smoke test only) | `qc-cnn-parallel.py` |
+| Example batch size in code | 4 (smoke test only) | `scripts/quick_smoke_test.py` |
 | Quantum shots | Not specified; analytic expectation values | PennyLane default |
 | PQC design | Circuit 11 (16 parameters, Circle topology) | Table 2–3, pages 9 |
 

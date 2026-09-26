@@ -58,6 +58,16 @@ logs/
 dist/
 build/
 *.egg-info/
+exports/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+paper/*.pdf
 
 # Temporary extractions
 docs/paper/extracted_figures/
