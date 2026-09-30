@@ -169,8 +169,10 @@ parallel_quantum-5/
 │   ├── recreate_all_figures.py          # Figure reproduction pipeline
 │   ├── recreate_rendered_svgs.py        # Vector SVG rasterizer
 │   ├── monitor_server.py                # Real-time HTTP dashboard for training
-│   ├── run_experiment.pbs               # PBS cluster batch submission script
-│   └── submit_all.sh                    # Multi-experiment shell runner
+│   ├── run_experiment.pbs               # PBS cluster 48h auto-resubmit batch runner
+│   ├── run_experiment.slurm             # SLURM cluster 48h auto-resubmit batch runner
+│   ├── run_single_exp.sh                # Single-experiment 48h self-resubmitting runner
+│   └── submit_all.sh                    # Multi-experiment 48h batch submitter
 │
 ├── implementation/                      # Core Python package & experiment suite
 │   ├── __init__.py
@@ -242,14 +244,55 @@ This verifies the model builds correctly and runs a single forward+backward pass
 ```bash
 cd implementation
 
-# Run all 3 experiments sequentially
-python run_all.py
+# Run all 5 experiments sequentially
+python run_all.py --exp 1 2 3 4 5
 
 # Or run individually:
 python experiments/experiment1_circuit_selection.py   # Circuit expressibility study
 python experiments/experiment2_classification.py      # Main classification (MNIST, Fashion-MNIST, Overhead-MNIST)
 python experiments/experiment3_noise_robustness.py    # Noise robustness (bit-flip, phase-flip, depolarizing)
+python experiments/experiment4_ablation_study.py       # Quantum vs classical branch ablation
+python experiments/experiment5_scalability_study.py    # Qubit and depth scalability
 ```
+
+### ⚡ H100 Server / Cluster Execution (48-Hour Walltime Limit)
+
+If your H100 cluster queue enforces a **48-hour walltime limit**, the included automation suite handles **intra-epoch batch checkpointing** and **automatic job re-submission**:
+
+1. **How it works**:
+   - `run_all.py` runs with `--max_hours 47.0`, giving a safe 1-hour buffer before the 48-hour queue kill.
+   - Training checkpoints every 25 batches and at each epoch atomically (`.pt.tmp` → `.pt`).
+   - When 47 hours elapse (or upon `SIGTERM`), the current batch is saved, and Python exits with code `42`.
+   - The cluster script (`run_experiment.pbs` or `run_experiment.slurm`) catches code `42` and **automatically submits the next job to the queue** (`qsub` or `sbatch`).
+   - The new job picks up the checkpoint and continues from the **exact epoch and batch** where it paused.
+   - When all experiments finish, `results/ALL_COMPLETED` is written and the chain halts.
+
+2. **Submit via PBS / TORQUE**:
+   ```bash
+   qsub scripts/run_experiment.pbs
+   ```
+
+3. **Submit via SLURM**:
+   ```bash
+   sbatch scripts/run_experiment.slurm
+   ```
+
+4. **Submit Individual Experiments as Independent 48-Hour Jobs**:
+   ```bash
+   chmod +x scripts/submit_all.sh scripts/run_single_exp.sh
+   ./scripts/submit_all.sh            # Submits all 5 experiments with dependency chaining
+   ./scripts/submit_all.sh 2          # Submits only Experiment 2
+   ```
+
+5. **Monitor Execution**:
+   ```bash
+   # Check cluster queue status:
+   qstat -u $USER      # PBS
+   squeue -u $USER     # SLURM
+
+   # Live progress logs:
+   tail -f logs/pbs_output.log
+   ```
 
 ---
 

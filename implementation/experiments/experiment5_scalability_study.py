@@ -35,7 +35,7 @@ from models.scalable_quantum_circuit import (
     measure_gradient_variance,
 )
 from datasets  import get_dataloaders
-from training  import train, set_seed
+from training  import train, set_seed, TimeBudgetManager, TimeBudgetExceeded
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +60,9 @@ FIXED_QUBITS = 4
 # ---------------------------------------------------------------------------
 # Part A: Qubit Count Scaling
 # ---------------------------------------------------------------------------
-def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
+def run_qubit_sweep(dataset_name="mnist", resume: bool = True,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     """
     Vary qubit count while keeping depth fixed.
     Tests: 2, 4, 6, 8 qubits with depth=2.
@@ -70,6 +72,8 @@ def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
     print(f"\n{'='*65}")
     print(f"  PART A: QUBIT COUNT SWEEP (depth={FIXED_DEPTH})")
     print(f"  Dataset: {dataset_name.upper()}  |  Device: {device}")
+    if time_budget_mgr and time_budget_mgr.max_runtime_hours:
+        print(f"  Walltime budget: {time_budget_mgr.max_runtime_hours:.2f} hours (Cluster queue safe)")
     print(f"{'='*65}")
 
     train_loader, test_loader = get_dataloaders(
@@ -120,17 +124,19 @@ def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
               f"Mean norm: {grad_info['mean_grad_norm']:.6f}")
 
         history, summary, trained_model = train(
-            model        = model,
-            train_loader = train_loader,
-            test_loader  = test_loader,
-            num_epochs   = EPOCHS,
-            lr           = LR,
-            seed         = SEED,
-            device       = device,
-            save_dir     = str(RESULTS),
-            model_name   = config_name,
-            dataset_name = dataset_name,
-            resume       = resume,
+            model                       = model,
+            train_loader                = train_loader,
+            test_loader                 = test_loader,
+            num_epochs                  = EPOCHS,
+            lr                          = LR,
+            seed                        = SEED,
+            device                      = device,
+            save_dir                    = str(RESULTS),
+            model_name                  = config_name,
+            dataset_name                = dataset_name,
+            resume                      = resume,
+            checkpoint_interval_batches = checkpoint_interval_batches,
+            time_budget_mgr             = time_budget_mgr,
         )
 
         # Find convergence epoch (first epoch to reach 85% accuracy)
@@ -155,9 +161,11 @@ def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
             "gradient_mean_norm": grad_info["mean_grad_norm"],
         }
 
-        # Save progress incrementally (checkpoint)
-        with open(partA_path, "w") as f:
+        # Save progress incrementally and atomically (checkpoint)
+        tmp_pA = partA_path.with_suffix(".json.tmp")
+        with open(tmp_pA, "w") as f:
             json.dump(results, f, indent=2)
+        tmp_pA.replace(partA_path)
 
     # Clean up checkpoint
     if partA_path.exists():
@@ -169,7 +177,9 @@ def run_qubit_sweep(dataset_name="mnist", resume: bool = True):
 # ---------------------------------------------------------------------------
 # Part B: Circuit Depth Scaling
 # ---------------------------------------------------------------------------
-def run_depth_sweep(dataset_name="mnist", resume: bool = True):
+def run_depth_sweep(dataset_name="mnist", resume: bool = True,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     """
     Vary circuit depth while keeping qubit count fixed.
     Tests: depth 1, 2, 3, 4, 5 with 4 qubits.
@@ -179,6 +189,8 @@ def run_depth_sweep(dataset_name="mnist", resume: bool = True):
     print(f"\n{'='*65}")
     print(f"  PART B: CIRCUIT DEPTH SWEEP (qubits={FIXED_QUBITS})")
     print(f"  Dataset: {dataset_name.upper()}  |  Device: {device}")
+    if time_budget_mgr and time_budget_mgr.max_runtime_hours:
+        print(f"  Walltime budget: {time_budget_mgr.max_runtime_hours:.2f} hours (Cluster queue safe)")
     print(f"{'='*65}")
 
     train_loader, test_loader = get_dataloaders(
@@ -229,17 +241,19 @@ def run_depth_sweep(dataset_name="mnist", resume: bool = True):
               f"Mean norm: {grad_info['mean_grad_norm']:.6f}")
 
         history, summary, trained_model = train(
-            model        = model,
-            train_loader = train_loader,
-            test_loader  = test_loader,
-            num_epochs   = EPOCHS,
-            lr           = LR,
-            seed         = SEED,
-            device       = device,
-            save_dir     = str(RESULTS),
-            model_name   = config_name,
-            dataset_name = dataset_name,
-            resume       = resume,
+            model                       = model,
+            train_loader                = train_loader,
+            test_loader                 = test_loader,
+            num_epochs                  = EPOCHS,
+            lr                          = LR,
+            seed                        = SEED,
+            device                      = device,
+            save_dir                    = str(RESULTS),
+            model_name                  = config_name,
+            dataset_name                = dataset_name,
+            resume                      = resume,
+            checkpoint_interval_batches = checkpoint_interval_batches,
+            time_budget_mgr             = time_budget_mgr,
         )
 
         convergence_epoch = None
@@ -263,9 +277,11 @@ def run_depth_sweep(dataset_name="mnist", resume: bool = True):
             "gradient_mean_norm": grad_info["mean_grad_norm"],
         }
 
-        # Save progress incrementally (checkpoint)
-        with open(partB_path, "w") as f:
+        # Save progress incrementally and atomically (checkpoint)
+        tmp_pB = partB_path.with_suffix(".json.tmp")
+        with open(tmp_pB, "w") as f:
             json.dump(results, f, indent=2)
+        tmp_pB.replace(partB_path)
 
     # Clean up checkpoint
     if partB_path.exists():
@@ -277,21 +293,40 @@ def run_depth_sweep(dataset_name="mnist", resume: bool = True):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment5(parts=("A", "B"), dataset_name="mnist", resume: bool = True):
+def run_experiment5(parts=("A", "B"), dataset_name="mnist", resume: bool = True,
+                    max_runtime_hours: float | None = None,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     """Run the full scalability study."""
+    if time_budget_mgr is None:
+        time_budget_mgr = TimeBudgetManager(max_runtime_hours=max_runtime_hours)
+
     all_results = {}
 
     if "A" in parts:
-        qubit_results = run_qubit_sweep(dataset_name, resume=resume)
+        qubit_results = run_qubit_sweep(
+            dataset_name,
+            resume=resume,
+            time_budget_mgr=time_budget_mgr,
+            checkpoint_interval_batches=checkpoint_interval_batches,
+        )
         all_results["qubit_sweep"] = qubit_results
 
     if "B" in parts:
-        depth_results = run_depth_sweep(dataset_name, resume=resume)
+        depth_results = run_depth_sweep(
+            dataset_name,
+            resume=resume,
+            time_budget_mgr=time_budget_mgr,
+            checkpoint_interval_batches=checkpoint_interval_batches,
+        )
         all_results["depth_sweep"] = depth_results
 
-    # Save results
-    with open(RESULTS / "scalability_results.json", "w") as f:
+    # Save results atomically
+    all_path = RESULTS / "scalability_results.json"
+    tmp_all = all_path.with_suffix(".json.tmp")
+    with open(tmp_all, "w") as f:
         json.dump(all_results, f, indent=2)
+    tmp_all.replace(all_path)
 
     # --- Print summary tables ---
     print(f"\n{'='*80}")
@@ -353,6 +388,15 @@ if __name__ == "__main__":
                        choices=["mnist", "fashion_mnist", "overhead_mnist"])
     parser.add_argument("--no-resume", action="store_true",
                        help="Ignore checkpoints and start from scratch")
+    parser.add_argument("--max-hours", type=float, default=None,
+                       help="Maximum hours before pausing and saving checkpoint (for 48h queues)")
+    parser.add_argument("--checkpoint-interval-batches", type=int, default=25,
+                       help="Frequency of intra-epoch batch checkpointing")
     args = parser.parse_args()
-    run_experiment5(parts=args.part, dataset_name=args.dataset,
-                    resume=not args.no_resume)
+    run_experiment5(
+        parts=args.part,
+        dataset_name=args.dataset,
+        resume=not args.no_resume,
+        max_runtime_hours=args.max_hours,
+        checkpoint_interval_batches=args.checkpoint_interval_batches,
+    )

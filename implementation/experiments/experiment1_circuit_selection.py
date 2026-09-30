@@ -32,7 +32,12 @@ from pathlib import Path
 
 from models.quantum_circuit import NUM_QUBITS
 from datasets.dataloader    import get_mnist, get_fashion_mnist
-from training.trainer       import set_seed, _train_epoch, _eval_epoch
+from training.trainer import (
+    set_seed, _train_epoch, _eval_epoch,
+    TimeBudgetManager, TimeBudgetExceeded,
+    safe_torch_save, safe_torch_load,
+    capture_rng_state, restore_rng_state,
+)
 from utils.circuit_metrics  import run_circuit_analysis
 
 
@@ -255,21 +260,26 @@ class SimpleHybrid(nn.Module):
 # Main
 # ---------------------------------------------------------------------------
 def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
-                    resume: bool = True):
+                    resume: bool = True,
+                    max_runtime_hours: float | None = None,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     set_seed(SEED)
     device = torch.device("cpu")
 
+    if time_budget_mgr is None:
+        time_budget_mgr = TimeBudgetManager(max_runtime_hours=max_runtime_hours)
+
     print("=" * 60)
     print("  Experiment 1: PQC Selection Study  (Table 2 & 3)")
+    if time_budget_mgr.max_runtime_hours:
+        print(f"  Walltime budget: {time_budget_mgr.max_runtime_hours:.2f} hours (Cluster queue safe)")
     print("=" * 60)
 
-    # Table 2 is the independent numerical circuit study described in the
-    # paper. The previous implementation claimed to reproduce it but never
-    # executed its metrics.
+    # Table 2 is the independent numerical circuit study
     table2_path = RESULTS_DIR / "table2_circuit_metrics.json"
     table2_results = {}
     if run_metrics:
-        # Resume: skip Table 2 if results already exist
         if resume and table2_path.exists():
             print("  ⟳ Table 2 metrics already computed — loading from checkpoint.")
             with open(table2_path, "r") as f:
@@ -283,6 +293,9 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
             with open(table2_path, "w") as f:
                 json.dump(table2_results, f, indent=2)
 
+    if time_budget_mgr.should_stop():
+        raise TimeBudgetExceeded("Time budget reached after Table 2 metrics calculation.")
+
     train_mnist,   test_mnist   = get_mnist(batch_size=BATCH_SIZE)
     train_fashion, test_fashion = get_fashion_mnist(batch_size=BATCH_SIZE)
 
@@ -294,43 +307,106 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
             with open(table3_path, "r") as f:
                 results_table3 = json.load(f)
             if results_table3:
-                print(f"  ⟳ Loaded {len(results_table3)} completed circuit(s) "
-                      f"from checkpoint.")
+                completed_count = sum(len(v) for v in results_table3.values() if isinstance(v, dict))
+                print(f"  ⟳ Loaded checkpoint: {completed_count} circuit-dataset benchmark(s) completed.")
         except Exception:
             results_table3 = {}
 
     for circuit_name, (qnode, n_params) in QNODES.items():
-        # Skip circuits already evaluated on resume
-        if resume and circuit_name in results_table3:
+        if circuit_name not in results_table3:
+            results_table3[circuit_name] = {}
+
+        # If both datasets already evaluated for this circuit, skip
+        if (resume and "MNIST" in results_table3[circuit_name]
+                and "Fashion-MNIST" in results_table3[circuit_name]):
             print(f"\n--- Circuit: {circuit_name} — ✓ already completed, skipping ---")
             continue
 
         print(f"\n--- Circuit: {circuit_name} ({n_params} params) ---")
-        row = {}
+
         for ds_name, (tr_loader, te_loader) in [
             ("MNIST", (train_mnist, test_mnist)),
             ("Fashion-MNIST", (train_fashion, test_fashion)),
         ]:
+            if resume and ds_name in results_table3[circuit_name]:
+                print(f"  ✓ {ds_name} already completed: best_acc = {results_table3[circuit_name][ds_name]}")
+                continue
+
+            ckpt_file = RESULTS_DIR / f"ckpt_{circuit_name}_{ds_name}.pt"
             set_seed(SEED)
             model   = SimpleHybrid(qnode, n_params).to(device)
             opt     = torch.optim.Adam(model.parameters(), lr=LR)
             loss_fn = nn.CrossEntropyLoss()
 
+            start_epoch = 1
             best_acc = 0.0
-            for epoch in range(1, NUM_EPOCHS + 1):
-                _train_epoch(model, tr_loader, opt, loss_fn, device)
+
+            if resume and ckpt_file.exists():
+                try:
+                    cdata = safe_torch_load(ckpt_file, device=device)
+                    start_epoch = cdata.get("epoch", 0) + 1
+                    best_acc = cdata.get("best_acc", 0.0)
+                    model.load_state_dict(cdata["model_state_dict"])
+                    opt.load_state_dict(cdata["opt_state_dict"])
+                    restore_rng_state(cdata.get("rng_state"))
+                    print(f"  ⟳ Resumed {circuit_name} on {ds_name} at epoch {start_epoch} (best: {best_acc:.4f})")
+                except Exception as ex:
+                    print(f"  ⚠ Failed to load {ckpt_file.name} ({ex}). Starting fresh.")
+                    start_epoch = 1
+                    best_acc = 0.0
+
+            for epoch in range(start_epoch, NUM_EPOCHS + 1):
+                tr_loss, tr_acc, interrupted, last_b, _, _, _ = _train_epoch(
+                    model=model, loader=tr_loader, optimizer=opt, loss_fn=loss_fn,
+                    device=device, time_budget_mgr=time_budget_mgr,
+                )
+
+                if interrupted:
+                    safe_torch_save({
+                        "epoch": epoch,
+                        "best_acc": best_acc,
+                        "model_state_dict": model.state_dict(),
+                        "opt_state_dict": opt.state_dict(),
+                        "rng_state": capture_rng_state(),
+                    }, ckpt_file)
+                    print(f"\n  [CHECKPOINT] Circuit {circuit_name} on {ds_name} paused at epoch {epoch}.")
+                    raise TimeBudgetExceeded(
+                        f"Walltime limit reached on Circuit {circuit_name} ({ds_name}, Epoch {epoch})."
+                    )
+
                 _, acc, _, _, _ = _eval_epoch(model, te_loader, loss_fn, device)
                 if acc > best_acc:
                     best_acc = acc
 
-            row[ds_name] = round(best_acc, 4)
+                # Save epoch checkpoint
+                safe_torch_save({
+                    "epoch": epoch,
+                    "best_acc": best_acc,
+                    "model_state_dict": model.state_dict(),
+                    "opt_state_dict": opt.state_dict(),
+                    "rng_state": capture_rng_state(),
+                }, ckpt_file)
+
+                if time_budget_mgr.should_stop():
+                    raise TimeBudgetExceeded(
+                        f"Walltime limit reached after epoch {epoch} of {circuit_name} on {ds_name}."
+                    )
+
+            results_table3[circuit_name][ds_name] = round(best_acc, 4)
             print(f"  {ds_name}: best_acc = {best_acc:.4f}")
 
-        results_table3[circuit_name] = row
+            # Save Table 3 atomically
+            tmp_t3 = table3_path.with_suffix(".json.tmp")
+            with open(tmp_t3, "w") as f:
+                json.dump(results_table3, f, indent=2)
+            tmp_t3.replace(table3_path)
 
-        # Save incrementally after each circuit (checkpoint)
-        with open(table3_path, "w") as f:
-            json.dump(results_table3, f, indent=2)
+            # Clean up per-dataset checkpoint
+            if ckpt_file.exists():
+                ckpt_file.unlink()
+            bak_f = ckpt_file.with_suffix(".pt.bak")
+            if bak_f.exists():
+                bak_f.unlink()
 
     # Print comparison against paper Table 3
     print("\n" + "=" * 60)
@@ -370,6 +446,15 @@ if __name__ == "__main__":
                         help="Simulations per Table 2 metric (paper: 5000).")
     parser.add_argument("--no-resume", action="store_true",
                         help="Ignore checkpoints and start from scratch.")
+    parser.add_argument("--max-hours", type=float, default=None,
+                        help="Maximum hours before pausing and saving checkpoint (for 48h queues).")
+    parser.add_argument("--checkpoint-interval-batches", type=int, default=25,
+                        help="Frequency of intra-epoch batch checkpointing.")
     args = parser.parse_args()
-    run_experiment1(run_metrics=not args.skip_metrics, n_sims=args.n_sims,
-                    resume=not args.no_resume)
+    run_experiment1(
+        run_metrics=not args.skip_metrics,
+        n_sims=args.n_sims,
+        resume=not args.no_resume,
+        max_runtime_hours=args.max_hours,
+        checkpoint_interval_batches=args.checkpoint_interval_batches,
+    )

@@ -37,7 +37,7 @@ from pathlib import Path
 from models.qc_cnn_parallel  import QCCNNParallel
 from models.ablation_models   import ClassicalOnlyCNN, QuantumOnlyCNN, ClassicalExtendedCNN
 from datasets                  import get_dataloaders
-from training                  import train, set_seed
+from training                  import train, set_seed, TimeBudgetManager, TimeBudgetExceeded
 from utils                     import plot_training_curves
 
 
@@ -67,11 +67,20 @@ ABLATION_MODELS = {
 # Main experiment
 # ---------------------------------------------------------------------------
 def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist"),
-                    resume: bool = True):
+                    resume: bool = True,
+                    max_runtime_hours: float | None = None,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     """Run the full ablation study across all datasets and model variants."""
     set_seed(SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Device: {device}")
+
+    if time_budget_mgr is None:
+        time_budget_mgr = TimeBudgetManager(max_runtime_hours=max_runtime_hours)
+
+    if time_budget_mgr.max_runtime_hours:
+        print(f"  Walltime budget: {time_budget_mgr.max_runtime_hours:.2f} hours (Cluster queue safe)")
 
     # Resume: load partial results if available
     progress_path = RESULTS / "checkpoint_progress.json"
@@ -131,17 +140,19 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
                       f"Total: {counts['total']}")
 
             history, summary, trained_model = train(
-                model        = model,
-                train_loader = train_loader,
-                test_loader  = test_loader,
-                num_epochs   = EPOCHS,
-                lr           = LR,
-                seed         = SEED,
-                device       = device,
-                save_dir     = str(RESULTS),
-                model_name   = model_name,
-                dataset_name = ds_name,
-                resume       = resume,
+                model                       = model,
+                train_loader                = train_loader,
+                test_loader                 = test_loader,
+                num_epochs                  = EPOCHS,
+                lr                          = LR,
+                seed                        = SEED,
+                device                      = device,
+                save_dir                    = str(RESULTS),
+                model_name                  = model_name,
+                dataset_name                = ds_name,
+                resume                      = resume,
+                checkpoint_interval_batches = checkpoint_interval_batches,
+                time_budget_mgr             = time_budget_mgr,
             )
 
             # Add parameter efficiency metric
@@ -154,9 +165,11 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
             all_results[ds_name][model_name] = summary
             ds_histories[model_name] = history
 
-            # Save progress incrementally (checkpoint)
-            with open(progress_path, "w") as f:
+            # Save progress incrementally and atomically (checkpoint)
+            tmp_prog = progress_path.with_suffix(".json.tmp")
+            with open(tmp_prog, "w") as f:
                 json.dump(all_results, f, indent=2)
+            tmp_prog.replace(progress_path)
 
         # --- Plot comparison curves ---
         if ds_histories:
@@ -173,9 +186,12 @@ def run_experiment4(datasets_to_run=("mnist", "fashion_mnist", "overhead_mnist")
                 save_path = str(RESULTS / ds_name / "ablation_loss.png"),
             )
 
-    # Save all summaries
-    with open(RESULTS / "ablation_results.json", "w") as f:
+    # Save all summaries atomically
+    all_res_path = RESULTS / "ablation_results.json"
+    tmp_all = all_res_path.with_suffix(".json.tmp")
+    with open(tmp_all, "w") as f:
         json.dump(all_results, f, indent=2)
+    tmp_all.replace(all_res_path)
 
     # Clean up checkpoint — experiment completed
     if progress_path.exists():
@@ -230,5 +246,18 @@ if __name__ == "__main__":
         "--no-resume", action="store_true",
         help="Ignore checkpoints and start from scratch",
     )
+    parser.add_argument(
+        "--max-hours", type=float, default=None,
+        help="Maximum hours before pausing and saving checkpoint (for 48h queues)",
+    )
+    parser.add_argument(
+        "--checkpoint-interval-batches", type=int, default=25,
+        help="Frequency of intra-epoch batch checkpointing",
+    )
     args = parser.parse_args()
-    run_experiment4(datasets_to_run=args.dataset, resume=not args.no_resume)
+    run_experiment4(
+        datasets_to_run=args.dataset,
+        resume=not args.no_resume,
+        max_runtime_hours=args.max_hours,
+        checkpoint_interval_batches=args.checkpoint_interval_batches,
+    )

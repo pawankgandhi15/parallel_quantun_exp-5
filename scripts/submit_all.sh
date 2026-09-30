@@ -1,108 +1,114 @@
 #!/bin/bash
 #====================================================================
-# PBS Job Scripts — Submit individual experiments separately
+# submit_all.sh — Submit experiments as separate 48-Hour Batch Jobs
 #====================================================================
-# This script submits each experiment as a separate PBS job.
-# Jobs that depend on prior results (e.g., Exp 3 needs Exp 2 weights)
-# are submitted with dependencies using -W depend=afterok:<jobid>
+# Submits each experiment as an independent batch job configured for
+# a 48-hour cluster queue limit, with automatic re-submission and
+# checkpoint-based resume.
+#
+# Works with both PBS (qsub) and SLURM (sbatch).
 #
 # Usage:
-#   chmod +x submit_all.sh
-#   ./submit_all.sh              # Submit all experiments
-#   ./submit_all.sh 2            # Submit only experiment 2
-#   ./submit_all.sh 2 3          # Submit experiments 2 and 3
+#   chmod +x scripts/submit_all.sh scripts/run_single_exp.sh
+#   ./scripts/submit_all.sh              # Submit all 5 experiments
+#   ./scripts/submit_all.sh 2            # Submit only experiment 2
+#   ./scripts/submit_all.sh 2 3          # Submit experiments 2 and 3
 #====================================================================
 
 set -e
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
+PROJECT_ROOT="$(pwd)"
 mkdir -p logs
 
-# Parse which experiments to run (default: all)
 EXPERIMENTS="${@:-1 2 3 4 5}"
 
-echo "========================================"
-echo "  Submitting QC-CNN-Parallel Experiments"
-echo "  Experiments: $EXPERIMENTS"
-echo "========================================"
+echo "======================================================================"
+echo "  Submitting QC-CNN-Parallel Experiments to 48-Hour Cluster Queue"
+echo "  Root Directory: ${PROJECT_ROOT}"
+echo "  Experiments   : ${EXPERIMENTS}"
+echo "  Queue Limit   : 48:00:00 per job (auto-resubmits until finished)"
+echo "======================================================================"
+
+# Detect cluster scheduler
+USE_PBS=false
+USE_SLURM=false
+
+if command -v qsub >/dev/null 2>&1; then
+    USE_PBS=true
+    echo "  [SCHEDULER] Detected PBS (qsub)."
+elif command -v sbatch >/dev/null 2>&1; then
+    USE_SLURM=true
+    echo "  [SCHEDULER] Detected SLURM (sbatch)."
+else
+    echo "  [WARNING] Neither qsub nor sbatch found in PATH."
+    echo "  Defaulting to PBS job submission syntax."
+    USE_PBS=true
+fi
+
+JOB2=""
 
 for EXP in $EXPERIMENTS; do
-    case $EXP in
-        1)
-            echo ""
-            echo "  Submitting Experiment 1: Circuit Selection..."
-            JOB1=$(qsub -N qccnn_exp1 \
-                -l select=1:ncpus=4:ngpus=1:mem=16gb \
-                -l walltime=72:00:00 \
-                -q gpu \
-                -o logs/exp1_output.log \
-                -e logs/exp1_error.log \
-                -- bash -c "cd $PBS_O_WORKDIR && python run_all.py --exp 1")
-            echo "  → Job ID: $JOB1"
-            ;;
-        2)
-            echo ""
-            echo "  Submitting Experiment 2: Classification..."
-            JOB2=$(qsub -N qccnn_exp2 \
-                -l select=1:ncpus=4:ngpus=1:mem=16gb \
-                -l walltime=48:00:00 \
-                -q gpu \
-                -o logs/exp2_output.log \
-                -e logs/exp2_error.log \
-                -- bash -c "cd $PBS_O_WORKDIR && python run_all.py --exp 2")
-            echo "  → Job ID: $JOB2"
-            ;;
-        3)
-            echo ""
-            echo "  Submitting Experiment 3: Noise Robustness..."
-            # Exp 3 needs Exp 2's trained weights — add dependency if Exp 2 was submitted
-            DEPEND=""
-            if [ ! -z "$JOB2" ]; then
-                DEPEND="-W depend=afterok:$JOB2"
-                echo "  (depends on Exp 2: $JOB2)"
-            fi
-            JOB3=$(qsub -N qccnn_exp3 \
-                -l select=1:ncpus=4:ngpus=1:mem=16gb \
-                -l walltime=24:00:00 \
-                -q gpu \
-                $DEPEND \
-                -o logs/exp3_output.log \
-                -e logs/exp3_error.log \
-                -- bash -c "cd $PBS_O_WORKDIR && python run_all.py --exp 3")
-            echo "  → Job ID: $JOB3"
-            ;;
-        4)
-            echo ""
-            echo "  Submitting Experiment 4: Ablation Study..."
-            JOB4=$(qsub -N qccnn_exp4 \
-                -l select=1:ncpus=4:ngpus=1:mem=16gb \
-                -l walltime=72:00:00 \
-                -q gpu \
-                -o logs/exp4_output.log \
-                -e logs/exp4_error.log \
-                -- bash -c "cd $PBS_O_WORKDIR && python run_all.py --exp 4")
-            echo "  → Job ID: $JOB4"
-            ;;
-        5)
-            echo ""
-            echo "  Submitting Experiment 5: Scalability Study..."
-            JOB5=$(qsub -N qccnn_exp5 \
-                -l select=1:ncpus=4:ngpus=1:mem=16gb \
-                -l walltime=72:00:00 \
-                -q gpu \
-                -o logs/exp5_output.log \
-                -e logs/exp5_error.log \
-                -- bash -c "cd $PBS_O_WORKDIR && python run_all.py --exp 5")
-            echo "  → Job ID: $JOB5"
-            ;;
-        *)
-            echo "  ⚠ Unknown experiment: $EXP (valid: 1-5)"
-            ;;
-    esac
+    echo ""
+    echo "  --- Configuring Experiment ${EXP} ---"
+
+    if [ "$USE_PBS" = true ]; then
+        DEPEND=""
+        # Experiment 3 needs Experiment 2's trained weights
+        if [ "$EXP" -eq 3 ] && [ -n "$JOB2" ]; then
+            DEPEND="-W depend=afterok:$JOB2"
+            echo "  (depends on Exp 2: $JOB2)"
+        fi
+
+        JOB_ID=$(qsub -N "qccnn_exp${EXP}" \
+            -l select=1:ncpus=8:ngpus=1:mem=32gb \
+            -l walltime=48:00:00 \
+            -q gpu \
+            $DEPEND \
+            -o "logs/exp${EXP}_output.log" \
+            -e "logs/exp${EXP}_error.log" \
+            -- "${PROJECT_ROOT}/scripts/run_single_exp.sh" "${EXP}")
+
+        echo "  → PBS Job submitted: ${JOB_ID}"
+        if [ "$EXP" -eq 2 ]; then
+            JOB2="$JOB_ID"
+        fi
+
+    elif [ "$USE_SLURM" = true ]; then
+        DEPEND=""
+        if [ "$EXP" -eq 3 ] && [ -n "$JOB2" ]; then
+            DEPEND="--dependency=afterok:$JOB2"
+            echo "  (depends on Exp 2: $JOB2)"
+        fi
+
+        JOB_ID=$(sbatch --job-name="qccnn_exp${EXP}" \
+            --time=48:00:00 \
+            --nodes=1 \
+            --ntasks=1 \
+            --cpus-per-task=8 \
+            --gres=gpu:1 \
+            --mem=32G \
+            $DEPEND \
+            --output="logs/exp${EXP}_output.log" \
+            --error="logs/exp${EXP}_error.log" \
+            --parsable \
+            "${PROJECT_ROOT}/scripts/run_single_exp.sh" "${EXP}")
+
+        echo "  → SLURM Job submitted: ${JOB_ID}"
+        if [ "$EXP" -eq 2 ]; then
+            JOB2="$JOB_ID"
+        fi
+    fi
 done
 
 echo ""
-echo "========================================"
-echo "  All jobs submitted!"
-echo "  Check status:  qstat -u \$USER"
-echo "  View logs:     tail -f logs/exp*_output.log"
-echo "========================================"
+echo "======================================================================"
+echo "  All requested experiment batch jobs submitted!"
+if [ "$USE_PBS" = true ]; then
+    echo "  Check status:  qstat -u \$USER"
+    echo "  Cancel job:    qdel <JOB_ID>"
+elif [ "$USE_SLURM" = true ]; then
+    echo "  Check status:  squeue -u \$USER"
+    echo "  Cancel job:    scancel <JOB_ID>"
+fi
+echo "  View live log: tail -f logs/exp*_output.log"
+echo "======================================================================"

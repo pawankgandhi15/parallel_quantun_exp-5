@@ -41,7 +41,7 @@ from torch.utils.data import DataLoader
 
 from models.quantum_circuit  import make_noisy_circuit
 from models.qc_cnn_parallel  import QCCNNParallel, ClassicalCNN
-from training.trainer        import set_seed, _eval_epoch
+from training.trainer        import set_seed, _eval_epoch, TimeBudgetManager, TimeBudgetExceeded
 from utils.plotting          import plot_noise_results
 
 
@@ -143,9 +143,15 @@ def evaluate_quantum_noise(model_factory,
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def run_experiment3(max_test_samples: int = None, resume: bool = True):
+def run_experiment3(max_test_samples: int = None, resume: bool = True,
+                    max_runtime_hours: float | None = None,
+                    time_budget_mgr: TimeBudgetManager | None = None,
+                    checkpoint_interval_batches: int = 25):
     set_seed(SEED)
     device   = torch.device("cpu")   # default.mixed runs on CPU
+
+    if time_budget_mgr is None:
+        time_budget_mgr = TimeBudgetManager(max_runtime_hours=max_runtime_hours)
 
     # Resume: load partial results if available
     results_path = RESULTS_DIR / "noise_results.json"
@@ -168,12 +174,11 @@ def run_experiment3(max_test_samples: int = None, resume: bool = True):
     print("=" * 60)
     print("  Experiment 3: Noise Robustness (Tables 5-8)")
     print("  Note: Pre-train models first using experiment2_classification.py")
+    if time_budget_mgr.max_runtime_hours:
+        print(f"  Walltime budget: {time_budget_mgr.max_runtime_hours:.2f} hours (Cluster queue safe)")
     print("=" * 60)
 
     # --- Load clean models trained for Experiment 2 ---
-    # Noise robustness is meaningful only when every evaluated model uses its
-    # own trained clean checkpoint.  The old code evaluated a newly initialized
-    # CNN, making its noise comparison invalid.
     def load_or_train_weights(model_name, model_cls):
         model_path = Path("results/experiment2/mnist") / f"{model_name}_best.pt"
         if model_path.exists():
@@ -183,22 +188,24 @@ def run_experiment3(max_test_samples: int = None, resume: bool = True):
         print("  Training a clean model for noise evaluation (50 epochs)...")
         from datasets.dataloader import get_mnist
         from training.trainer import train as run_train
-        # Table 4: training uses batch_size=32
         train_loader, clean_test_loader = get_mnist(batch_size=32)
         _, _, trained = run_train(
             model_cls(num_classes=10), train_loader, clean_test_loader,
             num_epochs=EPOCHS, lr=LR, seed=SEED, device=device,
             save_dir="results/experiment2", model_name=model_name,
             dataset_name="mnist", resume=resume,
+            checkpoint_interval_batches=checkpoint_interval_batches,
+            time_budget_mgr=time_budget_mgr,
         )
         return {name: value.detach().cpu() for name, value in trained.state_dict().items()}
 
     proposed_weights = load_or_train_weights("qc_cnn_parallel", QCCNNParallel)
     cnn_weights = load_or_train_weights("classical_cnn", ClassicalCNN)
 
-    # Helper to save results incrementally
+    # Helper to save results incrementally and atomically
     def _save_results():
-        with open(results_path, "w") as f:
+        tmp_res = results_path.with_suffix(".json.tmp")
+        with open(tmp_res, "w") as f:
             json_results = {
                 ntype: {
                     model: {str(k): v for k, v in acc_dict.items()}
@@ -207,6 +214,7 @@ def run_experiment3(max_test_samples: int = None, resume: bool = True):
                 for ntype, model_dict in results.items()
             }
             json.dump(json_results, f, indent=2)
+        tmp_res.replace(results_path)
 
     # -----------------------------------------------------------------------
     # Table 5: Data noise
@@ -227,8 +235,12 @@ def run_experiment3(max_test_samples: int = None, resume: bool = True):
             print(f"    p={p:.1f}  Proposed={prop_acc:.4f}  CNN={cnn_acc:.4f}  "
                   f"(paper: Prop={PAPER_REFS['data_noise']['Proposed'].get(p,'?')},"
                   f" CNN={PAPER_REFS['data_noise']['CNN'].get(p,'?')})")
-        results["data_noise"] = data_noise_results
-        _save_results()
+
+            results["data_noise"] = data_noise_results
+            _save_results()
+
+            if time_budget_mgr.should_stop():
+                raise TimeBudgetExceeded("Time budget reached during data noise evaluation.")
     else:
         print("\n  Table 5: Data noise — ✓ already completed, skipping.")
 
@@ -266,6 +278,12 @@ def run_experiment3(max_test_samples: int = None, resume: bool = True):
             paper_val = PAPER_REFS[noise_type]["Proposed"].get(p, "?")
             print(f"    p={p:.1f}  Proposed={noisy_acc:.4f}  "
                   f"(paper: {paper_val})")
+
+            results[noise_type] = noise_results
+            _save_results()
+
+            if time_budget_mgr.should_stop():
+                raise TimeBudgetExceeded(f"Time budget reached during {tname} noise evaluation at p={p}.")
 
         results[noise_type] = noise_results
         _save_results()
@@ -305,6 +323,18 @@ if __name__ == "__main__":
         "--no-resume", action="store_true",
         help="Ignore checkpoints and start from scratch",
     )
+    parser.add_argument(
+        "--max-hours", type=float, default=None,
+        help="Maximum hours before pausing and saving checkpoint (for 48h queues)",
+    )
+    parser.add_argument(
+        "--checkpoint-interval-batches", type=int, default=25,
+        help="Frequency of intra-epoch batch checkpointing",
+    )
     args = parser.parse_args()
-    run_experiment3(max_test_samples=args.max_test_samples,
-                    resume=not args.no_resume)
+    run_experiment3(
+        max_test_samples=args.max_test_samples,
+        resume=not args.no_resume,
+        max_runtime_hours=args.max_hours,
+        checkpoint_interval_batches=args.checkpoint_interval_batches,
+    )

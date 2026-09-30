@@ -1,42 +1,30 @@
 #!/bin/bash
 #====================================================================
-# PBS Job Script — QC-CNN-Parallel Automated 48-Hour Batch Runner
+# SLURM Job Script — QC-CNN-Parallel Automated 48-Hour Batch Runner
 #====================================================================
-# Designed for H100 GPU servers / clusters with a strict 48-hour queue limit.
+# Designed for H100 GPU clusters running SLURM with a 48-hour queue limit.
 #
-# How it solves the 48-hour walltime limit:
-#   1. Sets #PBS -l walltime=48:00:00 (matching cluster queue limit).
-#   2. Runs with Python time budget of 47.0 hours, giving a safe 1-hour
-#      buffer before scheduler cutoff.
-#   3. Training uses intra-epoch batch checkpointing and atomic writes.
-#   4. At 47.0 hours (or upon SIGTERM), training cleanly pauses at the
-#      current batch, writes checkpoints to disk, and exits with code 42.
-#   5. This script catches code 42 and AUTOMATICALLY re-submits itself
-#      to the PBS queue (qsub run_experiment.pbs).
-#   6. When the new job starts on an H100 node, it resumes execution
-#      from the EXACT epoch and batch where it paused!
-#   7. When all experiments finish, it stops and reports success.
-#
-# Submit with:   qsub scripts/run_experiment.pbs
-# Check status:  qstat -u $USER
-# Cancel job:    qdel <JOB_ID>
+# Submit with:   sbatch scripts/run_experiment.slurm
+# Check status:  squeue -u $USER
+# Cancel job:    scancel <JOB_ID>
 #====================================================================
 
-#--- PBS Directives ---------------------------------------------------
-#PBS -N qccnn_h100                          # Job name
-#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb   # 1 node, 8 CPUs, 1 H100 GPU, 32GB RAM
-#PBS -l walltime=48:00:00                    # Strict 48-hour queue walltime
-#PBS -q gpu                                  # GPU queue name (adjust to your cluster)
-#PBS -o logs/pbs_output.log                  # Combined stdout log
-#PBS -e logs/pbs_error.log                   # Combined stderr log
-#PBS -m abe                                  # Email notification on abort/begin/end
+#--- SLURM Directives -------------------------------------------------
+#SBATCH --job-name=qccnn_h100
+#SBATCH --time=48:00:00                    # Strict 48-hour walltime limit
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --gres=gpu:1                       # Request 1 H100 GPU
+#SBATCH --mem=32G
+#SBATCH --output=logs/slurm_%j_out.log
+#SBATCH --error=logs/slurm_%j_err.log
 
 #--- Environment & Working Directory ----------------------------------
-if [ -n "$PBS_O_WORKDIR" ]; then
-    cd "$PBS_O_WORKDIR"
+if [ -n "$SLURM_SUBMIT_DIR" ]; then
+    cd "$SLURM_SUBMIT_DIR"
 fi
 
-# Locate repository root and implementation directory
 if [ -d "implementation" ]; then
     PROJECT_ROOT="$(pwd)"
 elif [ -f "run_all.py" ]; then
@@ -52,16 +40,14 @@ fi
 mkdir -p logs
 mkdir -p implementation/results
 
-# Locate the submission script path for automatic re-submission
-SCRIPT_PATH="${PROJECT_ROOT}/scripts/run_experiment.pbs"
+SCRIPT_PATH="${PROJECT_ROOT}/scripts/run_experiment.slurm"
 if [ ! -f "$SCRIPT_PATH" ]; then
-    SCRIPT_PATH="$(pwd)/run_experiment.pbs"
+    SCRIPT_PATH="$(pwd)/run_experiment.slurm"
 fi
 
 # Load cluster modules (uncomment/adjust for your cluster)
 # module load python/3.10
 # module load cuda/12.2
-# module load anaconda3
 
 # Activate virtual environment or conda environment (uncomment/adjust)
 # source activate quantum_env
@@ -69,7 +55,7 @@ fi
 # source ~/venvs/quantum/bin/activate
 
 echo "======================================================================"
-echo "  PBS Job ID      : ${PBS_JOBID:-Local/Interactive}"
+echo "  SLURM Job ID    : ${SLURM_JOB_ID:-Local/Interactive}"
 echo "  Running Node    : $(hostname)"
 echo "  Started at      : $(date)"
 echo "  Project Root    : ${PROJECT_ROOT}"
@@ -80,7 +66,7 @@ echo "======================================================================"
 
 #--- Completion & Cycle Safety Checks ---------------------------------
 SENTINEL="${PROJECT_ROOT}/implementation/results/ALL_COMPLETED"
-COUNTER_FILE="${PROJECT_ROOT}/logs/pbs_resubmit_count.txt"
+COUNTER_FILE="${PROJECT_ROOT}/logs/slurm_resubmit_count.txt"
 MAX_CYCLES=20  # Safety cap: up to 20 cycles * 48h = 960 hours of compute
 
 if [ -f "$SENTINEL" ]; then
@@ -93,7 +79,6 @@ if [ -f "$SENTINEL" ]; then
     exit 0
 fi
 
-# Increment cycle counter
 CYCLE_COUNT=0
 if [ -f "$COUNTER_FILE" ]; then
     CYCLE_COUNT=$(cat "$COUNTER_FILE")
@@ -108,21 +93,19 @@ if [ "$CYCLE_COUNT" -gt "$MAX_CYCLES" ]; then
     exit 1
 fi
 
-#--- Signal Handler for Unexpected Early Termination -------------------
-on_cluster_signal() {
+#--- Signal Handler for Early SLURM Preemption / Walltime Warning ------
+on_slurm_signal() {
     echo ""
-    echo "  [ALERT] Received termination signal from PBS scheduler!"
+    echo "  [ALERT] Received termination signal from SLURM scheduler!"
     if [ ! -f "$SENTINEL" ] && [ "$CYCLE_COUNT" -le "$MAX_CYCLES" ]; then
         echo "  Automatically submitting continuation job before exit..."
-        qsub "$SCRIPT_PATH"
+        sbatch "$SCRIPT_PATH"
     fi
     exit 143
 }
-trap 'on_cluster_signal' SIGTERM SIGUSR1 SIGUSR2
+trap 'on_slurm_signal' SIGTERM SIGUSR1 SIGUSR2
 
 #--- Run Experiments with 47.0-Hour Time Budget -----------------------
-# Running with 47.0h max budget leaves a 1.0h safe margin before the
-# 48-hour queue walltime forcibly kills the job.
 cd "${PROJECT_ROOT}/implementation"
 
 echo ""
@@ -130,7 +113,6 @@ echo "  Starting experiment execution..."
 echo "  Walltime budget: 47.0 hours (Safe cutoff before 48:00:00 queue limit)"
 echo ""
 
-# Choose which experiments to run (default: 1 2 3 4 5)
 python run_all.py \
     --exp 1 2 3 4 5 \
     --max_hours 47.0 \
@@ -146,7 +128,6 @@ echo "  Exit code: ${EXIT_CODE}"
 echo "======================================================================"
 
 #--- Handle Continuation / Auto-Resubmission --------------------------
-# Check if all experiments completed
 if [ -f "$SENTINEL" ]; then
     echo ""
     echo "======================================================================"
@@ -157,17 +138,15 @@ if [ -f "$SENTINEL" ]; then
     exit 0
 fi
 
-# Exit code 42 = Graceful pause due to 47h walltime budget limit
-# Exit code 0  = Single experiment finished, but other experiments remain
 if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
     echo ""
     echo "======================================================================"
     echo "  ⏳ 48-HOUR QUEUE CYCLE COMPLETE (or walltime budget reached)."
     echo "  All weights, optimizer states, batches, and metrics safely saved."
-    echo "  Automatically re-submitting continuation job to PBS queue..."
+    echo "  Automatically re-submitting continuation job to SLURM queue..."
     echo "======================================================================"
 
-    NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
+    NEXT_JOB_ID=$(sbatch "$SCRIPT_PATH")
     echo "  → Successfully submitted next batch job: ${NEXT_JOB_ID}"
     echo "  → The new job will automatically resume from the exact checkpoint."
     echo "======================================================================"
@@ -175,6 +154,6 @@ if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
 else
     echo ""
     echo "  [ERROR] Python process exited with unexpected code: ${EXIT_CODE}."
-    echo "  Auto-resubmission paused. Please review logs/pbs_error.log."
+    echo "  Auto-resubmission paused. Please review logs/slurm_*_err.log."
     exit ${EXIT_CODE}
 fi
