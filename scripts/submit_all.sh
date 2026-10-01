@@ -62,7 +62,8 @@ for EXP in $EXPERIMENTS; do
         JOB_ID=$(qsub -N "qccnn_exp${EXP}" \
             -l select=1:ncpus=8:ngpus=1:mem=32gb \
             -l walltime=48:00:00 \
-            -q gpu \
+            -q workq \
+            -V \
             $DEPEND \
             -o "logs/exp${EXP}_output.log" \
             -e "logs/exp${EXP}_error.log" \

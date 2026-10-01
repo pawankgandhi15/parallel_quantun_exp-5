@@ -1,42 +1,25 @@
 #!/bin/bash
 #====================================================================
-# PBS Job Script — QC-CNN-Parallel Automated 48-Hour Batch Runner
-#====================================================================
-# Designed for H100 GPU servers / clusters with a strict 48-hour queue limit.
-#
-# How it solves the 48-hour walltime limit:
-#   1. Sets #PBS -l walltime=48:00:00 (matching cluster queue limit).
-#   2. Runs with Python time budget of 47.0 hours, giving a safe 1-hour
-#      buffer before scheduler cutoff.
-#   3. Training uses intra-epoch batch checkpointing and atomic writes.
-#   4. At 47.0 hours (or upon SIGTERM), training cleanly pauses at the
-#      current batch, writes checkpoints to disk, and exits with code 42.
-#   5. This script catches code 42 and AUTOMATICALLY re-submits itself
-#      to the PBS queue (qsub run_experiment.pbs).
-#   6. When the new job starts on an H100 node, it resumes execution
-#      from the EXACT epoch and batch where it paused!
-#   7. When all experiments finish, it stops and reports success.
-#
-# Submit with:   qsub scripts/run_experiment.pbs
-# Check status:  qstat -u $USER
-# Cancel job:    qdel <JOB_ID>
+# PBS Job Script - QC-CNN-Parallel Automated 48-Hour Batch Runner
 #====================================================================
 
-#--- PBS Directives ---------------------------------------------------
-#PBS -N qccnn_h100                          # Job name
-#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb   # 1 node, 8 CPUs, 1 H100 GPU, 32GB RAM
-#PBS -l walltime=48:00:00                    # Strict 48-hour queue walltime
-#PBS -q gpu                                  # GPU queue name (adjust to your cluster)
-#PBS -o logs/pbs_output.log                  # Combined stdout log
-#PBS -e logs/pbs_error.log                   # Combined stderr log
-#PBS -m abe                                  # Email notification on abort/begin/end
+#--- PBS Directives --------------------------------------------------
+#PBS -N qccnn_h100
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l walltime=48:00:00
+#PBS -q workq
+#PBS -V
+#PBS -o logs/pbs_output.log
+#PBS -e logs/pbs_error.log
+#PBS -m abe
 
-#--- Environment & Working Directory ----------------------------------
+#--- Environment & Working Directory -------------------------------
+
 if [ -n "$PBS_O_WORKDIR" ]; then
     cd "$PBS_O_WORKDIR"
 fi
 
-# Locate repository root and implementation directory
+# Locate repository root
 if [ -d "implementation" ]; then
     PROJECT_ROOT="$(pwd)"
 elif [ -f "run_all.py" ]; then
@@ -49,45 +32,70 @@ else
     PROJECT_ROOT="$(pwd)"
 fi
 
-mkdir -p logs
-mkdir -p implementation/results
+mkdir -p "${PROJECT_ROOT}/logs"
+mkdir -p "${PROJECT_ROOT}/implementation/results"
 
-# Locate the submission script path for automatic re-submission
+# Path to this PBS script
 SCRIPT_PATH="${PROJECT_ROOT}/scripts/run_experiment.pbs"
-if [ ! -f "$SCRIPT_PATH" ]; then
-    SCRIPT_PATH="$(pwd)/run_experiment.pbs"
+
+#--- Python Environment ---------------------------------------------
+
+# Activate conda environment so python, dependencies, and CUDA paths are in PATH
+if [ -f "/apps/compilers/anaconda3/bin/activate" ]; then
+    source "/apps/compilers/anaconda3/bin/activate" qcm
 fi
 
-# Load cluster modules (uncomment/adjust for your cluster)
-# module load python/3.10
-# module load cuda/12.2
-# module load anaconda3
+# Use the exact Python executable from the qcm environment.
+PYTHON="/Data4/it_25201815/.conda/envs/qcm/bin/python"
 
-# Activate virtual environment or conda environment (uncomment/adjust)
-# source activate quantum_env
-# conda activate quantum_env
-# source ~/venvs/quantum/bin/activate
+if [ ! -x "$PYTHON" ]; then
+    PYTHON="$(command -v python3 || command -v python)"
+fi
 
 echo "======================================================================"
-echo "  PBS Job ID      : ${PBS_JOBID:-Local/Interactive}"
-echo "  Running Node    : $(hostname)"
-echo "  Started at      : $(date)"
-echo "  Project Root    : ${PROJECT_ROOT}"
+echo "  PBS Job ID       : ${PBS_JOBID:-Local/Interactive}"
+echo "  Running Node     : $(hostname)"
+echo "  Started at       : $(date)"
+echo "  Project Root     : ${PROJECT_ROOT}"
 echo "  Submission Script: ${SCRIPT_PATH}"
-echo "  GPU Information :"
-nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>/dev/null || echo "  (nvidia-smi not available)"
+echo "  Python           : ${PYTHON}"
 echo "======================================================================"
 
-#--- Completion & Cycle Safety Checks ---------------------------------
+# Verify Python exists
+if [ ! -x "$PYTHON" ]; then
+    echo "[ERROR] Python executable not found:"
+    echo "        $PYTHON"
+    exit 1
+fi
+
+echo "Python version:"
+"$PYTHON" --version
+
+echo ""
+echo "Python location:"
+"$PYTHON" -c "import sys; print(sys.executable)"
+
+#--- GPU Information ------------------------------------------------
+
+echo ""
+echo "GPU Information:"
+nvidia-smi --query-gpu=index,name,memory.total,driver_version \
+    --format=csv,noheader 2>/dev/null || \
+    echo "(nvidia-smi not available)"
+
+echo "======================================================================"
+
+#--- Completion & Cycle Safety Checks -------------------------------
+
 SENTINEL="${PROJECT_ROOT}/implementation/results/ALL_COMPLETED"
 COUNTER_FILE="${PROJECT_ROOT}/logs/pbs_resubmit_count.txt"
-MAX_CYCLES=20  # Safety cap: up to 20 cycles * 48h = 960 hours of compute
+MAX_CYCLES=20
 
 if [ -f "$SENTINEL" ]; then
     echo ""
     echo "======================================================================"
-    echo "  🎉 All experiments are ALREADY COMPLETED! Nothing left to run."
-    echo "  Found completion marker: ${SENTINEL}"
+    echo "  All experiments are already completed."
+    echo "  Completion marker: ${SENTINEL}"
     echo "  Finished at: $(date)"
     echo "======================================================================"
     exit 0
@@ -95,86 +103,109 @@ fi
 
 # Increment cycle counter
 CYCLE_COUNT=0
+
 if [ -f "$COUNTER_FILE" ]; then
     CYCLE_COUNT=$(cat "$COUNTER_FILE")
 fi
+
 CYCLE_COUNT=$((CYCLE_COUNT + 1))
+
 echo "$CYCLE_COUNT" > "$COUNTER_FILE"
-echo "  Current 48-Hour Batch Cycle: ${CYCLE_COUNT} of ${MAX_CYCLES} allowed"
+
+echo ""
+echo "Current 48-Hour Batch Cycle: ${CYCLE_COUNT} of ${MAX_CYCLES}"
 
 if [ "$CYCLE_COUNT" -gt "$MAX_CYCLES" ]; then
-    echo "  [ERROR] Maximum allowed auto-resubmission cycles (${MAX_CYCLES}) reached."
-    echo "  Halting auto-resubmit to prevent runaway jobs. Inspect logs/ for details."
+    echo "[ERROR] Maximum allowed auto-resubmission cycles reached."
     exit 1
 fi
 
-#--- Signal Handler for Unexpected Early Termination -------------------
+#--- Signal Handler -------------------------------------------------
+
 on_cluster_signal() {
     echo ""
-    echo "  [ALERT] Received termination signal from PBS scheduler!"
+    echo "======================================================================"
+    echo "  [ALERT] Received termination signal from PBS scheduler."
+    echo "======================================================================"
+
     if [ ! -f "$SENTINEL" ] && [ "$CYCLE_COUNT" -le "$MAX_CYCLES" ]; then
-        echo "  Automatically submitting continuation job before exit..."
-        qsub "$SCRIPT_PATH"
+        echo "Automatically submitting continuation job..."
+        NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
+        echo "Continuation job: ${NEXT_JOB_ID}"
     fi
+
     exit 143
 }
+
 trap 'on_cluster_signal' SIGTERM SIGUSR1 SIGUSR2
 
-#--- Run Experiments with 47.0-Hour Time Budget -----------------------
-# Running with 47.0h max budget leaves a 1.0h safe margin before the
-# 48-hour queue walltime forcibly kills the job.
+#--- Run Experiments -----------------------------------------------
+
 cd "${PROJECT_ROOT}/implementation"
 
 echo ""
+echo "======================================================================"
 echo "  Starting experiment execution..."
-echo "  Walltime budget: 47.0 hours (Safe cutoff before 48:00:00 queue limit)"
+echo "  Walltime budget: 47.0 hours"
+echo "  Started at: $(date)"
+echo "======================================================================"
 echo ""
 
-# Choose which experiments to run (default: 1 2 3 4 5)
-python run_all.py \
+"$PYTHON" run_all.py \
     --exp 1 2 3 4 5 \
     --max_hours 47.0 \
     --checkpoint_interval_batches 25
 
 EXIT_CODE=$?
+
 cd "${PROJECT_ROOT}"
 
 echo ""
 echo "======================================================================"
-echo "  Python process finished at: $(date)"
+echo "  Python process finished"
+echo "  Finished at: $(date)"
 echo "  Exit code: ${EXIT_CODE}"
 echo "======================================================================"
 
-#--- Handle Continuation / Auto-Resubmission --------------------------
-# Check if all experiments completed
+#--- Handle Continuation -------------------------------------------
+
 if [ -f "$SENTINEL" ]; then
     echo ""
     echo "======================================================================"
-    echo "  🎉 SUCCESS: All experiments in the suite completed!"
-    echo "  No further job submissions needed."
+    echo "  SUCCESS: All experiments completed."
+    echo "  No further job submission required."
     echo "======================================================================"
+
     rm -f "$COUNTER_FILE"
+
     exit 0
 fi
 
-# Exit code 42 = Graceful pause due to 47h walltime budget limit
-# Exit code 0  = Single experiment finished, but other experiments remain
+# Exit code 42 = graceful pause
+# Exit code 0  = current batch completed, more work remains
+
 if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
+
     echo ""
     echo "======================================================================"
-    echo "  ⏳ 48-HOUR QUEUE CYCLE COMPLETE (or walltime budget reached)."
-    echo "  All weights, optimizer states, batches, and metrics safely saved."
-    echo "  Automatically re-submitting continuation job to PBS queue..."
+    echo "  Batch cycle complete."
+    echo "  Checkpoints should have been saved."
+    echo "  Submitting continuation job..."
     echo "======================================================================"
 
     NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
-    echo "  → Successfully submitted next batch job: ${NEXT_JOB_ID}"
-    echo "  → The new job will automatically resume from the exact checkpoint."
-    echo "======================================================================"
+
+    echo "Continuation job submitted: ${NEXT_JOB_ID}"
+
     exit 0
+
 else
+
     echo ""
-    echo "  [ERROR] Python process exited with unexpected code: ${EXIT_CODE}."
-    echo "  Auto-resubmission paused. Please review logs/pbs_error.log."
-    exit ${EXIT_CODE}
+    echo "======================================================================"
+    echo "  ERROR: Python exited with code ${EXIT_CODE}"
+    echo "  Auto-resubmission stopped."
+    echo "======================================================================"
+
+    exit "$EXIT_CODE"
 fi
