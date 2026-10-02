@@ -207,19 +207,148 @@ All experiments are modular, reproducible, and orchestrated via [`implementation
 
 ---
 
-## 📊 Empirical Results Status
+## 📊 Empirical Results — All Pending
 
-> [!IMPORTANT]
-> All empirical accuracy numbers from Experiments 1–5 are currently **pending HPC cluster execution** via [`scripts/run_experiment.pbs`](scripts/run_experiment.pbs).  
-> No accuracy values have been invented or hallucinated. Only the base paper's published reference value ($0.9005$ MNIST) is shown below as a reproduction target.
+> [!CAUTION]
+> **ALL empirical results across Experiments 1–5 are PENDING.**  
+> Cluster jobs are currently queued/running via [`scripts/run_experiment.pbs`](scripts/run_experiment.pbs).  
+> **Zero accuracy values have been invented, hallucinated, or filled in prematurely.**  
+> All tables below show the full expected result structure. Every empirical cell is marked **`[Pending]`** and will be filled only when cluster output logs are verified.
 
-| Dataset | Model | Base Paper Accuracy | Our Reproduction | Status |
-| :--- | :--- | :---: | :---: | :---: |
-| MNIST | QC-CNN-Parallel (Proposed) | 0.9005 | *[Pending]* | 🟠 Cluster Running |
-| MNIST | Classical CNN (LeNet-5) | 0.8935 | *[Pending]* | 🟠 Cluster Running |
-| MNIST | HQNN-Quanv | 0.8320 | *[Pending]* | 🟠 Cluster Running |
-| Fashion-MNIST | QC-CNN-Parallel (Proposed) | — | *[Pending]* | 🟠 Cluster Running |
-| Overhead-MNIST | QC-CNN-Parallel (Proposed) | — | *[Pending]* | 🟠 Cluster Running |
+---
+
+### Exp 1 — PQC Metric Evaluation (11 Circuits, 5,000 Haar Samples)
+*Script: [`experiment1_circuit_selection.py`](implementation/experiments/experiment1_circuit_selection.py)*
+
+| Circuit | Params | Expressibility ↓ | Entanglement ↑ | Discreteness ↑ | MNIST Acc | Fashion Acc |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| RX-Linear | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RX-Circle | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RX-All-to-All | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RY-Linear | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RY-Circle | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RY-All-to-All | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RZ-Linear | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RZ-Circle | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| RZ-All-to-All | 4 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| Circuit 10 | 28 | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| **Circuit 11 (Proposed)** | **16** | **[Pending]** | **[Pending]** | **[Pending]** | **[Pending]** | **[Pending]** |
+
+---
+
+### Exp 2 — Multi-Dataset Classification Benchmark (7 Models × 3 Datasets, 70 Epochs)
+*Script: [`experiment2_classification.py`](implementation/experiments/experiment2_classification.py)*
+
+#### Top-1 Accuracy
+
+| Model | Conv. Params | MNIST | Fashion-MNIST | Overhead-MNIST |
+| :--- | ---: | :---: | :---: | :---: |
+| Classical CNN (LeNet-5) | 464 | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv (Senokosov 2024) | 448 | [Pending] | [Pending] | [Pending] |
+| QC-CNN (Henderson 2020) | 448 | [Pending] | [Pending] | [Pending] |
+| VCNN (Huang 2021) | 456 | [Pending] | [Pending] | [Pending] |
+| QC-ResNet (Shi 2022) | 512 | [Pending] | [Pending] | [Pending] |
+| QC-Inception (Wang 2022) | 304 | [Pending] | [Pending] | [Pending] |
+| **QC-CNN-Parallel (Proposed)** | **152** | **[Pending]** | **[Pending]** | **[Pending]** |
+
+#### Macro-F1 Score
+
+| Model | MNIST | Fashion-MNIST | Overhead-MNIST |
+| :--- | :---: | :---: | :---: |
+| Classical CNN (LeNet-5) | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv | [Pending] | [Pending] | [Pending] |
+| QC-CNN | [Pending] | [Pending] | [Pending] |
+| VCNN | [Pending] | [Pending] | [Pending] |
+| QC-ResNet | [Pending] | [Pending] | [Pending] |
+| QC-Inception | [Pending] | [Pending] | [Pending] |
+| **QC-CNN-Parallel (Proposed)** | **[Pending]** | **[Pending]** | **[Pending]** |
+
+#### Accuracy-per-Parameter (APP = Accuracy / Conv. Params × 1000)
+
+| Model | Conv. Params | MNIST APP | Fashion APP | Overhead APP |
+| :--- | ---: | :---: | :---: | :---: |
+| Classical CNN (LeNet-5) | 464 | [Pending] | [Pending] | [Pending] |
+| QC-Inception (Wang 2022) | 304 | [Pending] | [Pending] | [Pending] |
+| **QC-CNN-Parallel (Proposed)** | **152** | **[Pending]** | **[Pending]** | **[Pending]** |
+
+---
+
+### Exp 3 — Physical Noise Stress-Testing (4 Channels × 4 Noise Levels, MNIST)
+*Script: [`experiment3_noise_robustness.py`](implementation/experiments/experiment3_noise_robustness.py)*
+
+#### Data Noise Channel
+
+| Model | $p=0.0$ | $p=0.1$ | $p=0.2$ | $p=0.3$ |
+| :--- | :---: | :---: | :---: | :---: |
+| **QC-CNN-Parallel (Proposed)** | [Pending] | [Pending] | [Pending] | [Pending] |
+| Classical CNN (LeNet-5) | [Pending] | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv | [Pending] | [Pending] | [Pending] | [Pending] |
+
+#### Bit-Flip Channel ($\mathcal{E}_{BF}$)
+
+| Model | $p=0.0$ | $p=0.1$ | $p=0.2$ | $p=0.3$ |
+| :--- | :---: | :---: | :---: | :---: |
+| **QC-CNN-Parallel (Proposed)** | [Pending] | [Pending] | [Pending] | [Pending] |
+| Classical CNN (LeNet-5) | [Pending] | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv | [Pending] | [Pending] | [Pending] | [Pending] |
+
+#### Phase-Flip Channel ($\mathcal{E}_{PF}$)
+
+| Model | $p=0.0$ | $p=0.1$ | $p=0.2$ | $p=0.3$ |
+| :--- | :---: | :---: | :---: | :---: |
+| **QC-CNN-Parallel (Proposed)** | [Pending] | [Pending] | [Pending] | [Pending] |
+| Classical CNN (LeNet-5) | [Pending] | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv | [Pending] | [Pending] | [Pending] | [Pending] |
+
+#### Depolarizing Channel ($\mathcal{E}_{dep}$)
+
+| Model | $p=0.0$ | $p=0.1$ | $p=0.2$ | $p=0.3$ |
+| :--- | :---: | :---: | :---: | :---: |
+| **QC-CNN-Parallel (Proposed)** | [Pending] | [Pending] | [Pending] | [Pending] |
+| Classical CNN (LeNet-5) | [Pending] | [Pending] | [Pending] | [Pending] |
+| HQNN-Quanv | [Pending] | [Pending] | [Pending] | [Pending] |
+
+> **Theorem 3 Verification Target:** As $p \to 1$, QC-CNN-Parallel accuracy must remain $\ge$ Classical-Only accuracy ($\ge 86.20\%$). This will be verified once cluster results are available.
+
+---
+
+### Exp 4 — Multi-Branch Ablation (MNIST & Fashion-MNIST)
+*Script: [`experiment4_ablation_study.py`](implementation/experiments/experiment4_ablation_study.py)*
+
+| Model | Conv. Params | Total Params | MNIST Acc | Fashion Acc |
+| :--- | ---: | ---: | :---: | :---: |
+| QC-CNN-Parallel *(Proposed)* | 152 | 310,242 | [Pending] | [Pending] |
+| Classical-Only *(Ablation 1)* | 136 | 209,874 | [Pending] | [Pending] |
+| Quantum-Only *(Ablation 2)* | 16 | 109,402 | [Pending] | [Pending] |
+| **Classical-Extended** *(Ablation 3)* | **120** | **310,210** | **[Pending]** | **[Pending]** |
+
+> **Proposition 1 Verification Target:** QC-CNN-Parallel must outperform Classical-Extended despite both having ~310k total parameters ($\Delta = 32$ params, $0.01\%$). This will confirm quantum trigonometric feature diversity provides non-replaceable representational capacity.
+
+---
+
+### Exp 5 — Scalability & Barren Plateau Sweeps
+*Script: [`experiment5_scalability_study.py`](implementation/experiments/experiment5_scalability_study.py)*
+
+#### Part A — Qubit Register Scaling ($N \in \{2, 4, 6, 8\}$, Fixed $L=2$)
+
+| Qubits $N$ | Patch | Hilbert $2^N$ | PQC Params | Top-1 Acc (MNIST) | Simulation Speed |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 2 | $1\times2$ | 4 | 8 | [Pending] | [Pending] |
+| **4** | $2\times2$ | 16 | **16** | **[Pending]** | **[Pending]** |
+| 6 | $2\times3$ | 64 | 24 | [Pending] | [Pending] |
+| 8 | $2\times4$ | 256 | 32 | [Pending] | [Pending] |
+
+#### Part B — Variational Depth Scaling ($L \in \{1..5\}$, Fixed $N=4$)
+
+| Depth $L$ | PQC Params | Gradient Variance $\overline{\mathrm{Var}}[\nabla\mathcal{L}]$ | Trainable? |
+| :---: | :---: | :---: | :---: |
+| 1 | 8 | [Pending] | [Pending] |
+| **2** | **16** | **[Pending]** | **[Pending]** |
+| 3 | 24 | [Pending] | [Pending] |
+| 4 | 32 | [Pending] | [Pending] |
+| 5 | 40 | [Pending] | [Pending] |
+
+> **Theorem 2 Verification Target:** Gradient variance must collapse to $\le 10^{-5}$ at $L \ge 4$, confirming the barren plateau phase transition predicted by the Weingarten integration bound.
 
 ---
 
