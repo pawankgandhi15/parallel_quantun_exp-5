@@ -2,16 +2,22 @@
 #====================================================================
 # PBS Job Script - QC-CNN-Parallel Automated 48-Hour Batch Runner
 #====================================================================
+# BEFORE FIRST SUBMIT (once, from the project root):
+#   mkdir -p logs
+# PBS opens the -o/-e files before this script runs, so logs/ must exist.
+#====================================================================
 
 #--- PBS Directives --------------------------------------------------
 #PBS -N qccnn_h100
 #PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+# To force an H100, add the cluster-specific GPU model request to the
+# select line above (check `pbsnodes -a` or ask your admin for the syntax).
 #PBS -l walltime=48:00:00
 #PBS -q workq
 #PBS -V
 #PBS -o logs/pbs_output.log
 #PBS -e logs/pbs_error.log
-#PBS -m abe
+#PBS -m a
 
 #--- Environment & Working Directory -------------------------------
 
@@ -35,8 +41,18 @@ fi
 mkdir -p "${PROJECT_ROOT}/logs"
 mkdir -p "${PROJECT_ROOT}/implementation/results"
 
-# Path to this PBS script
+# Path to this PBS script (must exist at this location for resubmission)
 SCRIPT_PATH="${PROJECT_ROOT}/scripts/run_experiment.pbs"
+
+if [ ! -f "$SCRIPT_PATH" ]; then
+    echo "[ERROR] Script not found at ${SCRIPT_PATH}; auto-resubmission would fail."
+    exit 1
+fi
+
+# Always submit from the project root so relative log paths resolve correctly
+resubmit() {
+    ( cd "$PROJECT_ROOT" && qsub "$SCRIPT_PATH" )
+}
 
 #--- Python Environment ---------------------------------------------
 
@@ -122,15 +138,23 @@ fi
 
 #--- Signal Handler -------------------------------------------------
 
+PY_PID=""
+
 on_cluster_signal() {
     echo ""
     echo "======================================================================"
     echo "  [ALERT] Received termination signal from PBS scheduler."
     echo "======================================================================"
 
+    # Forward the signal to Python so it can save a checkpoint
+    if [ -n "$PY_PID" ] && kill -0 "$PY_PID" 2>/dev/null; then
+        kill -TERM "$PY_PID" 2>/dev/null
+        wait "$PY_PID" 2>/dev/null
+    fi
+
     if [ ! -f "$SENTINEL" ] && [ "$CYCLE_COUNT" -le "$MAX_CYCLES" ]; then
         echo "Automatically submitting continuation job..."
-        NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
+        NEXT_JOB_ID=$(resubmit)
         echo "Continuation job: ${NEXT_JOB_ID}"
     fi
 
@@ -151,11 +175,13 @@ echo "  Started at: $(date)"
 echo "======================================================================"
 echo ""
 
+# Run in background + wait so the trap fires immediately on a signal
 "$PYTHON" run_all.py \
     --exp 1 2 3 4 5 \
     --max_hours 47.0 \
-    --checkpoint_interval_batches 25
-
+    --checkpoint_interval_batches 25 &
+PY_PID=$!
+wait "$PY_PID"
 EXIT_CODE=$?
 
 cd "${PROJECT_ROOT}"
@@ -181,10 +207,8 @@ if [ -f "$SENTINEL" ]; then
     exit 0
 fi
 
-# Exit code 42 = graceful pause
-# Exit code 0  = current batch completed, more work remains
-
-if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
+# Exit code 42 = graceful pause (checkpoint saved, more work remains)
+if [ "$EXIT_CODE" -eq 42 ]; then
 
     echo ""
     echo "======================================================================"
@@ -193,11 +217,21 @@ if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
     echo "  Submitting continuation job..."
     echo "======================================================================"
 
-    NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
+    NEXT_JOB_ID=$(resubmit)
 
     echo "Continuation job submitted: ${NEXT_JOB_ID}"
 
     exit 0
+
+elif [ "$EXIT_CODE" -eq 0 ]; then
+
+    echo ""
+    echo "======================================================================"
+    echo "  ERROR: Python exited 0 but ALL_COMPLETED was not created."
+    echo "  Treating as unexpected. Auto-resubmission stopped."
+    echo "======================================================================"
+
+    exit 1
 
 else
 
