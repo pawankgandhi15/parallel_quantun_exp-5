@@ -71,3 +71,7 @@ paper/*.pdf
 
 # Temporary extractions
 docs/paper/extracted_figures/
+*.pt
+*.pth
+*.ckpt
+*.pt.bak
