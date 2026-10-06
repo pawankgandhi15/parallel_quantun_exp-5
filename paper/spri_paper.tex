@@ -19,6 +19,20 @@
 \usepackage{microtype}%
 
 %%%% Theorem styles as per Springer Nature guidelines
+\allowdisplaybreaks
+
+%%%% Float placement parameters to eliminate large blank spaces and prevent float accumulation
+\renewcommand{\topfraction}{0.95}        % Max fraction of page for top floats
+\renewcommand{\bottomfraction}{0.85}     % Max fraction of page for bottom floats
+\renewcommand{\textfraction}{0.05}       % Min fraction of page for text
+\renewcommand{\floatpagefraction}{0.80}  % Min fraction of float page occupied
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{8}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
 \theoremstyle{thmstyleone}%
 \newtheorem{theorem}{Theorem}%
 \newtheorem{proposition}[theorem]{Proposition}%
@@ -118,9 +132,9 @@ where $L$ denotes circuit depth and $\alpha \,{>}\, 0$. In deep sequential hybri
 
 Concurrently, physical NISQ quantum processing units (QPUs) are burdened by finite qubit coherence times ($T_1$ relaxation, $T_2$ dephasing) and imperfect gate fidelities ($10^{-3}$ to $10^{-2}$ two-qubit error rates) \cite{arute2019quantum, jurcevic2021demonstration, kandala2017hardware, tilly2022variational, mcardle2020quantum, farhi2014quantum}. In deeply stacked quantum layers, environmental decoherence rapidly degrades pure quantum states into maximally mixed states, destroying non-classical superposition and erasing learned representations before measurement can occur \cite{wang2021noise, franca2021limitations}.
 
-\begin{figure}[!t]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\columnwidth]{figures/shallow_parallel_vs_deep_design.jpg}
+\includegraphics[width=0.85\textwidth]{figures/shallow_parallel_vs_deep_design.jpg}
 \caption{Architectural paradigm comparison: (Top) Prior deep sequential hybrid models suffer from exponential gradient decay ($\mathrm{Var}[\nabla_\theta \mathcal{L}] \sim \mathcal{O}(2^{-n})$) and cumulative decoherence. (Bottom) The proposed QC-CNN-Parallel framework executes a shallow 2-layer PQC in parallel with a classical convolutional branch, preserving gradient flow and offering fault tolerance under environmental noise.}
 \label{fig:philosophy_comparison}
 \end{figure}
@@ -368,12 +382,12 @@ Integrating Eq.~\eqref{eq:lindblad_master} over gate duration $\Delta t$ yields 
 \section{Proposed Methodology: QC-CNN-Parallel}
 \label{sec:methodology}
 
-\begin{figure*}[!t]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/qc_cnn_parallel_architecture.jpg}
+\includegraphics[width=0.95\textwidth]{figures/qc_cnn_parallel_architecture.jpg}
 \caption{Comprehensive architecture of the proposed QC-CNN-Parallel framework. An input image ($28 \times 28$) is concurrently processed by: (Top Branch) a classical convolutional layer ($4 \times 4$, stride 2, padding 1) generating 8 channels of size $14 \times 14$; (Bottom Branch) a quantum convolutional sliding filter ($2 \times 2$ window, stride 2) mapping 4 pixels onto a 4-qubit PQC (Circuit~11) to produce 4 Pauli-$Z$ expectation channels of size $14 \times 14$. The concatenated $12 \times 14 \times 14$ tensor is flattened into 2,352 dimensions and classified via a 3-layer dense head.}
 \label{fig:main_architecture}
-\end{figure*}
+\end{figure}
 
 \subsection{Global Dual-Branch Architecture \& Dimensional Alignment}
 The core architecture of QC-CNN-Parallel is illustrated in Fig.~\ref{fig:main_architecture}. Given a batch of single-channel grayscale images $\mathbf{X} \in \mathbb{R}^{B \times 1 \times H \times W}$ (where $H = W = 28$ for standard benchmarks), feature extraction proceeds concurrently across two distinct computational branches.
@@ -425,7 +439,7 @@ Eq.~\eqref{eq:quantum_kernel_derivation} reveals the rich mathematical geometry 
 
 \subsection{Parameterized Quantum Circuit Design \& Shifted-Circle Topology}
 
-\begin{figure}[!t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/pqc_circuit11_diagram.jpg}
 \caption{Detailed gate schematic of PQC Circuit~11. Following angle encoding on 4 qubits, the ansatz executes Layer 1 with parameterized $RY$ rotations and a closed circular $CRX$ entangling loop ($0 \to 1 \to 2 \to 3 \to 0$). Layer 2 applies independent $RY$ rotations followed by a shifted-circle $CRX$ loop ($1 \to 2 \to 3 \to 0 \to 1$), breaking symmetry without adding depth. Four Pauli-$Z$ measurements yield continuous features in $[-1, 1]$.}
@@ -535,7 +549,7 @@ P(y = c \,|\, \mathbf{x}) = \frac{\exp(z_c)}{\sum_{j=1}^{10} \exp(z_j)}.
 
 The end-to-end forward inference procedure is formally specified in Algorithm~\ref{alg:forward_pass}.
 
-\begin{algorithm}[!htbp]
+\begin{algorithm}[htbp]
 \caption{QC-CNN-Parallel Forward Inference and Feature Fusion}
 \label{alg:forward_pass}
 \begin{algorithmic}[1]
@@ -622,7 +636,7 @@ Furthermore, total network gradient norm satisfies:
 \end{align}
 guaranteeing continuous optimization progress even if quantum channels undergo perturbation.
 
-\begin{algorithm}[!htbp]
+\begin{algorithm}[htbp]
 \caption{Hybrid Training via Parameter-Shift Backpropagation}
 \label{alg:training_loop}
 \begin{algorithmic}[1]
@@ -653,9 +667,9 @@ guaranteeing continuous optimization progress even if quantum channels undergo p
 \section{Extended Model Suite \& Benchmark Setup}
 \label{sec:benchmark_setup}
 
-\begin{figure}[!t]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\columnwidth]{figures/model_suite_architecture_comparison.jpg}
+\includegraphics[width=0.85\textwidth]{figures/model_suite_architecture_comparison.jpg}
 \caption{Architectural configurations of the 6 implemented models. (a) Proposed QC-CNN-Parallel (152 conv params); (b) Classical CNN / LeNet-5 baseline (464 conv params); (c) Classical-Only ablation (136 params); (d) Quantum-Only ablation (16 params); (e) Classical-Extended matched comparison (120 params); (f) Scalable architecture ($N$ qubits, $L$ layers).}
 \label{fig:model_suite}
 \end{figure}
@@ -675,12 +689,12 @@ To ensure rigorous and fair benchmarking under identical training conditions, we
 
 \textbf{(f) Scalable Architecture.} A generalized template where $N \in \{2, 4, 6, 8\}$ and $L \in \{1, \dots, 5\}$ are swept systematically. At the baseline setting ($N=4, L=2$), it is identical to QC-CNN-Parallel. Used exclusively in the scalability experiments (Section~\ref{sec:scalability}).
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Comprehensive Parameter Accounting and Architectural Specifications Across the Extended Model Suite}
 \label{tab:param_accounting}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model Identifier} & \textbf{Classical Conv} & \textbf{PQC Conv} & \textbf{Total Conv} & \textbf{Dense Head} & \textbf{Total Params} \\
@@ -950,12 +964,12 @@ To elucidate the structural distinctions across all evaluated paradigms, Table~\
 \end{align}
 Crucially, while sequential and residual hybrids require $304$--$512$ convolutional parameters, QC-CNN-Parallel accomplishes simultaneous classical edge filtering and quantum trigonometric correlation extraction with only $\mathbf{152}$ total convolutional parameters---representing a $\mathbf{67.24\%}$ parameter reduction compared to LeNet-5, while establishing an unbroken classical gradient highway.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Algorithmic and Structural Comparison of Evaluated Benchmark Architectures}
 \label{tab:baseline_specifications}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model Architecture} & \textbf{Paradigm} & \textbf{Quantum Circuit} & $\mathbf{\Theta_{\mathrm{conv}}}$ & $\mathbf{\Theta_{\mathrm{total}}}$ & \textbf{Gradient Flow Mechanism} \\
@@ -1169,12 +1183,12 @@ The ablation suite spans four architectural topologies designed to systematicall
     \item \textbf{Classical-Extended (Ablation 3 --- Parameter-Matched Control):} Designed to definitively address the parameter-capacity critique in QML literature. Rather than leaving parameter counts unbalanced, the 4 quantum channels are substituted with additional classical convolutional filters, expanding the classical filter bank to 12 channels ($120$ convolutional parameters) feeding a $12 \times 14 \times 14$ feature map ($2{,}352$ dense activations) into the standard dense head ($310{,}090$ weights). The resulting total parameter count of $310{,}210$ matches QC-CNN-Parallel ($310{,}242$) to within $\Delta = 32$ parameters ($0.01\%$). Any statistically significant accuracy margin achieved by QC-CNN-Parallel over Classical-Extended is therefore attributable strictly to the geometric expressibility of the quantum Hilbert space rather than classical capacity expansion.
 \end{enumerate}
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Multi-Branch Ablation Architecture \& Structural Tensor Specifications}
 \label{tab:ablation_specifications}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Model Configuration} & \textbf{Active Streams} & \textbf{Conv Tensor} $\mathbf{F}$ & $d_{\mathrm{dense}}$ & $\Theta_{\mathrm{conv}}$ & $\Theta_{\mathrm{total}}$ & $\Delta$ \textbf{vs Hybrid} \\
@@ -1333,11 +1347,11 @@ Table~\ref{tab:circuit_selection} presents the tri-metric evaluation across 11 c
 
 \textbf{Circuit 10 vs. Circuit 11 --- The Pareto-Optimal NISQ Trade-off.} Circuit~10 (Sim \textit{et al.}~\cite{sim2019expressibility}) achieves high expressibility ($D_{\mathrm{KL}} = 0.0032$) and entanglement ($1.4303$), but incurs a heavy cost of 28 parameters and dense all-to-all entangling gates. Our proposed Circuit~11 achieves near-Haar expressibility ($D_{\mathrm{KL}} = 0.0126$) and strong entanglement ($1.1127$) while exhibiting over $3\times$ higher gradient discreteness ($\mathrm{Disc} = 0.1547$ vs. $0.0515$) using only 16 parameters---a $42.9\%$ reduction in parameter count. This confirms Circuit~11 as the Pareto-optimal ansatz for NISQ hardware constraints.
 
-\begin{table*}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Empirical Evaluation of 11 Candidate PQC Architectures Across Expressibility, Entanglement, Discreteness, and Benchmark Accuracy}
 \label{tab:circuit_selection}
-\renewcommand{\arraystretch}{1.2}
+\renewcommand{\arraystretch}{1.1}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lccccccc}
 \toprule
@@ -1357,7 +1371,7 @@ Circuit 10 (Sim \textit{et al.} \cite{sim2019expressibility}) & 28 & All-to-All 
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \subsection{Multi-Dataset Benchmark Accuracies (Table 2)}
 \label{subsec:multi_dataset_benchmark}
@@ -1396,12 +1410,12 @@ To verify whether quantum representational advantage is domain-dependent or gene
     operating directly on local pixel amplitudes. Quantum phase interference between the four entangled qubits creates sharp oscillatory responses to periodic pixel variations. When repetitive spatial structures pass beneath the sliding filter, constructive interference amplifies coherent spatial phase relationships while destructive interference cancels incoherent aerial sensor noise. Consequently, QC-CNN-Parallel reaches $82.15\%$ test accuracy on Overhead-MNIST, exceeding classical LeNet-5 ($79.80\%$) by $+2.35\%$ and outperforming sequential hybrid architectures ($75.90\%$--$79.10\%$) by up to $+6.25\%$.
 \end{enumerate}
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Classification Accuracies Across Benchmark Datasets (Published Literature Baselines vs. Pending Cluster Validation)}
 \label{tab:dataset_accuracies}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model Architecture} & \textbf{Conv Params} & \textbf{Total Params} & \textbf{MNIST} & \textbf{Fashion-MNIST} & \textbf{Overhead-MNIST} \\
@@ -1445,12 +1459,12 @@ To rigorously quantify model efficiency, we define the \textit{Accuracy-per-Para
 \end{equation}
 which measures the percentage accuracy points achieved per convolutional parameter. Table~\ref{tab:app_comparison} presents the comparative APP evaluation across all evaluated models.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Accuracy-per-Parameter ($\mathrm{APP}$) Efficiency Metric Across Datasets ($\times 10^3$)}
 \label{tab:app_comparison}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Model Architecture} & \textbf{Conv Params ($\Theta_{\mathrm{conv}}$)} & \textbf{MNIST APP} & \textbf{F-MNIST APP} & \textbf{Overhead APP} \\
@@ -1494,21 +1508,21 @@ Proposition~\ref{prop:feature_complementarity} mathematically explains why the p
 \subsection{Physical Noise Channel Robustness (Table 3)}
 \textbf{Stress-Testing Protocol.} To evaluate hardware resilience, models pre-trained under ideal noiseless conditions ($p = 0$) are evaluated on MNIST under progressively increasing error probabilities $p \in \{0.1, 0.2, 0.3\}$ across four physical noise channels: Classical Data Noise, Bit-Flip, Phase-Flip, and Depolarizing.
 
-\begin{figure*}[!t]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/noise_robustness_comparison.jpg}
+\includegraphics[width=0.85\textwidth]{figures/noise_robustness_comparison.jpg}
 \caption{Noise robustness evaluation framework across four physical error models ($p \in [0.0, 0.3]$): (a) Classical data noise; (b) Pauli Bit-Flip channel; (c) Pauli Phase-Flip channel; (d) Depolarizing channel. The parallel dual-branch topology provides structural fault tolerance, shielding classification performance from catastrophic decoherence.}
 \label{fig:noise_curves}
-\end{figure*}
+\end{figure}
 
 Table~\ref{tab:noise_results} summarizes the noise stress-testing protocol, detailing reference performance benchmarks alongside pending cluster validation entries.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Accuracy Retention Under Simulated Physical Noise Channels ($p \in [0.0, 0.3]$)}
 \label{tab:noise_results}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{llcccc}
 \toprule
 \textbf{Noise Channel} & \textbf{Model Architecture} & $p = 0.0$ & $p = 0.1$ & $p = 0.2$ & $p = 0.3$ \\
@@ -1572,12 +1586,12 @@ Evaluating formal Hypotheses~\eqref{eq:hyp_additivity}--\eqref{eq:hyp_superiorit
     \item \textbf{Parameter-Matched Classical Comparison (Hypothesis 3, Eq.~\eqref{eq:hyp_superiority}):} The Classical-Extended baseline (12 classical channels, 120 conv params, 310,210 total params) matches the parameter footprint of QC-CNN-Parallel ($310,242$ params, $\Delta = 32$ params). An accuracy advantage for QC-CNN-Parallel validates that quantum Hilbert-space embeddings encode linearly independent feature directions that cannot be replicated by simply increasing classical filter width.
 \end{enumerate}
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Experiment 4: Multi-Branch Ablation Study Specifications and Benchmark Accuracies}
 \label{tab:ablation_results}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Configuration} & \textbf{Conv Params} & \textbf{Total Params} & \textbf{Channels} & \textbf{MNIST Acc. (Ref. \cite{liu2026parallel} / HPC)} \\
@@ -1594,12 +1608,12 @@ Classical-Extended (Ablation 3) & 120 & 310,210 & 12 Classical & 0.8710 / [\text
 \subsection{Granular Per-Class Confusion \& Representational Analysis}
 Table~\ref{tab:per_class_breakdown} establishes the per-class precision, recall, and F1-score evaluation template across the 10 categories of Fashion-MNIST, designed to isolate which visual categories benefit most substantially from the quantum feature map.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Granular Per-Class Classification Performance on Fashion-MNIST (Template for Pending Cluster Data)}
 \label{tab:per_class_breakdown}
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.08}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
 \multirow{2}{*}{\textbf{Category}} & \multicolumn{3}{c}{\textbf{Classical LeNet-5 (464 params)}} & \multicolumn{3}{c}{\textbf{QC-CNN-Parallel (152 params)}} \\
@@ -1626,7 +1640,7 @@ Table~\ref{tab:per_class_breakdown} establishes the per-class precision, recall,
 \section{Scalability Analysis \& Barren Plateau Demarcation}
 \label{sec:scalability}
 
-\begin{figure}[!t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/ablation_and_scalability_study.jpg}
 \caption{(Left) Multi-branch ablation accuracy comparison illustrating quantum synergy. (Right) Gradient variance $\mathrm{Var}[\partial\mathcal{L}/\partial\theta]$ as a function of variational circuit depth ($L \in \{1,\dots,5\}$), demonstrating exponential decay ($\le 10^{-5}$) beyond $L \ge 4$.}
@@ -1643,12 +1657,12 @@ As derived in Theorem~2, the average gradient variance over a parameterized ansa
 \end{equation}
 implying that gradient variances decay exponentially as layers are sequentially stacked. Under shallow variational depths ($L=1$ and $L=2$), the circuit explores a restricted subgroup of $\mathbb{U}(16)$, preventing the state ensemble from forming a global 2-design and thereby avoiding the concentration of measure that characterizes barren plateaus. At $L=1$ (8 parameters), gradients remain robust, but representational capacity is restricted. At $L=2$ (16 parameters, Circuit~11), the model achieves the hypothesized Pareto optimum between expressibility ($D_{\mathrm{KL}} = 0.0126$) and gradient health ($\mathrm{Disc} = 0.1547$). Beyond $L \ge 3$, deep sequential entangling layers rapidly drive the ansatz toward 2-design Haar randomness, with gradient variance predicted to degrade by orders of magnitude at $L=4$ and encounter barren plateau collapse at $L=5$.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Scalability Sweeps Across Qubit Counts ($N$) and Variational Depths ($L$) (Reference Baselines vs. Pending Cluster Sweeps)}
 \label{tab:scalability_sweeps}
-\renewcommand{\arraystretch}{1.2}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{cccccc}
 \toprule
 \multicolumn{6}{c}{\textbf{Part A: Qubit Count Sweep ($N \in \{2,4,6,8\}$, Fixed Depth $L=2$)}} \\
@@ -1720,12 +1734,12 @@ CRX_{c \to t}(\theta) &= (\mathbb{I} \otimes RZ_t(\pi/2)) \cdot \mathrm{CNOT}_{c
 
 Table~\ref{tab:hardware_accounting} details the hardware resource accounting for a single QNode evaluation of Circuit~11.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Native Basis Gate Transpilation Accounting for Circuit~11 (4 Qubits)}
 \label{tab:hardware_accounting}
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.08}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lccc}
 \toprule
 \textbf{Circuit Stage} & \textbf{Single-Qubit Gates} & \textbf{Two-Qubit (CNOT) Gates} & \textbf{Circuit Depth} \\
@@ -1819,12 +1833,12 @@ Several promising extensions of the QC-CNN-Parallel framework are identified:
 \section{Glossary of Abbreviations}
 Table~\ref{tab:abbreviations} defines the primary technical acronyms and notations utilized throughout this manuscript.
 
-\begin{table}[!htbp]
+\begin{table}[htbp]
 \centering
 \caption{Glossary of Frequently Used Abbreviations and Notations}
 \label{tab:abbreviations}
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{
+\renewcommand{\arraystretch}{1.08}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{ll}
 \toprule
 \textbf{Abbreviation} & \textbf{Definition} \\
