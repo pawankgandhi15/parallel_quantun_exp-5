@@ -1,161 +1,511 @@
 #!/bin/bash
 #====================================================================
 # PBS Job Script - QC-CNN-Parallel Automated 48-Hour Batch Runner
-#====================================================================
-# BEFORE FIRST SUBMIT (once, from the project root):
-#   mkdir -p logs
-# PBS opens the -o/-e files before this script runs, so logs/ must exist.
+#
+# Features:
+#   - 48-hour PBS allocation
+#   - 47-hour Python experiment budget
+#   - Automatic checkpointing
+#   - Automatic cycle resubmission
+#   - Persistent APPEND-ONLY logs
+#   - Automatic GitHub commit + push
+#   - Large checkpoint exclusion
+#   - Maximum 20 cycles
 #====================================================================
 
-#--- PBS Directives --------------------------------------------------
+#====================================================================
+# PBS Directives
+#====================================================================
+
 #PBS -N qccnn_h100
 #PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
-# To force an H100, add the cluster-specific GPU model request to the
-# select line above (check `pbsnodes -a` or ask your admin for the syntax).
 #PBS -l walltime=48:00:00
 #PBS -q workq
 #PBS -V
-#PBS -o logs/pbs_output.log
-#PBS -e logs/pbs_error.log
-#PBS -m a
 
-#--- Environment & Working Directory -------------------------------
+# IMPORTANT:
+# These are PBS's temporary/current-job stdout/stderr files.
+# The persistent logs are created below using tee -a.
+#====================================================================
+
+# Use absolute paths because PBS resolves these before the script runs.
+#====================================================================
+
+#PBS -o /Data4/it_25201815/parallel_quantum-5/logs/pbs_job_stdout.log
+#PBS -e /Data4/it_25201815/parallel_quantum-5/logs/pbs_job_stderr.log
+
+# Mail
+#PBS -m abe
+
+#====================================================================
+# 1. Working Directory
+#====================================================================
 
 if [ -n "$PBS_O_WORKDIR" ]; then
     cd "$PBS_O_WORKDIR"
 fi
 
-# Locate repository root
+#====================================================================
+# 2. Locate Project Root
+#====================================================================
+
 if [ -d "implementation" ]; then
+
     PROJECT_ROOT="$(pwd)"
+
 elif [ -f "run_all.py" ]; then
+
     PROJECT_ROOT="$(cd .. && pwd)"
     cd "$PROJECT_ROOT"
+
 elif [ -d "../implementation" ]; then
+
     PROJECT_ROOT="$(cd .. && pwd)"
     cd "$PROJECT_ROOT"
+
 else
+
     PROJECT_ROOT="$(pwd)"
+
 fi
+
+#====================================================================
+# 3. Create Required Directories
+#====================================================================
 
 mkdir -p "${PROJECT_ROOT}/logs"
 mkdir -p "${PROJECT_ROOT}/implementation/results"
 
-# Path to this PBS script (must exist at this location for resubmission)
+#====================================================================
+# 4. Persistent Log Files
+#
+# IMPORTANT:
+# These files are APPEND-ONLY.
+#
+# pbs_output.log
+# pbs_error.log
+#
+# Each PBS cycle adds to the existing files.
+#====================================================================
+
+PERSISTENT_OUTPUT="${PROJECT_ROOT}/logs/pbs_output.log"
+PERSISTENT_ERROR="${PROJECT_ROOT}/logs/pbs_error.log"
+
+# PBS itself writes to pbs_job_stdout.log / pbs_job_stderr.log.
+# We additionally append all script output to the persistent logs.
+
+exec > >(tee -a "$PERSISTENT_OUTPUT") \
+     2> >(tee -a "$PERSISTENT_ERROR" >&2)
+
+#====================================================================
+# 5. Paths
+#====================================================================
+
 SCRIPT_PATH="${PROJECT_ROOT}/scripts/run_experiment.pbs"
 
-if [ ! -f "$SCRIPT_PATH" ]; then
-    echo "[ERROR] Script not found at ${SCRIPT_PATH}; auto-resubmission would fail."
-    exit 1
-fi
-
-# Always submit from the project root so relative log paths resolve correctly
-resubmit() {
-    ( cd "$PROJECT_ROOT" && qsub "$SCRIPT_PATH" )
-}
-
-#--- Python Environment ---------------------------------------------
-
-# Activate conda environment so python, dependencies, and CUDA paths are in PATH
-if [ -f "/apps/compilers/anaconda3/bin/activate" ]; then
-    source "/apps/compilers/anaconda3/bin/activate" qcm
-fi
-
-# Use the exact Python executable from the qcm environment.
-PYTHON="/Data4/it_25201815/.conda/envs/qcm/bin/python"
-
-if [ ! -x "$PYTHON" ]; then
-    PYTHON="$(command -v python3 || command -v python)"
-fi
-
-echo "======================================================================"
-echo "  PBS Job ID       : ${PBS_JOBID:-Local/Interactive}"
-echo "  Running Node     : $(hostname)"
-echo "  Started at       : $(date)"
-echo "  Project Root     : ${PROJECT_ROOT}"
-echo "  Submission Script: ${SCRIPT_PATH}"
-echo "  Python           : ${PYTHON}"
-echo "======================================================================"
-
-# Verify Python exists
-if [ ! -x "$PYTHON" ]; then
-    echo "[ERROR] Python executable not found:"
-    echo "        $PYTHON"
-    exit 1
-fi
-
-echo "Python version:"
-"$PYTHON" --version
-
-echo ""
-echo "Python location:"
-"$PYTHON" -c "import sys; print(sys.executable)"
-
-#--- GPU Information ------------------------------------------------
-
-echo ""
-echo "GPU Information:"
-nvidia-smi --query-gpu=index,name,memory.total,driver_version \
-    --format=csv,noheader 2>/dev/null || \
-    echo "(nvidia-smi not available)"
-
-echo "======================================================================"
-
-#--- Completion & Cycle Safety Checks -------------------------------
-
 SENTINEL="${PROJECT_ROOT}/implementation/results/ALL_COMPLETED"
+
 COUNTER_FILE="${PROJECT_ROOT}/logs/pbs_resubmit_count.txt"
+
 MAX_CYCLES=20
 
-if [ -f "$SENTINEL" ]; then
-    echo ""
-    echo "======================================================================"
-    echo "  All experiments are already completed."
-    echo "  Completion marker: ${SENTINEL}"
-    echo "  Finished at: $(date)"
-    echo "======================================================================"
-    exit 0
-fi
+PYTHON="/Data4/it_25201815/.conda/envs/qcm/bin/python"
 
-# Increment cycle counter
+GIT_REPO="git@github.com:pawankgandhi15/parallel_quantun_exp-5.git"
+
+#====================================================================
+# 6. Determine Cycle Number
+#====================================================================
+
 CYCLE_COUNT=0
 
 if [ -f "$COUNTER_FILE" ]; then
-    CYCLE_COUNT=$(cat "$COUNTER_FILE")
+    CYCLE_COUNT=$(cat "$COUNTER_FILE" 2>/dev/null)
+fi
+
+# Safety if file contains invalid content
+if ! [[ "$CYCLE_COUNT" =~ ^[0-9]+$ ]]; then
+    CYCLE_COUNT=0
 fi
 
 CYCLE_COUNT=$((CYCLE_COUNT + 1))
 
 echo "$CYCLE_COUNT" > "$COUNTER_FILE"
 
+#====================================================================
+# 7. CYCLE START MARKER
+#====================================================================
+
 echo ""
-echo "Current 48-Hour Batch Cycle: ${CYCLE_COUNT} of ${MAX_CYCLES}"
+echo ""
+echo "======================================================================"
+echo "                    PBS CYCLE START"
+echo "======================================================================"
+echo "Cycle Number       : ${CYCLE_COUNT} / ${MAX_CYCLES}"
+echo "PBS Job ID         : ${PBS_JOBID:-Local/Interactive}"
+echo "Running Node       : $(hostname)"
+echo "Started At         : $(date)"
+echo "Project Root       : ${PROJECT_ROOT}"
+echo "Python             : ${PYTHON}"
+echo "Git Repository     : ${GIT_REPO}"
+echo "======================================================================"
+echo ""
+
+#====================================================================
+# 8. Maximum Cycle Safety
+#====================================================================
 
 if [ "$CYCLE_COUNT" -gt "$MAX_CYCLES" ]; then
-    echo "[ERROR] Maximum allowed auto-resubmission cycles reached."
+
+    echo "[ERROR] Maximum allowed cycles reached: ${MAX_CYCLES}"
+    echo "[ERROR] Automatic resubmission stopped."
+
     exit 1
 fi
 
-#--- Signal Handler -------------------------------------------------
+#====================================================================
+# 9. Check Existing Completion Marker
+#====================================================================
 
-PY_PID=""
+if [ -f "$SENTINEL" ]; then
 
-on_cluster_signal() {
     echo ""
     echo "======================================================================"
-    echo "  [ALERT] Received termination signal from PBS scheduler."
+    echo "  ALL EXPERIMENTS ARE ALREADY COMPLETED"
+    echo "======================================================================"
+    echo "Completion marker: ${SENTINEL}"
+    echo "Time: $(date)"
+    echo ""
+
+    exit 0
+fi
+
+#====================================================================
+# 10. Python Environment
+#====================================================================
+
+echo "======================================================================"
+echo "                    PYTHON ENVIRONMENT"
+echo "======================================================================"
+
+if [ -f "/apps/compilers/anaconda3/bin/activate" ]; then
+
+    source "/apps/compilers/anaconda3/bin/activate" qcm
+
+fi
+
+# Reconfirm Python path after activation
+
+if [ ! -x "$PYTHON" ]; then
+
+    PYTHON="$(command -v python3 || command -v python)"
+
+fi
+
+echo "Python executable:"
+echo "$PYTHON"
+
+if [ ! -x "$PYTHON" ]; then
+
+    echo "[ERROR] Python executable not found."
+    exit 1
+
+fi
+
+echo ""
+echo "Python version:"
+"$PYTHON" --version
+
+echo ""
+echo "Python executable reported by Python:"
+"$PYTHON" -c "import sys; print(sys.executable)"
+
+#====================================================================
+# 11. GPU Information
+#====================================================================
+
+echo ""
+echo "======================================================================"
+echo "                    GPU INFORMATION"
+echo "======================================================================"
+
+nvidia-smi \
+    --query-gpu=index,name,memory.total,driver_version \
+    --format=csv,noheader 2>/dev/null || \
+    echo "(nvidia-smi not available)"
+
+#====================================================================
+# 12. Git Configuration Check
+#====================================================================
+
+echo ""
+echo "======================================================================"
+echo "                    GIT CONFIGURATION"
+echo "======================================================================"
+
+cd "$PROJECT_ROOT" || exit 1
+
+echo "Git repository:"
+git rev-parse --show-toplevel 2>/dev/null || {
+    echo "[GIT ERROR] Not a Git repository."
+}
+
+echo ""
+echo "Git remote:"
+git remote -v
+
+echo ""
+echo "Current branch:"
+git branch --show-current
+
+#====================================================================
+# 13. GitHub Synchronization Function
+#====================================================================
+
+git_sync() {
+
+    SYNC_REASON="$1"
+
+    echo ""
+    echo "======================================================================"
+    echo "                    GITHUB SYNCHRONIZATION"
+    echo "======================================================================"
+    echo "Reason: ${SYNC_REASON}"
+    echo "Cycle : ${CYCLE_COUNT}"
+    echo "Time  : $(date)"
     echo "======================================================================"
 
-    # Forward the signal to Python so it can save a checkpoint
-    if [ -n "$PY_PID" ] && kill -0 "$PY_PID" 2>/dev/null; then
-        kill -TERM "$PY_PID" 2>/dev/null
-        wait "$PY_PID" 2>/dev/null
+    cd "$PROJECT_ROOT" || {
+        echo "[GIT ERROR] Cannot enter project root."
+        return 1
+    }
+
+    #--------------------------------------------------------------
+    # Verify repository
+    #--------------------------------------------------------------
+
+    if [ ! -d ".git" ]; then
+
+        echo "[GIT ERROR] .git directory not found."
+        return 1
+
     fi
 
-    if [ ! -f "$SENTINEL" ] && [ "$CYCLE_COUNT" -le "$MAX_CYCLES" ]; then
-        echo "Automatically submitting continuation job..."
-        NEXT_JOB_ID=$(resubmit)
-        echo "Continuation job: ${NEXT_JOB_ID}"
+    #--------------------------------------------------------------
+    # Ensure correct remote
+    #--------------------------------------------------------------
+
+    CURRENT_REMOTE=$(git remote get-url origin 2>/dev/null || true)
+
+    if [ "$CURRENT_REMOTE" != "$GIT_REPO" ]; then
+
+        echo "[GIT] Correcting origin remote..."
+
+        git remote set-url origin "$GIT_REPO" || {
+
+            echo "[GIT ERROR] Could not set GitHub remote."
+            return 1
+        }
+
+    fi
+
+    echo "[GIT] Remote:"
+    git remote get-url origin
+
+    #--------------------------------------------------------------
+    # Fetch latest GitHub state
+    #--------------------------------------------------------------
+
+    echo ""
+    echo "[GIT] Fetching origin..."
+
+    git fetch origin || {
+
+        echo "[GIT WARNING] Git fetch failed."
+        echo "[GIT WARNING] Continuing without stopping experiment."
+
+        return 1
+    }
+
+    #--------------------------------------------------------------
+    # Stage ALL changed files
+    #
+    # git add -A stages:
+    #   modified files
+    #   new files
+    #   deleted files
+    #
+    # Large generated files are removed from staging below.
+    #--------------------------------------------------------------
+
+    echo ""
+    echo "[GIT] Staging all project changes..."
+
+    git add -A
+
+    #--------------------------------------------------------------
+    # NEVER commit large/generated checkpoint files
+    #--------------------------------------------------------------
+
+    echo ""
+    echo "[GIT] Removing large checkpoint files from staging..."
+
+    git reset -- \
+        '*.pt' \
+        '*.pth' \
+        '*.ckpt' \
+        '*.bak' \
+        '*.safetensors' \
+        '*.onnx' \
+        '*.h5' \
+        '*.hdf5' \
+        '*.tar' \
+        '*.tar.gz' \
+        '*.zip' \
+        'datasets/*' \
+        'dataset/*' \
+        'data/*' \
+        'checkpoints/*' \
+        'models/*' \
+        'implementation/results/*/*.pt' \
+        'implementation/results/*/*.pth' \
+        'implementation/results/*/*.ckpt' \
+        'implementation/results/*/*.bak' \
+        2>/dev/null || true
+
+    #--------------------------------------------------------------
+    # Don't commit PBS's temporary raw output files.
+    #
+    # Persistent logs are:
+    #   logs/pbs_output.log
+    #   logs/pbs_error.log
+    #
+    # These are intentionally kept and committed.
+    #--------------------------------------------------------------
+
+    git reset -- \
+        'logs/pbs_job_stdout.log' \
+        'logs/pbs_job_stderr.log' \
+        2>/dev/null || true
+
+    #--------------------------------------------------------------
+    # Show staged files
+    #--------------------------------------------------------------
+
+    echo ""
+    echo "======================================================================"
+    echo "Files staged for GitHub:"
+    echo "======================================================================"
+
+    git diff --cached --name-status
+
+    #--------------------------------------------------------------
+    # Nothing changed
+    #--------------------------------------------------------------
+
+    if git diff --cached --quiet; then
+
+        echo ""
+        echo "[GIT] No changes to commit."
+        echo "[GIT] Nothing to push."
+
+        return 0
+    fi
+
+    #--------------------------------------------------------------
+    # Commit
+    #--------------------------------------------------------------
+
+    COMMIT_MESSAGE="PBS cycle ${CYCLE_COUNT}: ${SYNC_REASON}"
+
+    echo ""
+    echo "[GIT] Commit message:"
+    echo "$COMMIT_MESSAGE"
+
+    git commit -m "$COMMIT_MESSAGE"
+
+    if [ $? -ne 0 ]; then
+
+        echo "[GIT ERROR] Commit failed."
+        return 1
+
+    fi
+
+    #--------------------------------------------------------------
+    # Push
+    #--------------------------------------------------------------
+
+    echo ""
+    echo "[GIT] Pushing to GitHub..."
+
+    git push origin main
+
+    PUSH_STATUS=$?
+
+    if [ "$PUSH_STATUS" -ne 0 ]; then
+
+        echo ""
+        echo "======================================================================"
+        echo "  [GIT WARNING] GitHub PUSH FAILED"
+        echo "======================================================================"
+        echo "Push exit code: ${PUSH_STATUS}"
+        echo "Experiment will continue."
+        echo "The commit remains locally and can be pushed later."
+        echo "======================================================================"
+
+        return 1
+    fi
+
+    echo ""
+    echo "======================================================================"
+    echo "  [GIT SUCCESS] GitHub PUSH SUCCESSFUL"
+    echo "======================================================================"
+    echo "Repository : ${GIT_REPO}"
+    echo "Cycle      : ${CYCLE_COUNT}"
+    echo "Time       : $(date)"
+    echo "======================================================================"
+
+    return 0
+}
+
+#====================================================================
+# 14. PBS Termination Signal Handler
+#====================================================================
+
+on_cluster_signal() {
+
+    echo ""
+    echo ""
+    echo "======================================================================"
+    echo "              PBS TERMINATION SIGNAL RECEIVED"
+    echo "======================================================================"
+    echo "Job ID : ${PBS_JOBID:-Unknown}"
+    echo "Cycle  : ${CYCLE_COUNT}"
+    echo "Time   : $(date)"
+    echo "======================================================================"
+
+    # Prevent recursive signal handling
+    trap - SIGTERM SIGUSR1 SIGUSR2
+
+    # Try to push the latest information
+    git_sync "scheduler termination"
+
+    echo ""
+    echo "Submitting continuation job..."
+
+    NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
+
+    QSUB_STATUS=$?
+
+    if [ "$QSUB_STATUS" -eq 0 ]; then
+
+        echo "Continuation job submitted: ${NEXT_JOB_ID}"
+
+    else
+
+        echo "[ERROR] Continuation job submission failed."
+        echo "qsub exit code: ${QSUB_STATUS}"
+
     fi
 
     exit 143
@@ -163,82 +513,179 @@ on_cluster_signal() {
 
 trap 'on_cluster_signal' SIGTERM SIGUSR1 SIGUSR2
 
-#--- Run Experiments -----------------------------------------------
+#====================================================================
+# 15. Run Experiments
+#====================================================================
 
-cd "${PROJECT_ROOT}/implementation"
+cd "${PROJECT_ROOT}/implementation" || exit 1
 
 echo ""
 echo "======================================================================"
-echo "  Starting experiment execution..."
-echo "  Walltime budget: 47.0 hours"
-echo "  Started at: $(date)"
+echo "                    EXPERIMENT EXECUTION"
+echo "======================================================================"
+echo "Experiments         : 1 2 3 4 5"
+echo "PBS walltime        : 48.0 hours"
+echo "Python time budget  : 47.0 hours"
+echo "Checkpoint interval : 25 batches"
+echo "Started             : $(date)"
 echo "======================================================================"
 echo ""
 
-# Run in background + wait so the trap fires immediately on a signal
 "$PYTHON" run_all.py \
     --exp 1 2 3 4 5 \
     --max_hours 47.0 \
-    --checkpoint_interval_batches 25 &
-PY_PID=$!
-wait "$PY_PID"
+    --checkpoint_interval_batches 25
+
 EXIT_CODE=$?
 
-cd "${PROJECT_ROOT}"
+cd "$PROJECT_ROOT" || exit 1
+
+#====================================================================
+# 16. Python Completion
+#====================================================================
 
 echo ""
 echo "======================================================================"
-echo "  Python process finished"
-echo "  Finished at: $(date)"
-echo "  Exit code: ${EXIT_CODE}"
+echo "                    PYTHON PROCESS FINISHED"
+echo "======================================================================"
+echo "Exit code : ${EXIT_CODE}"
+echo "Finished  : $(date)"
 echo "======================================================================"
 
-#--- Handle Continuation -------------------------------------------
+#====================================================================
+# 17. Check Completion
+#====================================================================
 
 if [ -f "$SENTINEL" ]; then
+
     echo ""
     echo "======================================================================"
-    echo "  SUCCESS: All experiments completed."
-    echo "  No further job submission required."
+    echo "              ALL EXPERIMENTS COMPLETED"
+    echo "======================================================================"
+    echo "Completion marker:"
+    echo "$SENTINEL"
+    echo "Time: $(date)"
     echo "======================================================================"
 
+    #--------------------------------------------------------------
+    # Final GitHub synchronization
+    #--------------------------------------------------------------
+
+    git_sync "ALL experiments completed"
+
+    GIT_STATUS=$?
+
+    if [ "$GIT_STATUS" -ne 0 ]; then
+
+        echo ""
+        echo "======================================================================"
+        echo "  [WARNING] Final GitHub push failed."
+        echo "  Experiments are complete."
+        echo "  No continuation job will be submitted."
+        echo "======================================================================"
+
+        exit 1
+    fi
+
+    #--------------------------------------------------------------
+    # Remove cycle counter after successful completion
+    #--------------------------------------------------------------
+
     rm -f "$COUNTER_FILE"
+
+    echo ""
+    echo "======================================================================"
+    echo "                    FINAL STATUS"
+    echo "======================================================================"
+    echo "Experiments       : COMPLETE"
+    echo "GitHub            : SYNCHRONIZED"
+    echo "Continuation job  : NONE"
+    echo "Finished          : $(date)"
+    echo "======================================================================"
 
     exit 0
 fi
 
-# Exit code 42 = graceful pause (checkpoint saved, more work remains)
-if [ "$EXIT_CODE" -eq 42 ]; then
+#====================================================================
+# 18. Sync Current Cycle to GitHub
+#====================================================================
+
+echo ""
+echo "======================================================================"
+echo "             SYNCHRONIZING CURRENT CYCLE"
+echo "======================================================================"
+
+git_sync "cycle ${CYCLE_COUNT} completed"
+
+GIT_SYNC_STATUS=$?
+
+if [ "$GIT_SYNC_STATUS" -ne 0 ]; then
+
+    echo ""
+    echo "[WARNING] GitHub synchronization failed."
+    echo "[WARNING] Continuation will still be submitted."
+
+else
+
+    echo ""
+    echo "[SUCCESS] Current cycle pushed to GitHub."
+
+fi
+
+#====================================================================
+# 19. Submit Next Cycle
+#====================================================================
+
+if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
 
     echo ""
     echo "======================================================================"
-    echo "  Batch cycle complete."
-    echo "  Checkpoints should have been saved."
-    echo "  Submitting continuation job..."
+    echo "                 SUBMITTING NEXT PBS CYCLE"
+    echo "======================================================================"
+    echo "Current cycle : ${CYCLE_COUNT}"
+    echo "Next cycle    : $((CYCLE_COUNT + 1))"
+    echo "Time          : $(date)"
     echo "======================================================================"
 
-    NEXT_JOB_ID=$(resubmit)
+    NEXT_JOB_ID=$(qsub "$SCRIPT_PATH")
 
-    echo "Continuation job submitted: ${NEXT_JOB_ID}"
+    QSUB_STATUS=$?
+
+    if [ "$QSUB_STATUS" -ne 0 ]; then
+
+        echo ""
+        echo "======================================================================"
+        echo "  [ERROR] NEXT PBS JOB SUBMISSION FAILED"
+        echo "======================================================================"
+        echo "qsub exit code: ${QSUB_STATUS}"
+        echo "======================================================================"
+
+        exit 1
+    fi
+
+    echo ""
+    echo "Continuation job submitted successfully:"
+    echo "$NEXT_JOB_ID"
+
+    echo ""
+    echo "======================================================================"
+    echo "                    PBS CYCLE FINISHED"
+    echo "======================================================================"
+    echo "Cycle        : ${CYCLE_COUNT}"
+    echo "Next Job ID  : ${NEXT_JOB_ID}"
+    echo "Finished     : $(date)"
+    echo "======================================================================"
 
     exit 0
-
-elif [ "$EXIT_CODE" -eq 0 ]; then
-
-    echo ""
-    echo "======================================================================"
-    echo "  ERROR: Python exited 0 but ALL_COMPLETED was not created."
-    echo "  Treating as unexpected. Auto-resubmission stopped."
-    echo "======================================================================"
-
-    exit 1
 
 else
 
     echo ""
     echo "======================================================================"
-    echo "  ERROR: Python exited with code ${EXIT_CODE}"
-    echo "  Auto-resubmission stopped."
+    echo "                    EXPERIMENT ERROR"
+    echo "======================================================================"
+    echo "Python exit code: ${EXIT_CODE}"
+    echo "Automatic resubmission stopped."
     echo "======================================================================"
 
     exit "$EXIT_CODE"
