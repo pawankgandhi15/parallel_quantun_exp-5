@@ -139,8 +139,22 @@ def restore_rng_state(states: Optional[Dict[str, Any]]):
             np.random.set_state(states["numpy"])
         if "torch" in states:
             torch.set_rng_state(states["torch"])
-        if "cuda" in states and torch.cuda.is_available():
-            torch.cuda.set_rng_state_all(states["cuda"])
+        if "cuda" in states:
+            n_devices = torch.cuda.device_count()
+            if n_devices == 0:
+                # No CUDA devices on this node; skip GPU RNG restore gracefully.
+                print("  [WARN] Checkpoint has CUDA RNG states but no GPU is available; skipping.")
+            else:
+                saved_states = states["cuda"]
+                # Only restore states for GPUs that exist on this node to avoid
+                # an IndexError when the checkpoint was saved on a node with more GPUs.
+                if len(saved_states) > n_devices:
+                    print(
+                        f"  [WARN] Checkpoint has {len(saved_states)} CUDA RNG states "
+                        f"but only {n_devices} GPU(s) available; restoring first {n_devices}."
+                    )
+                    saved_states = saved_states[:n_devices]
+                torch.cuda.set_rng_state_all(saved_states)
     except Exception as e:
         print(f"  [WARN] Could not fully restore RNG states: {e}")
 
