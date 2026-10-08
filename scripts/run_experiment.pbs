@@ -220,9 +220,20 @@ echo ""
 echo "Python executable reported by Python:"
 "$PYTHON" -c "import sys; print(sys.executable)"
 
+export PYTHONUNBUFFERED=1
+
 #====================================================================
-# 11. GPU Information
+# 11. GPU Information & Isolation
 #====================================================================
+
+# Isolate GPU to prevent allocating virtual memory across all 8 H100 GPUs
+if [ -n "$PBS_GPUFILE" ] && [ -s "$PBS_GPUFILE" ]; then
+    export CUDA_VISIBLE_DEVICES=$(cat "$PBS_GPUFILE" | tr '\n' ',' | sed 's/,$//')
+    echo "Assigned GPU via PBS_GPUFILE: ${CUDA_VISIBLE_DEVICES}"
+elif [ -z "$CUDA_VISIBLE_DEVICES" ]; then
+    export CUDA_VISIBLE_DEVICES=0
+    echo "Defaulting CUDA_VISIBLE_DEVICES to: ${CUDA_VISIBLE_DEVICES}"
+fi
 
 echo ""
 echo "======================================================================"
@@ -531,7 +542,7 @@ echo "Started             : $(date)"
 echo "======================================================================"
 echo ""
 
-"$PYTHON" run_all.py \
+"$PYTHON" -u run_all.py \
     --exp 1 2 3 4 5 \
     --max_hours 47.0 \
     --checkpoint_interval_batches 25
@@ -636,7 +647,15 @@ fi
 # 19. Submit Next Cycle
 #====================================================================
 
-if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ]; then
+if [ "$EXIT_CODE" -eq 42 ] || [ "$EXIT_CODE" -eq 0 ] || [ "$EXIT_CODE" -eq 137 ] || [ "$EXIT_CODE" -eq 143 ]; then
+
+    if [ "$EXIT_CODE" -eq 137 ] || [ "$EXIT_CODE" -eq 143 ]; then
+        echo ""
+        echo "======================================================================"
+        echo "  [RESUBMIT NOTICE] Process was interrupted with exit code ${EXIT_CODE}."
+        echo "  Resuming seamlessly from latest disk checkpoint in next cycle."
+        echo "======================================================================"
+    fi
 
     echo ""
     echo "======================================================================"

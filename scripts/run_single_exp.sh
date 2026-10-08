@@ -64,9 +64,16 @@ echo "  Started at        : $(date)"
 echo "  Python            : ${PYTHON}"
 echo "======================================================================"
 
+export PYTHONUNBUFFERED=1
+if [ -n "$PBS_GPUFILE" ] && [ -s "$PBS_GPUFILE" ]; then
+    export CUDA_VISIBLE_DEVICES=$(cat "$PBS_GPUFILE" | tr '\n' ',' | sed 's/,$//')
+elif [ -z "$CUDA_VISIBLE_DEVICES" ]; then
+    export CUDA_VISIBLE_DEVICES=0
+fi
+
 cd "${PROJECT_ROOT}/implementation"
 
-"$PYTHON" run_all.py \
+"$PYTHON" -u run_all.py \
     --exp "${EXP_NUM}" \
     --max_hours 47.0 \
     --checkpoint_interval_batches 25

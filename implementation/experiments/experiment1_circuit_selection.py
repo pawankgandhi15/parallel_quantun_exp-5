@@ -378,6 +378,9 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
                 if acc > best_acc:
                     best_acc = acc
 
+                print(f"  [{circuit_name}|{ds_name}] Epoch {epoch}/{NUM_EPOCHS} "
+                      f"— Loss: {tr_loss:.4f}, Val Acc: {acc:.4f} (Best: {best_acc:.4f})", flush=True)
+
                 # Save epoch checkpoint
                 safe_torch_save({
                     "epoch": epoch,
@@ -386,6 +389,7 @@ def run_experiment1(run_metrics: bool = True, n_sims: int = N_SIMS,
                     "opt_state_dict": opt.state_dict(),
                     "rng_state": capture_rng_state(),
                 }, ckpt_file)
+                import gc; gc.collect()
 
                 if time_budget_mgr.should_stop():
                     raise TimeBudgetExceeded(
