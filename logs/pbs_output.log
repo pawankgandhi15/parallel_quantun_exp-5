@@ -1,0 +1,444 @@
+
+
+======================================================================
+                    PBS CYCLE START
+======================================================================
+Cycle Number       : 1 / 20
+PBS Job ID         : 34551.master
+Running Node       : master
+Started At         : Thu Oct  8 11:02:58 AM IST 2026
+Project Root       : /Data4/it_25201815/parallel_quantum-5
+Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
+Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+======================================================================
+
+======================================================================
+                    PYTHON ENVIRONMENT
+======================================================================
+Python executable:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+Python version:
+Python 3.11.16
+
+Python executable reported by Python:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+Defaulting CUDA_VISIBLE_DEVICES to: 0
+
+======================================================================
+                    GPU INFORMATION
+======================================================================
+0, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+1, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+2, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+3, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+4, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+5, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+6, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+7, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+
+======================================================================
+                    GIT CONFIGURATION
+======================================================================
+Git repository:
+/Data4/it_25201815/parallel_quantum-5
+
+Git remote:
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (fetch)
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (push)
+
+Current branch:
+main
+
+======================================================================
+                    EXPERIMENT EXECUTION
+======================================================================
+Experiments         : 1 2 3 4 5
+PBS walltime        : 48.0 hours
+Python time budget  : 47.0 hours
+Checkpoint interval : 25 batches
+Started             : Thu Oct  8 11:02:58 AM IST 2026
+======================================================================
+
+
+======================================================================
+  QC-CNN-Parallel Batch Execution Runner
+  Target Experiments: [1, 2, 3, 4, 5]
+  Max Queue Budget  : 47.00 hours (Queue limit: 48h)
+  Batch Checkpoint  : Every 25 batches
+  Resume enabled    : True
+======================================================================
+
+============================================================
+  EXPERIMENT 1: PQC Selection Study (Tables 2 & 3)
+============================================================
+============================================================
+  Experiment 1: PQC Selection Study  (Table 2 & 3)
+  Walltime budget: 47.00 hours (Cluster queue safe)
+============================================================
+  ⟳ Table 2 metrics already computed — loading from checkpoint.
+
+--- Circuit: RX-Linear (4 params) ---
+  [WARN] Checkpoint has 15 CUDA RNG states but only 1 GPU(s) available; restoring first 1.
+  ⟳ Resumed RX-Linear on MNIST at epoch 69 (best: 0.8170)
+  [RX-Linear|MNIST] Epoch 69/70 — Loss: 0.3163, Val Acc: 0.7925 (Best: 0.8170)
+  [RX-Linear|MNIST] Epoch 70/70 — Loss: 0.3137, Val Acc: 0.7900 (Best: 0.8170)
+  MNIST: best_acc = 0.8170
+  [RX-Linear|Fashion-MNIST] Epoch 1/70 — Loss: 0.8411, Val Acc: 0.7635 (Best: 0.7635)
+  [RX-Linear|Fashion-MNIST] Epoch 2/70 — Loss: 0.6382, Val Acc: 0.7755 (Best: 0.7755)
+  [RX-Linear|Fashion-MNIST] Epoch 3/70 — Loss: 0.5876, Val Acc: 0.7790 (Best: 0.7790)
+  [RX-Linear|Fashion-MNIST] Epoch 4/70 — Loss: 0.5585, Val Acc: 0.7625 (Best: 0.7790)
+  [RX-Linear|Fashion-MNIST] Epoch 5/70 — Loss: 0.5394, Val Acc: 0.7820 (Best: 0.7820)
+  [RX-Linear|Fashion-MNIST] Epoch 6/70 — Loss: 0.5097, Val Acc: 0.7845 (Best: 0.7845)
+  [RX-Linear|Fashion-MNIST] Epoch 7/70 — Loss: 0.5056, Val Acc: 0.7850 (Best: 0.7850)
+  [RX-Linear|Fashion-MNIST] Epoch 8/70 — Loss: 0.4980, Val Acc: 0.7970 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 9/70 — Loss: 0.4785, Val Acc: 0.7790 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 10/70 — Loss: 0.4806, Val Acc: 0.7775 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 11/70 — Loss: 0.4650, Val Acc: 0.7710 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 12/70 — Loss: 0.4610, Val Acc: 0.7785 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 13/70 — Loss: 0.4469, Val Acc: 0.7815 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 14/70 — Loss: 0.4493, Val Acc: 0.7750 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 15/70 — Loss: 0.4334, Val Acc: 0.7755 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 16/70 — Loss: 0.4413, Val Acc: 0.7740 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 17/70 — Loss: 0.4239, Val Acc: 0.7780 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 18/70 — Loss: 0.4260, Val Acc: 0.7755 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 19/70 — Loss: 0.4162, Val Acc: 0.7760 (Best: 0.7970)
+
+  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 99/313.
+
+  [CHECKPOINT] Circuit RX-Linear on Fashion-MNIST paused at epoch 20.
+
+======================================================================
+  ⏳ [WALLTIME BUDGET PAUSE]
+  Walltime limit reached on Circuit RX-Linear (Fashion-MNIST, Epoch 20).
+  Elapsed wall-clock time: 47.01 hours.
+  All model parameters, batch states, optimizer buffers, and RNG seeds
+  have been safely written to disk via atomic checkpoints.
+  Exiting with status code 42 for automatic cluster queue re-submission.
+======================================================================
+
+
+======================================================================
+                    PYTHON PROCESS FINISHED
+======================================================================
+Exit code : 42
+Finished  : Sat Oct 10 10:03:26 AM IST 2026
+======================================================================
+
+======================================================================
+             SYNCHRONIZING CURRENT CYCLE
+======================================================================
+
+======================================================================
+                    GITHUB SYNCHRONIZATION
+======================================================================
+Reason: cycle 1 completed
+Cycle : 1
+Time  : Sat Oct 10 10:03:26 AM IST 2026
+======================================================================
+[GIT] Remote:
+git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+
+[GIT] Fetching origin...
+
+[GIT] Staging all project changes...
+
+[GIT] Removing large checkpoint files from staging...
+
+======================================================================
+Files staged for GitHub:
+======================================================================
+A	implementation/results/experiment1/table3_circuit_classification.json
+
+[GIT] Commit message:
+PBS cycle 1: cycle 1 completed
+[main d1065fa] PBS cycle 1: cycle 1 completed
+ 1 file changed, 5 insertions(+)
+ create mode 100644 implementation/results/experiment1/table3_circuit_classification.json
+
+[GIT] Pushing to GitHub...
+
+======================================================================
+  [GIT SUCCESS] GitHub PUSH SUCCESSFUL
+======================================================================
+Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+Cycle      : 1
+Time       : Sat Oct 10 10:03:32 AM IST 2026
+======================================================================
+
+[SUCCESS] Current cycle pushed to GitHub.
+
+======================================================================
+                 SUBMITTING NEXT PBS CYCLE
+======================================================================
+Current cycle : 1
+Next cycle    : 2
+Time          : Sat Oct 10 10:03:32 AM IST 2026
+======================================================================
+
+Continuation job submitted successfully:
+34867.master
+
+======================================================================
+                    PBS CYCLE FINISHED
+======================================================================
+Cycle        : 1
+Next Job ID  : 34867.master
+Finished     : Sat Oct 10 10:03:33 AM IST 2026
+======================================================================
+
+
+======================================================================
+                    PBS CYCLE START
+======================================================================
+Cycle Number       : 2 / 20
+PBS Job ID         : 34867.master
+Running Node       : master
+Started At         : Sat Oct 10 10:03:34 AM IST 2026
+Project Root       : /Data4/it_25201815/parallel_quantum-5
+Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
+Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+======================================================================
+
+======================================================================
+                    PYTHON ENVIRONMENT
+======================================================================
+Python executable:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+Python version:
+Python 3.11.16
+
+Python executable reported by Python:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+======================================================================
+                    GPU INFORMATION
+======================================================================
+0, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+1, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+2, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+3, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+4, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+5, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+6, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+7, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+
+======================================================================
+                    GIT CONFIGURATION
+======================================================================
+Git repository:
+/Data4/it_25201815/parallel_quantum-5
+
+Git remote:
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (fetch)
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (push)
+
+Current branch:
+main
+
+======================================================================
+                    EXPERIMENT EXECUTION
+======================================================================
+Experiments         : 1 2 3 4 5
+PBS walltime        : 48.0 hours
+Python time budget  : 47.0 hours
+Checkpoint interval : 25 batches
+Started             : Sat Oct 10 10:03:34 AM IST 2026
+======================================================================
+
+
+======================================================================
+  QC-CNN-Parallel Batch Execution Runner
+  Target Experiments: [1, 2, 3, 4, 5]
+  Max Queue Budget  : 47.00 hours (Queue limit: 48h)
+  Batch Checkpoint  : Every 25 batches
+  Resume enabled    : True
+======================================================================
+
+============================================================
+  EXPERIMENT 1: PQC Selection Study (Tables 2 & 3)
+============================================================
+============================================================
+  Experiment 1: PQC Selection Study  (Table 2 & 3)
+  Walltime budget: 47.00 hours (Cluster queue safe)
+============================================================
+  ⟳ Table 2 metrics already computed — loading from checkpoint.
+  ⟳ Loaded checkpoint: 1 circuit-dataset benchmark(s) completed.
+
+--- Circuit: RX-Linear (4 params) ---
+  ✓ MNIST already completed: best_acc = 0.817
+  ⟳ Resumed RX-Linear on Fashion-MNIST at epoch 21 (best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 21/70 — Loss: 0.4170, Val Acc: 0.7745 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 22/70 — Loss: 0.4160, Val Acc: 0.7930 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 23/70 — Loss: 0.4040, Val Acc: 0.7735 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 24/70 — Loss: 0.4027, Val Acc: 0.7970 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 25/70 — Loss: 0.4041, Val Acc: 0.7705 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 26/70 — Loss: 0.4004, Val Acc: 0.7815 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 27/70 — Loss: 0.3932, Val Acc: 0.7770 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 28/70 — Loss: 0.3856, Val Acc: 0.7745 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 29/70 — Loss: 0.3898, Val Acc: 0.7745 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 30/70 — Loss: 0.3863, Val Acc: 0.7705 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 31/70 — Loss: 0.3810, Val Acc: 0.7730 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 32/70 — Loss: 0.3739, Val Acc: 0.7640 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 33/70 — Loss: 0.3809, Val Acc: 0.7625 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 34/70 — Loss: 0.3731, Val Acc: 0.7855 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 35/70 — Loss: 0.3729, Val Acc: 0.7695 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 36/70 — Loss: 0.3683, Val Acc: 0.7835 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 37/70 — Loss: 0.3700, Val Acc: 0.7775 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 38/70 — Loss: 0.3739, Val Acc: 0.7840 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 39/70 — Loss: 0.3673, Val Acc: 0.7845 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 40/70 — Loss: 0.3698, Val Acc: 0.7765 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 41/70 — Loss: 0.3614, Val Acc: 0.7890 (Best: 0.7970)
+
+  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 97/313.
+
+  [CHECKPOINT] Circuit RX-Linear on Fashion-MNIST paused at epoch 42.
+
+======================================================================
+  ⏳ [WALLTIME BUDGET PAUSE]
+  Walltime limit reached on Circuit RX-Linear (Fashion-MNIST, Epoch 42).
+  Elapsed wall-clock time: 47.01 hours.
+  All model parameters, batch states, optimizer buffers, and RNG seeds
+  have been safely written to disk via atomic checkpoints.
+  Exiting with status code 42 for automatic cluster queue re-submission.
+======================================================================
+
+
+======================================================================
+                    PYTHON PROCESS FINISHED
+======================================================================
+Exit code : 42
+Finished  : Mon Oct 12 09:03:59 AM IST 2026
+======================================================================
+
+======================================================================
+             SYNCHRONIZING CURRENT CYCLE
+======================================================================
+
+======================================================================
+                    GITHUB SYNCHRONIZATION
+======================================================================
+Reason: cycle 2 completed
+Cycle : 2
+Time  : Mon Oct 12 09:03:59 AM IST 2026
+======================================================================
+[GIT] Remote:
+git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+
+[GIT] Fetching origin...
+
+[GIT] Staging all project changes...
+
+[GIT] Removing large checkpoint files from staging...
+
+======================================================================
+Files staged for GitHub:
+======================================================================
+
+[GIT] No changes to commit.
+[GIT] Nothing to push.
+
+[SUCCESS] Current cycle pushed to GitHub.
+
+======================================================================
+                 SUBMITTING NEXT PBS CYCLE
+======================================================================
+Current cycle : 2
+Next cycle    : 3
+Time          : Mon Oct 12 09:04:01 AM IST 2026
+======================================================================
+
+Continuation job submitted successfully:
+35096.master
+
+======================================================================
+                    PBS CYCLE FINISHED
+======================================================================
+Cycle        : 2
+Next Job ID  : 35096.master
+Finished     : Mon Oct 12 09:04:02 AM IST 2026
+======================================================================
+
+
+======================================================================
+                    PBS CYCLE START
+======================================================================
+Cycle Number       : 3 / 20
+PBS Job ID         : 35096.master
+Running Node       : master
+Started At         : Mon Oct 12 09:04:03 AM IST 2026
+Project Root       : /Data4/it_25201815/parallel_quantum-5
+Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
+Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+======================================================================
+
+======================================================================
+                    PYTHON ENVIRONMENT
+======================================================================
+Python executable:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+Python version:
+Python 3.11.16
+
+Python executable reported by Python:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+======================================================================
+                    GPU INFORMATION
+======================================================================
+0, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+1, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+2, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+3, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+4, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+5, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+6, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+7, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+
+======================================================================
+                    GIT CONFIGURATION
+======================================================================
+Git repository:
+/Data4/it_25201815/parallel_quantum-5
+
+Git remote:
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (fetch)
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (push)
+
+Current branch:
+main
+
+======================================================================
+                    EXPERIMENT EXECUTION
+======================================================================
+Experiments         : 1 2 3 4 5
+PBS walltime        : 48.0 hours
+Python time budget  : 47.0 hours
+Checkpoint interval : 25 batches
+Started             : Mon Oct 12 09:04:04 AM IST 2026
+======================================================================
+
+
+======================================================================
+  QC-CNN-Parallel Batch Execution Runner
+  Target Experiments: [1, 2, 3, 4, 5]
+  Max Queue Budget  : 47.00 hours (Queue limit: 48h)
+  Batch Checkpoint  : Every 25 batches
+  Resume enabled    : True
+======================================================================
+
+============================================================
+  EXPERIMENT 1: PQC Selection Study (Tables 2 & 3)
+============================================================
+============================================================
+  Experiment 1: PQC Selection Study  (Table 2 & 3)
+  Walltime budget: 47.00 hours (Cluster queue safe)
+============================================================
+  ⟳ Table 2 metrics already computed — loading from checkpoint.
+  ⟳ Loaded checkpoint: 1 circuit-dataset benchmark(s) completed.
+
+--- Circuit: RX-Linear (4 params) ---
+  ✓ MNIST already completed: best_acc = 0.817
+  ⟳ Resumed RX-Linear on Fashion-MNIST at epoch 43 (best: 0.7970)

@@ -50,9 +50,8 @@ desktop.ini
 *.swp
 *.swo
 
-# Logs
-*.log
-logs/
+# Logs - tracked on GitHub
+# (no entries - logs/ directory is intentionally committed)
 
 # Distribution / packaging
 dist/
