@@ -442,3 +442,63 @@ Started             : Mon Oct 12 09:04:04 AM IST 2026
 --- Circuit: RX-Linear (4 params) ---
   ✓ MNIST already completed: best_acc = 0.817
   ⟳ Resumed RX-Linear on Fashion-MNIST at epoch 43 (best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 43/70 — Loss: 0.3626, Val Acc: 0.7725 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 44/70 — Loss: 0.3549, Val Acc: 0.7660 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 45/70 — Loss: 0.3597, Val Acc: 0.7825 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 46/70 — Loss: 0.3577, Val Acc: 0.7835 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 47/70 — Loss: 0.3398, Val Acc: 0.7790 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 48/70 — Loss: 0.3458, Val Acc: 0.7905 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 49/70 — Loss: 0.3440, Val Acc: 0.7895 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 50/70 — Loss: 0.3411, Val Acc: 0.7635 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 51/70 — Loss: 0.3417, Val Acc: 0.7800 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 52/70 — Loss: 0.3387, Val Acc: 0.7800 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 53/70 — Loss: 0.3422, Val Acc: 0.7520 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 54/70 — Loss: 0.3408, Val Acc: 0.7765 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 55/70 — Loss: 0.3414, Val Acc: 0.7785 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 56/70 — Loss: 0.3312, Val Acc: 0.7770 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 57/70 — Loss: 0.3358, Val Acc: 0.7770 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 58/70 — Loss: 0.3290, Val Acc: 0.7905 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 59/70 — Loss: 0.3438, Val Acc: 0.7845 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 60/70 — Loss: 0.3329, Val Acc: 0.7830 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 61/70 — Loss: 0.3219, Val Acc: 0.7925 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 62/70 — Loss: 0.3303, Val Acc: 0.7715 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 63/70 — Loss: 0.3242, Val Acc: 0.7700 (Best: 0.7970)
+
+  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 3/313.
+
+  [CHECKPOINT] Circuit RX-Linear on Fashion-MNIST paused at epoch 64.
+
+======================================================================
+  ⏳ [WALLTIME BUDGET PAUSE]
+  Walltime limit reached on Circuit RX-Linear (Fashion-MNIST, Epoch 64).
+  Elapsed wall-clock time: 47.00 hours.
+  All model parameters, batch states, optimizer buffers, and RNG seeds
+  have been safely written to disk via atomic checkpoints.
+  Exiting with status code 42 for automatic cluster queue re-submission.
+======================================================================
+
+
+======================================================================
+                    PYTHON PROCESS FINISHED
+======================================================================
+Exit code : 42
+Finished  : Wed Oct 14 08:04:13 AM IST 2026
+======================================================================
+
+======================================================================
+             SYNCHRONIZING CURRENT CYCLE
+======================================================================
+
+======================================================================
+                    GITHUB SYNCHRONIZATION
+======================================================================
+Reason: cycle 3 completed
+Cycle : 3
+Time  : Wed Oct 14 08:04:13 AM IST 2026
+======================================================================
+[GIT] Remote:
+git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+
+[GIT] Fetching origin...
+
+[GIT] Staging all project changes...
