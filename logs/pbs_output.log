@@ -642,3 +642,60 @@ Started             : Wed Oct 14 08:04:22 AM IST 2026
   [RX-Linear|Fashion-MNIST] Epoch 66/70 — Loss: 0.3207, Val Acc: 0.7760 (Best: 0.7970)
   [RX-Linear|Fashion-MNIST] Epoch 67/70 — Loss: 0.3298, Val Acc: 0.7575 (Best: 0.7970)
   [RX-Linear|Fashion-MNIST] Epoch 68/70 — Loss: 0.3181, Val Acc: 0.7720 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 69/70 — Loss: 0.3178, Val Acc: 0.7740 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 70/70 — Loss: 0.3245, Val Acc: 0.7790 (Best: 0.7970)
+  Fashion-MNIST: best_acc = 0.7970
+
+--- Circuit: RX-Circle (4 params) ---
+  [RX-Circle|MNIST] Epoch 1/70 — Loss: 1.5703, Val Acc: 0.6915 (Best: 0.6915)
+  [RX-Circle|MNIST] Epoch 2/70 — Loss: 1.1033, Val Acc: 0.7015 (Best: 0.7015)
+  [RX-Circle|MNIST] Epoch 3/70 — Loss: 0.9702, Val Acc: 0.7145 (Best: 0.7145)
+  [RX-Circle|MNIST] Epoch 4/70 — Loss: 0.8986, Val Acc: 0.7245 (Best: 0.7245)
+  [RX-Circle|MNIST] Epoch 5/70 — Loss: 0.8512, Val Acc: 0.7210 (Best: 0.7245)
+  [RX-Circle|MNIST] Epoch 6/70 — Loss: 0.8174, Val Acc: 0.7305 (Best: 0.7305)
+  [RX-Circle|MNIST] Epoch 7/70 — Loss: 0.7901, Val Acc: 0.7300 (Best: 0.7305)
+  [RX-Circle|MNIST] Epoch 8/70 — Loss: 0.7683, Val Acc: 0.7350 (Best: 0.7350)
+  [RX-Circle|MNIST] Epoch 9/70 — Loss: 0.7484, Val Acc: 0.7360 (Best: 0.7360)
+  [RX-Circle|MNIST] Epoch 10/70 — Loss: 0.7332, Val Acc: 0.7375 (Best: 0.7375)
+  [RX-Circle|MNIST] Epoch 11/70 — Loss: 0.7190, Val Acc: 0.7380 (Best: 0.7380)
+  [RX-Circle|MNIST] Epoch 12/70 — Loss: 0.7061, Val Acc: 0.7430 (Best: 0.7430)
+  [RX-Circle|MNIST] Epoch 13/70 — Loss: 0.6946, Val Acc: 0.7430 (Best: 0.7430)
+
+  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 149/313.
+
+  [CHECKPOINT] Circuit RX-Circle on MNIST paused at epoch 14.
+
+======================================================================
+  ⏳ [WALLTIME BUDGET PAUSE]
+  Walltime limit reached on Circuit RX-Circle (MNIST, Epoch 14).
+  Elapsed wall-clock time: 47.01 hours.
+  All model parameters, batch states, optimizer buffers, and RNG seeds
+  have been safely written to disk via atomic checkpoints.
+  Exiting with status code 42 for automatic cluster queue re-submission.
+======================================================================
+
+
+======================================================================
+                    PYTHON PROCESS FINISHED
+======================================================================
+Exit code : 42
+Finished  : Fri Oct 16 07:04:45 AM IST 2026
+======================================================================
+
+======================================================================
+             SYNCHRONIZING CURRENT CYCLE
+======================================================================
+
+======================================================================
+                    GITHUB SYNCHRONIZATION
+======================================================================
+Reason: cycle 4 completed
+Cycle : 4
+Time  : Fri Oct 16 07:04:45 AM IST 2026
+======================================================================
+[GIT] Remote:
+git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+
+[GIT] Fetching origin...
+
+[GIT] Staging all project changes...
