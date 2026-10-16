@@ -1,0 +1,1480 @@
+--- PAGE 1 ---
+RESEARCHARTICLE OPEN ACCESS
+A Parallel Hybrid Quantum-Classical Convolutional Design
+Using Parameterized Quantum Circuits for
+Image Classifcation
+Haoxuan Liu
+ | Xiaoping Lou
+College of Information Science and Engineering, Hunan Normal University, Changsha, Hunan, China
+Correspondence: Xiaoping Lou (louxiaoping@hunnu.edu.cn)
+Received: 6 September 2025 | Revised: 16 December 2025 | Accepted: 17 January 2026
+Academic Editor:Shijie Wei
+Keywords: deep learning | image classifcation | quantum computing | quantum machine learning
+ABSTRACT
+Image classifcation plays a critical role across various industries, yet the rapid growth of visual data has signifcantly increased
+computational complexity. Convolutional neural networks (CNNs) have demonstrated strong capabilities in efcient feature
+extraction, but they still face trade-ofs between performance and computational cost when handling large-scale data. Recent
+studies have explored integrating quantum mechanical principles into classical CNNs to enhance model expressivity. However,
+existing hybrid quantum–classical convolutional architectures remain limited in terms of feature capture and computational
+efciency.In thisstudy, we propose a novel hybridquantum–classical convolutional neural network (QC-CNN-Parallel), which
+introduces parallel quantum and classical convolutional branches and extends the concept of multiscale convolution to hybrid
+networks.Thisdesignenablesthecaptureoflargercontextualinformationduringconvolutionwhilereducingcircuitdepthand
+computational overhead. Moreover, we employ parameterized quantum circuits (PQCs) with expressibility, entanglement, and
+discretenessmetricstoselectoptimalquantumcircuitsandfurtherenhancemodelperformance.WeevaluateQC-CNN-Parallelon
+three grayscale image datasets: MNIST, Fashion-MNIST, and Overhead-MNIST. Experimental results show that our model
+improves average training accuracy by 4.89%, 2.77%, and 6.24% over existing hybrid quantum CNNs and classical CNNs, re-
+spectively,whileexhibitingsuperiorrobustness.TheseresultsdemonstratethatQC-CNN-Parallelachievesenhancedclassifcation
+performance with high computational efciency and practical potential.
+1 | Introduction
+Quantum machine learning (QML) [1] is an interdisciplinary
+feldthatmergesquantumcomputingwithmachinelearning.It
+has garnered signifcant attention due to its potential to solve
+computational problems that are challenging or impractical for
+classical computers. This potential arises from the unique
+characteristicsofquantumcomputing,suchassuperposition[2]
+and entanglement [3], which can provide exponential speedups
+for specifc machine learning tasks.
+Researchers have made signifcant contributions across various
+domains,includingdataprocessing,classifcation,segmentation,
+and optimization. In the era of noisy intermediate–scale quan-
+tum (NISQ) devices [4], the application of QML to image clas-
+sifcation tasks is particularly promising. Quantum computing
+Thisisanopenaccessarticleunderthetermsofthe CreativeCommonsAttribution License,whichpermitsuse,distributionandreproductioninanymedium,providedthe
+original work is properly cited.
+Copyright © 2026 Haoxuan Liu and Xiaoping Lou.Quantum Engineeringpublished by John Wiley & Sons Ltd.
+Quantum Engineering, 2026; 2026:6643049 1 of 15
+https://doi.org/10.1155/que2/6643049
+Quantum Engineering
+
+--- PAGE 2 ---
+can expedite the complex computations involved in image
+analysis, while the classifcation output remains relatively
+straightforward and deterministic, making it well suited for the
+probabilistic outcomes produced by QML algorithms. Several
+QML models have been proposed for image classifcation, uti-
+lizingtechniquessuchasquantumannealing[5]andPQCs[6, 7].
+However,practicalimplementationofquantumalgorithmsfaces
+signifcant challenges, including the fragility of quantum states
+[8],thenecessityofquantumerrorcorrection[9],andtheefects
+ofnoise[10].Furthermore,itremainsanopenquestionwhether
+quantum neural networks (QNNs) [11], a subfeld of QML, can
+consistentlyoutperformclassicalneuralnetworks.Despitethese
+limitations, QML has demonstrated promising results across
+several application domains [12].
+Hybrid quantum neural networks (HQNNs) [13], as an impor-
+tantvariantofQNNs,representapromisingdirectionforQMLin
+image classifcation and visual tasks. HQNNs integrate classical
+deeplearningarchitectureswithparameterizedquantumcircuits
+(PQCs) to build a hybrid system that leverages both the ex-
+pressive power of quantum computation and the stability of
+classical neural networks. They have demonstrated promising
+applications across multiple domains, including healthcare
+[14, 15], chemistry [16, 17], data security [18], and fnance
+[19,20].RecentstudieshavefurtheradvancedHQNNsinimage
+processing and generative tasks. For instance, He et al. [21]
+applied HQNNs for image denoising, showing that quantum
+convolution can enhance texture recovery under high-noise
+conditions; Huang et al. [22] constructed HQNN-based image
+classifcation models and systematically analyzed their robust-
+nessagainstadversarialexamples.Moreover,signifcantprogress
+has been made in quantum generative modeling, including the
+one-to-many image generation framework based on PQCs pro-
+posed by Pei et al. [23], the quantum generative adversarial
+network(QGAN)leveragingBornmachineprobabilitiesbyDing
+et al. [24], the dual-discriminator QGAN with quantum con-
+volution proposed by Gong et al. [25], and the unrolled hybrid
+quantum–classicalgenerativemodelforcontinuousdistribution
+modeling by Gong et al. [26]. These studies collectively dem-
+onstrate the potential of HQNNs in image classifcation, image
+generation, and image restoration tasks. Further research is
+expectedtofullyexploretherepresentationalcapacityofHQNNs
+and to develop more robust and scalable hybrid quantum–
+classical learning algorithms.
+A recent advancement in this feld involves the integration of
+quantum techniques into CNNs. Previous HQNN approaches
+primarily introduced quantum layers into the fully connected
+layers to replace traditional linear classifers. In contrast, the
+current approach replaces convolutional layers with quantum
+modulesforfeatureextraction.Recentstudiesindicatethatthese
+models possess signifcant development potential and already
+exhibit promising performance. Within this framework, two
+primarydirectionshaveemerged:quantumconvolutionalneural
+networks (Q-CNNs) [27], which are entirely quantum archi-
+tectures, and quantum–classical convolutional neural networks
+(QC-CNNs) [28], which integrate both classical and quantum
+components. Each approach has distinct advantages and limi-
+tations. QCNNs fully harness the strengths of quantum com-
+puting but are less suitable for processing large-scale data. In
+contrast, QC-CNNs provide improved training efciency and
+broader applicability, although they may demonstrate less pro-
+nounced enhancements in task-specifc performance.
+ThehybridQC-CNNwasfrstproposedbyHendersonetal.[29]
+tocombinetheexpressivepotentialofquantumcomputingwith
+thewell-establishedcapabilitiesofclassicalconvolutionalneural
+networks (CNNs) for image recognition tasks. Subsequently,
+Huang et al. [30] introduced a QC-CNN based on variational
+quantumcircuits,validatingtheefectivenessofthisarchitecture
+usingtheMNISTandFashion-MNISTdatasets.Senokosovetal.
+[31]furtherextendedHenderson’sworkbyreplacingtheoriginal
+random quantum circuits with specially designed PQCs, en-
+hancingboththetrainabilityandexpressivepowerofthemodel.
+Xiang et al. [32] applied QC-CNNs to breast cancer diagnosis,
+demonstrating the potential of QML in medical imaging. Later,
+Shietal.[33]incorporatedquantumconvolutionalmechanisms
+into the ResNet framework, proposing the QC-ResNet for
+medical image classifcation. Wang et al. [34] systematically
+evaluated multiple PQC architectures in terms of expressibility
+and entangling capability, treating these metrics as key quan-
+titative indicators of quantum circuit performance.
+Despite the rapid development of QC-CNN-type quantum con-
+volutional models in recent years, several critical challenges re-
+main. Firstly, the quantum convolution proposed by Henderson
+et al. [29] relies on deterministic or shallow quantum flters
+without trainable parameters, limiting the ability to exploit
+quantum nonlinearity for adaptive feature extraction. Although
+subsequent studies, such as Senokosov et al.’s study [31], in-
+troduced trainable PQCs, the quantum modules were often in-
+tegrated within fully connected layers as independent quantum
+linear branches, while convolutional feature extraction remained
+dominated by classical CNNs, restricting their capacity to model
+multiscale spatial features. Secondly, research such as that by
+Xiang et al. [32] has primarily focused on applying QC-CNNs to
+novel tasks rather than systematically optimizing the model ar-
+chitecture.Thirdly,Wangetal.[34]concentratedmainlyonsingle
+metrics,suchasexpressibilityorentanglingcapability,overlooking
+gradient behavior, which is crucial for training feasibility. More-
+over, existing methods have not thoroughly addressed additional
+trainingchallengesassociatedwithincreasedcircuitdepth,suchas
+gradient vanishing and the exacerbation of barren plateau phe-
+nomena [35]. Collectively, these issues limit the scalability and
+practical performance of QC-CNNs under NISQ conditions.
+To address these challenges, the present study undertakes
+asystematicinvestigationandmakesthreemajorcontributions.
+• WeproposeaparallelhybridQC-CNNarchitecturebasedon
+PQCs,termedas QC-CNN-Parallel.Inspiredby theparallel
+designconceptofInceptionnetworks,thismodelenhances
+feature representation by increasing the width of feature
+extraction layers—implemented as parallel quantum–clas-
+sical convolutional channels—rather than their depth, ef-
+fectively mitigating issues associated with excessively deep
+quantum circuits.
+• We systematically investigate the relationship between the
+structural properties of PQCs and model performance. Our
+analysis considers multiple dimensions, including expres-
+sibility, entangling capability, and gradient behavior, of-
+fering both theoretical guidance and practical insights for
+selecting optimal PQC designs under NISQ conditions.
+2 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 3 ---
+• The efectiveness and stability of the proposed model are
+validated through extensive comparative experiments and
+noise robustness tests. The results demonstrate that QC-
+CNN-Paralleloutperformstheexistingquantumandhybrid
+models in accuracy, training stability, and noise tolerance.
+The structure of this paper is organized as follows: Section 2
+introduces the relevant background information; Section 3
+providesadetaileddescriptionoftheproposedQC-CNN-Parallel
+model architecture; Section 4 presents the experimental evalu-
+ation of the model’s performance; Section 5 summarizes the
+paper and discusses future research directions; and Table A1
+ofers a glossary of abbreviations used in this study.
+2 | Background
+Quantum mechanics defnes a “quantum” as the smallest dis-
+crete unit of a physical quantity. Core properties of quantum
+mechanicsincludesuperpositionandentanglement,whichform
+the theoretical foundation for quantum computing. The quan-
+tumbit(qubit)servesasthefundamentalunitofinformationin
+quantum computing, analogous to the classical bit in conven-
+tional computing. Unlike classical bits, qubits can exist in an
+arbitrary linear superposition of the basis states |0〉 and |1〉:
+|ψ〉 = α|0〉 + β|1〉, α, β∈C, |α|2 +|β|2 =1. (1)
+Quantum entanglement denotes a unique correlation that
+emerges between two or more quantum systems, wherein the
+stateofonesystemafectsthestateofanother,irrespectiveofthe
+distance that separates them. The state of an entangled system
+cannot be characterized independently; rather, the collective
+stateofthesystemmustbeanalyzed.Forexample,inthecontext
+of two qubits, the entangled state can be expressed as
+|ψ〉 = 1̅̅ ̅
+2
+√ (|00〉 +|11〉). (2)
+Inthisspecifcstate,ifonequbitismeasuredandfoundtobein
+the state |0〉, the measurement of the other qubit will also yield
+thestate |0〉.Conversely,ifthefrstqubitismeasuredtobeinthe
+state |1〉, the second qubit will similarly be measured as |1〉.
+2.1 | Quantum Logic Gates
+In classical computing, the fundamental unit is the bit, and the
+primary control mechanism is the logical gate, often referred to
+as the U-gate. By integrating multiple logical gates, one can
+achieve precise control over electronic circuits. In a parallel
+manner,quantumcomputingutilizesthequantumbit,orqubit,
+as its fundamental operational unit, with the manipulation of
+qubits being facilitated by quantum logic gates. The imple-
+mentation of quantum logic gates allows for the deliberate
+evolutionofquantumstates,therebyrenderingthemessentialto
+the development of quantum algorithms.
+Quantum logic gates are represented by unitary matrices and
+generally function on one or two qubits, similar to the function of
+classical logic gates on bits. This operational mechanism endows
+quantum computing with considerable fexibility and computa-
+tionalcapability.Inthefollowingsections,wewillintroduceseveral
+single-qubit quantum gates that will be employed in this study:
+RX (θ) =
+cos θ2( ) − isin θ2( )
+− isin θ2( ) cos θ2( )
+⎛
+⎜⎜⎜⎜⎜⎜⎜⎝
+⎞
+⎟⎟⎟⎟⎟⎟⎟⎠,
+RY (θ) =
+cos θ2( ) −sin θ2( )
+sin θ2( ) cos θ2( )
+⎛
+⎜⎜⎜⎜⎜⎜⎜⎝
+⎞
+⎟⎟⎟⎟⎟⎟⎟⎠,
+RZ (θ) =
+e−i(θ/2) 0
+0 ei(θ/2)
+⎛
+⎜⎜⎝
+⎞
+⎟⎟⎠.
+(3)
+Thedual quantumgaterepresentsthe dualquantumcontrolled
+variant of the previously discussed quantum gate, as outlined
+below:
+CU =
+1 0 0 0
+0 1 0 0
+0 0 U11 U12
+0 0 U21 U22
+⎛
+⎜⎜⎜⎜⎜⎜⎝
+⎞
+⎟⎟⎟⎟⎟⎟⎠. (4)
+The operator U = U11 U12
+U21 U22
+( ) can represent any single-qubit
+gate, including, but not limited to, the X, Y, Z, RZ, RX, and
+RY gates.
+2.2 | Quantum Circuit
+Typically, a QNN circuit comprises three primary components:
+encoding, training, and measurement. The encoding stage is re-
+sponsible for mapping classical information into quantum states.
+Thetrainingcircuit,whichincorporatestrainableparameters,can
+beregardedasaquantumanalogofafeedforwardneuralnetwork.
+It maps input features to corresponding quantum states through
+parameter optimization. Finally, the measurement stage converts
+the quantum state back into classical information, which can
+subsequently be processed by classical networks.
+3 | Methodology
+Many existing QNN models typically utilize PQCs to substitute
+for convolutional or classifcation layers found in conventional
+neural networks. While increasing the depth of PQCs can im-
+provethemodel’srepresentationalcapacity,itoftenleadstothe
+vanishing gradient problem, which can complicate the training
+process.
+Toaddressthisissue,thispaperproposesamultichannelhybrid
+quantum CNN—QC-CNN-Parallel, as illustrated in Figure 1.
+Thisarchitectureintegratesclassicalandquantumconvolutional
+branches in parallel, with the classical branch concentrating on
+localspatialfeatureextractionandthequantumbranchfocusing
+on nonlinear modeling. This combination enhances the overall
+representational capacity of the model.
+In the concrete implementation, the classical branch employs
+convolutional kernels of size 44, while the quantum branch
+Quantum Engineering, 2026 3 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 4 ---
+utilizes kernels of size 22, both with a stride of 2, to achieve
+efcient spatial compression and feature extraction. To accom-
+modate the receptive feld corresponding to the 22 quantum
+kernel,wedesignaPQCconsistingoffourqubits,asillustratedin
+Figure 2. Specifcally, each 22 region within the convolutional
+windowisfrstfattenedintoaone-dimensionalvectorandthen
+encoded into the initialstates of four qubits via angleencoding.
+These qubits are subsequently processed through a trainable
+PQC composed of multiple layers of parameterized quantum
+gates, followed by measurement at the output stage. During
+measurement,thePauli-Z operatorischosenasobservable,and
+itsexpectationvalueisusedastheoutputfeatureofthequantum
+convolutional kernel at the corresponding spatial location.
+As shown in Figure 2, each qubit corresponds to one output
+channel.Consequently,thequantumconvolutionallayercanbe
+viewedasanalogoustoaclassicalconvolutionalkernelwithfour
+channels of size 22, where the output of each channel is rep-
+resented by the measurement result of a single qubit. After the
+classical and quantum branches independently complete their
+feature extraction processes, the resulting feature maps are
+concatenated along the channel dimension and fed into sub-
+sequent fully connected layers for classifcation. This parallel
+architecture not only alleviates the parameter optimization
+bottleneck typically encountered in PQC training but also en-
+hancesthemodel’sabilitytocapturemultiscalefeatures,thereby
+demonstrating superior classifcation performance across mul-
+tiple tasks. Then, we will introduce the quantum components
+including feature mapping, PQC, measurement operations, and
+the classical components and the learning process.
+3.1 | Feature Mapping
+As image data are inherently classical, it is essential to encode
+them into quantum states before quantum processing can be
+applied. Three commonly used encoding strategies in QML are
+basis encoding [36], amplitude encoding [37], and angle
+encoding [38]. Each of these strategies has its own trade-ofs
+regarding space complexity, circuit depth, and applicability to
+specifc tasks. These strategies depend on unitary trans-
+formations that map classical data vectors into quantum states.
+Formally, a classical data vector x is encoded into a quantum
+state via a unitary operation Ue, such that
+|x〉 = Ue|0〉⊗n, (5)
+where Ue denotes the encoding circuit composed of quantum
+gates and n is the number of qubits used.
+In this work, we employ angle encoding, which integrates
+classical data into the rotation angles of quantum gates. As il-
+lustrated in Figure3, each input value is encoded onto a single
+qubit through a rotation around the Y-axis. Specifcally, for an
+input value x, the corresponding quantum state is prepared as
+follows:
+|ψ〉 = RY (x)H|0〉 = cos(x/2) + sin(x/2)̅̅ ̅2√ |0〉 + cos(x/2) − sin(x/2)̅̅ ̅2√ |1〉.
+(6)
+This encoding scheme necessitates one qubit for each input
+dimension. Although it is less space-efcient than amplitude
+0 M
+0 M
+0 M
+0 M
+PQC U(θ)
+Quantum filter
+Measurement
+Input data
+Output data
+θ1 = X1 * π
+X1 X2
+X3 X4
+θ2 = X2 * π
+θ3 = X3 * π
+θ4 = X4 * π
+Encoding Ue(x)
+FIGURE 2 | Quantum circuit of feature extraction.
+4 × 4
+Car
+Harbor
+Helicopter
+Oil_gas_feld
+Parking_lot
+Plane
+Runway_markFully1 Fully2
+Output
+Ship
+Storage_tank
+Stadium
+Flatten 
+Quantum flter
+Classical flter
+M
+M
+M
+M
+U
+FIGURE 1 | The QC-CNN-Parallel structure proposed in this article.
+4 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 5 ---
+encoding, it is more practical and better suited for classifcation
+tasks. In our implementation, each input patch of the image is
+mapped to a set of qubits using this method before being pro-
+cessed by the PQC.
+3.2 | PQCs
+PQCs represent a critical element of QNNs, and their archi-
+tectural design can profoundly infuence the performance of
+QNN models. In contrast to encoding layers, which are char-
+acterized by fxed functions and lack learning capabilities, the
+design and selection of trainable layers are essential for ef-
+fectivemodelconstruction.Thesetrainablelayersplayapivotal
+role in determining the model’s capacity for generalization,
+similar to the function of convolutional or fully connected
+layersinclassicalneuralnetworks.Amodelthatisdefcientin
+tunable parameters may encounter difculties in learning
+complex input patterns.
+PQCs optimize adjustable parameters to approximate target
+functions, thereby mapping input features to value ranges that
+correspond to diferent classes. The architecture of a PQC is
+typically composed of two primary components: variational
+layers and entangling layers. The variational layers generally
+include single-qubit rotation gates (e.g.,RX, RY, and RZ), which
+governthestatetransformationsofindividualqubits.Incontrast,
+theentanglinglayersconsistofmulti-qubitcontrolledgates(e.g.,
+CNOT and CZ), which are responsible for establishing entan-
+glement among qubits.
+The application of a PQC denoted as U(θ) to an input state |ψ〉
+results in an output state |ψout〉:
+ȷψout〉 = U(θ)|ψ〉, (7)
+where U(θ) can be written as
+U(θ) = Un θn( ) ,…, Ui θi( ) ,…, U1 θ1( ) , (8)
+where n represents the depth of the circuit, with each param-
+eterizedunitthatoperatesonasinglequbitbeingconsideredas
+one layer of depth.
+Diferent circuit architectures signifcantly impact the perfor-
+mance of QNNs, making the selection of an appropriate PQC
+structure a critical step in developing efective QNNs. Notably,
+even for the same task, various PQC designs may demonstrate
+considerable performance variations due to diferences in their
+expressibility and entangling capabilities. As highlighted by
+Sukin Sim et al. [40], the performance of a PQC is jointly
+infuenced by these two factors. The expressibility of a PQC is
+typically measured by
+Expr = DKL ̂PPQC(F; θ)‖PHaar(F)( ), (9)
+where ̂PPQC(F; θ) denotes the estimated probability distribution
+of the fdelity function F, which is derived from states sampled
+fromthePQCwithparameter θ.Incontrast, PHaar(F)represents
+the reference distribution under the Haar measure. The Kull-
+back–Leibler (KL) divergence DKL is utilized to quantify the
+diference between these two probability distributions. A value
+closer to zero indicates a higher expressibility of the quantum
+circuit.
+TheMeyer–Wallach(MW)entanglementmeasure[40]iswidely
+utilized to quantify the amount and type of entanglement gen-
+erated by a PQC, serving as an efective metric for assessing its
+entangling capability. Specifcally, the entangling capability of
+aPQCisdefnedasitsabilitytogeneratestateswithhighaverage
+MWentanglement.Thiscapabilityisestimatedbysamplingthe
+parameterspaceofthePQCandcomputingthesamplemeanof
+the MW entanglement of the output states. The mathematical
+formulation is provided as follows:
+Ent = 1|S| ∑θi∈ S Q |ψθi〉( ) , (10)
+where S denotes the set of parameters sampled from the pa-
+rameter space, |ψθi 〉 represents the quantum state generated by
+the PQC with parameter θi, and Q is the MW entanglement
+measure function. Consequently, this metric approaches 1 for
+circuitswithstrongentanglingcapabilitiesandtendstoward0for
+those with weaker entanglement.
+However, our empirical observations indicate that neither
+expressibility nor entangling capability exhibits a positive cor-
+relation with the classifcation performance of the model. Spe-
+cifcally, certain circuits with high expressibility perform
+unexpectedly poorly, whereas some structures with compara-
+tively low entangling capability achieve higher classifcation
+accuracy. This deviation from conventional intuition suggests
+that relying solely on expressibility and entangling capability is
+insufcient for comprehensively evaluating PQC quality.
+AccordingtothetheoreticalframeworkestablishedbyMcClean
+etal.[35],thetrainabilityofaPQCisgovernedbythevarianceof
+its gradients. Their central conclusion can be expressed as
+Var ∂θL[ ] ∼ O! 12n( ) . (11)
+Implyingthatgradientvariancedecreasesexponentiallywiththe
+numberofqubitsorcircuitdepth—anefectcommonlyreferred
+to as the barren plateau phenomenon. Consequently, the
+00 Four-qubits
+angle
+encoding:
+H
+H
+H
+H
+Ry (α)
+Ry (β)
+Ry (γ)
+Ry (δ)
+Ansatz
+∣0〉
+∣0〉
+∣0〉
+∣0〉
+δ γ
+01
+10 11
+αβ
+FIGURE 3 | Quantum angle encoding.
+Quantum Engineering, 2026 5 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 6 ---
+structure of the gradient distribution plays a decisive role in
+determining whether a PQC is trainable.
+Nevertheless, for the shallow and few-qubit quantum convolu-
+tional circuits considered in this study, McClean’s framework
+cannot adequately distinguish the training behavior among
+diferent shallow PQC architectures. For instance, two circuits
+may share similar expressibility and comparable mean gradient
+magnitudes, yet exhibit drastically diferent training outcomes.
+Thisdiscrepancysuggeststheneedforanadditionalmetricthat
+capturesthevariabilityofgradientsacrosstheparameterspace—
+namely, gradient heterogeneity.
+Toaddressthis,weintroduceanewmetrictermedDiscreteness
+(Disc), defned as the mean variance of the gradients of all
+trainable parameters over N-random initializations:
+Var gi( ) = 1N∑Nj=1 g(j)i − gi( ) 2, gi = 1N∑Nj=1g(j)i , (12)
+where g(j)i denotes the gradient of the i-th parameter during the
+j-th sampling and N represents the total number of samples.
+Additionally, gi signifesthemeangradientofthe i-thparameter.
+Disc = 1M∑Mi=1Var gi( ) , (13)
+where M represents the total number of trainable parameters.
+Fundamentally, this metric captures the second-order statistics
+ofthegradientdistributionandalignswiththegradient-variance
+framework originally proposed by McClean et al., thereby pro-
+viding a theoretically grounded measure. Detailed numerical
+simulations and structural comparisons based on these three
+characteristicswillbepresentedintheexperimentalsectionthat
+follows.
+3.3 | Measurement
+After quantum feature extraction, measurement operations are
+necessary to convert quantum data into classical information,
+whichis subsequentlyinputintoclassicalnetworks.Theresults
+of the measurements are expressed as expectation values. For
+aquantumstate |ψ〉,themeasurementoperator Mmaybeoneof
+the Pauli operators: X, Y, or Z. The measurement outcome is
+determined by the following.
+E(θ) = 〈ψout|M|ψout〉 = 〈ψ|U(θ)†MU(θ)|ψ〉. (14)
+In this experiment, we use the Pauli-Z operator as observable.
+ThischoiceismotivatedbythefactthattheeigenstatesofPauli-
+Z, namely, |0〉and |1〉, correspond to the default computational
+basis of quantum computers, allowing for direct physical mea-
+surement at the hardware level. The measurement outcomes
+naturally represent the probability distribution of a qubit be-
+tween the |0〉 and |1〉 states. Furthermore, the eigenvalue of
+Pauli-Zis ±1,whichrestrictsitsexpectationvaluestotheinterval
+[ −1, 1]. This bounded range is stable, easily normalized, and
+therefore particularly suitable as input features for classical
+neuralnetworks.Duetotheseadvantages, Z-basismeasurement
+not only ofers simplicity and compatibility in implementation
+but also exhibits robustness in error mitigation and numerical
+stability,makingitwidelyadoptedinQNNsandrelatedquantum
+computing applications.
+3.4 | Classical Dense Layer
+After obtaining the feature data from the PQC output, further
+processing is conducted. In the hybrid layer of the model, fea-
+tures extracted by the quantum convolutional layer (PQC) are
+concatenated with those from the classical convolutional layer
+along the channel dimension, resulting in multichannel feature
+fusion. This fusion strategy efectively harnesses the comple-
+mentary strengths of both quantum and classical features,
+thereby enhancing the model’s representational capacity.
+The fused features are subsequently fed into a three-layer fully
+connected neural network for the purpose of classifcation. A
+ReLUactivationfunctionisemployedbetweeneachpairoffully
+connected layers to augment the model’s ability to capture
+nonlinearrelationships.Thefnalclassifcationoutputistrained
+utilizing the cross-entropy loss function, which serves to opti-
+mize the model parameters.
+3.5 | Learning Process
+The efcacy of quantum algorithms that utilize PQCs is signif-
+icantly infuenced by the efciency and robustness of the opti-
+mization techniques applied. Following the execution of
+measurements and the acquisition of output features from the
+quantum circuit, these features are subsequently transmitted to
+classicalfullyconnectedlayers,wheregradientcomputationand
+parameter updates are performed.
+In this study, we utilize the cross-entropy loss function as the
+optimization objective, which is defned as follows:
+L(θ) = − ∑
+C
+i=1
+yilog eE θi( )∑Cj=1eE θj( )⎛⎜⎝ ⎞⎟⎠, (15)
+where E(θi)representstheoutputofthequantumcircuitforclass
+i given the parameter θ (refer to Equation (14)). The variable yi
+denotestheone-hotencodedgroundtruthlabel,while Csignifes
+thetotalnumberofclassesinvolvedintheclassifcationtask.The
+gradient of the loss function with respect to the parameterθi is
+given by
+∂L(θ)
+∂θi
+= ∑
+C
+i=1
+σi − yi( ) ∂E(θ)∂θi , (16)
+where σi = eEi /(∑Ck=1eEk ) denotes the predicted probability for
+class iobtainedbysoftmaxnormalization.Tocalculatethepartial
+derivativeofthequantumcircuitoutput E(θ)withrespecttothe
+parameter θi, we utilize the parameter-shift rule, which is ar-
+ticulated as follows:
+∂E(θ)
+∂θi
+= 12 E θ + π2ei( ) − E θ − π2ei( )[ ], (17)
+where ei denotes the unit vector associated with the i-th pa-
+rameter.Basedonthegradientinformationpresentedabove,the
+parameters can be updated utilizing the gradient descent
+method. The update rule is articulated as follows:
+θʹi = θi − η∂L(θ)∂θi , (18)
+where η represents the learning rate, which regulates the mag-
+nitudeofeachparameterupdate.Thismethodologyisgenerally
+implementedusingminibatchesinsteadofthecompletetraining
+6 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 7 ---
+dataset, thereby mitigating the risk of converging to suboptimal
+local minima.
+4 | Results
+4.1 | Experiments’ Setting
+In this chapter, we design and conduct three experiments, de-
+tailed as follows.
+• Experiment 1: This experiment aims to investigate the re-
+lationship between the structural characteristics of various
+trainingcircuitsandmodelperformance.Weseektoidentify
+the most appropriate training circuit for this study and an-
+alyzethekeyfactorsthatinfuencethemodel’sefectiveness.
+• Experiment 2: Building on the optimal training circuit
+identifed in Experiment 1, this experiment incorporates it
+into our proposed model architecture and compares the
+resulting model with existing quantum–classical hybrid
+models. The objective is to assess and validate the perfor-
+mance of various models under consistent conditions.
+• Experiment 3: This experiment evaluates the robustness of
+themodelsbyintroducingvarioustypesofnoise,including
+both data perturbations and model disturbances. The ob-
+jective is to analyze each model’s resistance to interference
+and its overall robustness in noisy environments.
+4.2 | Experiments’ Preparation
+4.2.1 | Data Preparation
+In this study, three datasets—MNIST, Fashion-MNIST, and
+Overhead-MNIST—were utilized. To evaluate model perfor-
+mance under typical operational conditions, all categories were
+retained without any class reduction. Due to the computational
+limitations of current quantum simulators, we applied class-
+balanced subsampling to MNIST and Fashion-MNIST by ran-
+domly selecting 1000 samples per category for training and 200
+samplespercategoryfortesting,ensuringcontrolleddatasetsize
+and balanced class distributions. The full Overhead-MNIST
+dataset was used, as its original scale is already suitable for
+experimentation.Asummaryofthedatapreparationprocedures
+and experimental confgurations is provided in Table1.
+4.2.2 | Quantum Simulator Setup
+In this study, we implemented and trained quantum deep
+learning models using the PennyLane platform [39], a widely
+adopted framework for QML that supports multiple quantum
+simulators and hardware backends. For gradient-based optimi-
+zation,weemployedPennyLane’sPyTorchinterface,specifcally
+the TorchLayer module, which encapsulates quantum nodes
+(QNodes) as custom layers fully compatible with PyTorch. This
+integrationallowstrainableparameterswithinquantumcircuits
+to be optimized using PyTorch’s automatic diferentiation
+framework.Moreover,TorchLayerfacilitatestheconstructionof
+hybridquantum–classicalarchitecturesbyseamlesslycombining
+quantumcircuitswithconventionalneuralnetworklayers,such
+as convolutional and fully connected layers, enabling joint op-
+timization of classical and quantum parameters.
+4.3 | Experiments’ Result
+4.3.1 | Experiment 1: Analysis of the Performance
+Indicators of Diferent Quantum Circuits
+Inthisexperiment,theobjectiveistoidentifyquantumcircuitsthat
+exhibitenhancedoverallperformance.Tominimizetheimpactof
+confounding variables, we have developed a straightforward hy-
+bridmodelthatcomprisesasinglequantumconvolutionallayerfor
+featureextractionandaclassicallinearlayerforclassifcation.This
+simplifed architecture substantially decreases the number of pa-
+rameters, thereby reducing the likelihood of overftting on rela-
+tively small datasets and facilitating a more precise assessment of
+the contribution of the quantum component.
+Figure4illustratesninerepresentativequantumcircuitstructures,
+each constructed by combining common single-qubit rotation
+gates (RX , RY , RZ) with three types of two-qubit entangling con-
+nectivities: Linear, Circle, and All-to-All. Additionally, for per-
+formance comparison, we include two more complex circuit
+architecturesproposedbySimetal.[40],whichhavedemonstrated
+strong empirical efectiveness; these are shown in Figure5. The
+corresponding gate-level defnitions are provided below:
+Circuit-10 consists of three components: the frst variational
+layer, the entangling layer, and the second variational layer.
+• Variational layers: Each qubit is parameterized by two ro-
+tation gates. For an n −qubits system, a rotation layer is
+defned as
+Urot(θ) = ∏
+n
+i=1
+RX θ(1)i( ) RZ θ(2)i( ) . (19)
+• Entanglinglayer:Everyorderedpairofdistinctqubits (i, j)is
+connected through a CRX gate, where qubiti serves as the
+control qubit and qubit j serves as the target qubit:
+Uent(ϕ) = ∏
+n
+i=1
+∏
+n
+j=1;j≠i
+CRXi⟶j ϕij( ) . (20)
+Circuit-10 is expressed as
+U10(θ, ϕ) = U(2)rot θ2( ) Uent(ϕ)U(1)rot θ1( ) . (21)
+Circuit-11 follows a similar structure but employs a Circle
+entanglement pattern.
+• Variational layers: Each qubit is parameterized by a single
+rotation gate:
+Urot(θ) = ∏
+n
+i=1
+RY θi( ) . (22)
+TABLE 1 | Experimental data for performance evaluation.
+Data Categories Patch size Training Test
+MNIST All classes 28×28×1 10,000 2000
+Fashion-MNIST All classes 28×28×1 10,000 2000
+Overhead-MNIST All classes 28×28×1 8519 1065
+Quantum Engineering, 2026 7 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 8 ---
+• Entangling layer: The entanglement is arranged in a ring
+topology in which each qubitqi controls a CRX gate acting
+on its successor qubit q(i mod n)+1: Uent(ϕ) = ∏
+n
+i=1
+CRXi⟶(i mod n)+1 ϕi( ) . (23)
+0 RX
+RX
+RX RX
+RX
+RX
+RX
+RX
+RX RX
+RX
+RX
+RX
+RX
+RX
+RX
+RZ
+RZ
+RZ
+RZ
+RX
+RX
+RX
+RX
+RZ
+RZ
+RZ
+RZ
+1
+2
+3
+(a)
+0
+1
+2
+3
+RY RX
+RX
+RX RX
+RX
+RX
+RX
+RX
+RY
+RY
+RY
+RY
+RY
+RY
+RY
+(b)
+FIGURE 5 | The two additional entangling structures selected for this study. (a) Circuit 10. (b) Circuit 11.
+Encoding
+Ue (x)
+Expression layer Entangled layer
+Ansatz U (x)
+0
+0
+0
+0
+(a)
+Expression layer Entangled layer
+Ansatz U (x)
+0
+0
+0
+0
+Encoding
+Ue (x) (b)
+Expression layer Entangled layer
+0
+0
+0
+0
+Encoding
+Ue (x)
+Ansatz U (x)
+(c)
+FIGURE4 | Thisstudycomparesthreeclassicaltwo-qubitentanglingcircuitarchitecturesusedastrainingcircuits.(a)Linear.(b)Circle.(c)All-to-
+All.
+8 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 9 ---
+Circuit-11 is expressed as
+U11(θ, ϕ) = U(2)ent ϕ2( ) U(2)rot θ2( ) U(1)ent ϕ1( ) U(1)rot θ1( ) . (24)
+wherebothentanglinglayersadoptaCircletopology,butthey
+diferintheirstartingcontrolqubit:Thefrstlayerbeginswith
+qubit q1, while the second starts with qubit q2. This shift
+prevents the two entangling patterns from fully overlapping
+and enhances the expressive capacity of the circuit.
+In the context of the experimental setup, each quantum circuit
+architecture was constructed utilizingfour qubits and subjected
+to 5000 numerical simulations to thoroughly evaluate its
+expressibility, entangling capability, and circuit diversity. The
+resultantdataarepresentedinTable 2.Asindicatedinthetable,
+circuits that incorporate identical types of single-qubit rotation
+gates demonstrate comparable levels of expressibility; however,
+the observed variations in entangling capability are pre-
+dominantly ascribed to diferences in the topology of the two-
+qubit entangling connections.
+A thorough comparison of various confgurations reveals the
+followingobservations:withrespecttoexpressibility,thetrendis
+observed as RX≈RZ > RY; regarding entangling capability, the
+hierarchy is Circle >Linear >All −to −All.
+Table 2 presents the circuit diversity associated with each con-
+fguration. Following this, we integrate the 11 quantum circuits
+into the previously mentioned hybrid model and perform clas-
+sifcation experiments utilizing standard benchmark datasets.
+The classifcation accuracies are summarized in Table 3. The
+experimental results indicate that, although the All-to-All ar-
+chitecture demonstratesrelativelylimited entangling capability,
+its high diversity signifcantly enhances performance. Similarly,
+circuits that utilize the RY gate, despite their restricted expres-
+sibility and entangling capability, beneft from increased di-
+versity, which aids the optimization process by providing more
+informative gradients, thereby resulting in improved classifca-
+tion accuracy.
+It is important to highlight that Circuit 10 and Circuit 11
+demonstrateanadvantageousbalancebetweenexpressibilityand
+diversity. These circuits integrate robust representational
+capabilities, signifcant diversity, and distinct discriminability,
+which collectively contribute to their exceptional overall per-
+formance in the conducted experiments.
+In summary, when designing hybrid Q-CNNs, the selection of
+circuitstructureshouldcomprehensivelytakeintoaccountthree
+key factors: expressibility, discreteness, and distinguishability.
+The experimental results indicate the following:
+• Circuits constructed with RY gates, despite their limited
+expressibility, demonstrate high discreteness, resulting in
+stable training and enhanced classifcation performance.
+• Circuits that utilize RX and RZ gates exhibit greater
+expressibility; however, they experience reduced discrete-
+ness, making them susceptible to barren plateaus and
+consequently leads to diminished performance.
+• Among entangling structures, the Circle architecture ex-
+hibits a stronger entangling capability but has poorer
+distinguishability.
+• Customizedarchitectures,suchasCircuit10andCircuit11,
+achieve a superior balance among expressibility, discrete-
+ness, and distinguishability. Although they require slightly
+more parameters, they deliver the best performance.
+These analyses indicate that the key to constructing high-
+performance hybrid quantum models lies in the meticulous
+design of circuit structures, which necessitate a careful balance
+between model complexity and trainability, tailored to
+specifc tasks.
+4.3.2 | Experiment 2: Analysis of General
+Classifcation Performance
+Table4summarizes the confgurations of the models compared
+inthisstudy.Inthisexperiment,theoptimalPQCsidentifedin
+thefrstsetofexperimentswereintegratedintothehybridmodel
+architectures, and their performance was compared against
+a classical CNN and several existing hybrid quantum models.
+Specifcally, the classical CNN baselineadopts the conventional
+LeNet-5 architecture; the QC-CNN model follows the design of
+Henderson et al. [29]; the HQNN-Quanv model is based on the
+scheme proposed by Senokosov et al. [31]; the VCNN model
+comes from Huang et al. [30]; the QC-ResNet model from Shi
+etal.[33];andtheQC-InceptionmodelfromLiuetal.[34].The
+primary distinction among these hybrid models lies in the
+trainabilityandstructureofthequantumcircuits:TheQC-CNN
+employs fxed (nontrainable) circuits, HQNN-Quanv utilizes
+trainable PQCs, while VCNN, QC-ResNet, and QC-Inception
+incorporate diferent quantum–classical convolutional designs
+to enhance feature extraction.
+Subsequently, we trained and evaluated these models on mul-
+tiple datasets, as described in Section 4.2.1. The results are
+presented in Figures 6, 7, and 8.
+From the fgures, it can be observed that under consistent ex-
+perimentalconditions,ourproposedmodelachievesthehighest
+classifcationaccuracyacrossalldatasetswhileusingthefewest
+parameters.Uponanalysis,thisadvantageprimarilystemsfrom
+the following factors.
+• Multichannel architecture design: Our model utilizes par-
+allel classical and quantum channels, facilitating
+TABLE 2 | Expressibility and entangling capability of diferent
+construction.
+Circuit Params Type Expr Ent Disc
+RX 4
+Linear 0.1755 0.5618 0.0280
+Circle 0.1679 0.7448 0.0060
+All-to-All 0.1738 0.6178 0.0330
+RY 4
+Linear 0.3317 0.4540 0.1256
+Circle 0.3552 0.6372 0.0607
+All-to-All 0.3454 0.4520 0.1260
+RZ 4
+Linear 0.1721 0.6248 2.7e −33
+Circle 0.1670 0.7924 3.6e −33
+All-to-All 0.1759 0.5653 0.0154
+Circuit 10 28 — 0.0013 0.7180 0.0208
+Circuit 11 16 — 0.0071 0.5463 0.0191
+Note:TheTypeindicatesthethreecircuittopologiesillustratedinFigure 4.Lower
+expressibility refects better uniformity over the Hilbert space.
+Quantum Engineering, 2026 9 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 10 ---
+complementary feature extraction from various scales and
+perspectives, which enhances the overall representational
+capacity.
+• Introduction of the optimal PQC: The selected PQC is de-
+termined through prior analysis to achieve a well-balanced
+trade-ofamongexpressibility,discreteness,andentangling
+capability.
+• Reasonable control of model depth: Compared to other
+modelsthataredeeperandmoredifculttotrain,ourdesign
+maintains a relatively shallow architecture while still
+achieving robust representational power.
+Overall, the proposed QC-CNN-Parallel architecture leverages
+the complementary strengths of quantum and classical feature
+extractionwhileusingrelativelyfewparameters,demonstrating
+superior classifcation performance.
+4.3.3 | Experiment 3: Analysis of the Efects of
+Noise on Model Performance
+To thoroughly assess the robustness of the proposed model in
+the presence of noisy conditions, we performed a series of
+performancetestsacrossdiferenttypesofnoiseandcompared
+theoutcomeswiththoseoftraditionalconvolutionalmodels.In
+terms of data noise, to efectively isolate the efects of noise
+fromthedimensionalityreductionprocess,Gaussiannoisewas
+introduced to the input images subsequent to dimensionality
+reduction. This approach more accurately simulates the in-
+fuence of noise at the perceptual layer on the performance of
+the model.
+Inaddressingthenoiseinherenttothemodel,weexaminedthree
+distinct types of noise that are applied immediately prior to the
+measurement of qubits: bit-fip noise, phase-fip noise, and
+depolarizing noise. The defnitions of these noise types are as
+follows.
+• Bit-Flip Noise: Bit-fip noise is one of the fundamental
+quantumerrormodelsandcorrespondstotheapplicationof
+a Pauli-X gate on a qubit with probability p. This noise
+causesthe quantum state to randomly fip between |0〉and
+|1〉. Its evolution can be described as
+ρ⟶ (1 − p)ρ + pXρX, (25)
+where X is the Pauli-X operator.
+• Phase-Flip Noise: Phase-fip noise modifes the phase of
+the quantum state by applying a Pauli-Z gate with proba-
+bility p.Whenactingonaqubit,thephaseofthe |1〉stateis
+inverted while the |0〉 state remains unchanged. Its math-
+ematical expression is
+ρ⟶ (1 − p)ρ + pZρZ, (26)
+where Z is the Pauli-Z operator.
+• Depolarizing Noise: Depolarizing noise is a widely used
+generalerrormodelinquantumchannels.Withprobability
+p, it replaces the quantum state with a maximally mixed
+state, and with probability 1 − p, it leaves the state un-
+changed. Its evolution is given by
+ρ⟶ (1 − p)ρ + p3(XρX + YρY + ZρZ), (27)
+where X, Y, and Z are the Pauli operators.
+TABLE 3 | Classifcation performance of diferent constructions.
+Circuit Type MNIST-acc Fashion-MNIST-acc
+RX
+Linear 0.6560 0.7364
+Circle 0.6066 0.6864
+All-to-All 0.7495 0.7647
+RY
+Linear 0.7530 0.7626
+Circle 0.7602 0.7763
+All-to-All 0.8006 0.7846
+RZ
+Linear 0.5496 0.6229
+Circle 0.5481 0.6213
+All-to-All 0.7249 0.6881
+Circuit 10 — 0.8254 0.7946
+Circuit 11 — 0.8057 0.7778
+TABLE 4 | The experimental confguration of diferent models.
+Indicators
+Model
+CNN QC-CNN HQNN-Quanv VCNN QC-ResNet QC-Inception Proposed
+Parameters 464 448 448 456 512 304 136
+Qubits \ 4 4 4 4 4 4
+Receptive feld 4 4 4 4 4 4 4
+Depth 4 4 4 4 4 3 3
+Learning rate 0.01
+Random seed 42
+Loss function Cross-entropy loss
+Batch size 32
+Epoch 50
+Optimizer Adam
+Note: Since all models use the same linear layer, the table only includes the number of parameters in the convolutional part.
+10 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 11 ---
+In this experiment, we employed noise characterized by three
+distinct probability coefcients (p=0.1,0.2,0.3) to systematically
+assess the robustness of the proposed quantum generative model
+undervaryinglevelsofnoiseintensity.Tosimulateanoisyquantum
+environment, we utilized the mixed-state quantum simulator
+(default.mixed)providedbythePennyLaneframework.However,it
+is important to note that this simulator currently lacks support for
+batchedinputs,whichsignifcantlyescalatesthecomputationalcost
+associated with model training. Given this limitation, the experi-
+mentaltaskwasappropriatelysimplifedtoconcentrateexclusively
+on the analysis of noise sensitivity within the MNIST dataset,
+encompassing all categories.
+In the process of model selection, we evaluated the previously
+introduced models: QC-CNN, HQNN-Quanv, the proposed
+model, and the classical CNN. To ensure a fair evaluation and
+accurate performance comparison, all models were trained and
+tested on the complete validation and test sets corresponding to
+the categories outlined in Table 1. The experiments were con-
+ducted over 50 training epochs with a batch size of 100. The
+0.95
+0.90
+0.85
+0.80
+0.75
+0.70
+0.65Acc0.60
+0.55
+0.50
+0.45
+0.40
+0.35
+0.30 01 0 2 0
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-resnet
+QC-inception
+Propose
+VCNN
+HQNN-quanv
+(a)
+01 0 2 0
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-resnet
+QC-inception
+Propose
+VCNN
+HQNN-quanv
+0.0
+0.2
+0.4
+0.6
+0.8Loss
+1.0
+1.2
+1.4
+1.6
+1.8 (b)
+FIGURE 7 | Validation performance of various models on the fashion-MNIST dataset over training iterations: (a) accuracy and (b) loss.
+1.00
+0.95
+0.90
+0.85
+0.80
+0.75Acc0.70
+0.65
+0.60
+0.55
+0.50
+0.45 01 0 2 0
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-resnet
+QC-inception
+Propose
+VCNN
+HQNN-quanv
+(a)
+00.0
+0.2
+0.4
+0.6
+0.8Loss
+1.0
+1.2
+1.4
+1.6
+10 20
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-resnet
+QC-inception
+Propose
+VCNN
+HQNN-quanv
+ (b)
+FIGURE 6 | Validation performance of various models on the MNIST dataset over training iterations: (a) accuracy and (b) loss.
+Quantum Engineering, 2026 11 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 12 ---
+experimental results are presented in Tables5, 6, 7, and8. The
+primary conclusions drawn from these results are as follows.
+• Noise-Free Condition: In the absence of noise, the pro-
+posedmodelattainsanaccuracyof0.9005,whichrepresents
+a signifcant improvement over the HQNN-Quanv, QNN,
+and classical CNN baseline models.
+• Robustness to Data Noise: The proposed model demon-
+stratessignifcantrobustnessinthepresenceofclassicaldata
+noise,witherrorratesrangingfrom0.1to0.3.Notably,even
+at the highest error rate of 0.3, the model achieves an ac-
+curacy of 0.8425. In contrast, the accuracies of the HQNN-
+Quanv and QNN models decline to 0.7125 and 0.7100,
+respectively.
+• ImpactofBit-FlipNoise:Thepresenceofbit-fipnoisein
+quantum systems has a substantial impact on the perfor-
+mance of HQNN-Quanv and QNN models, particularly in
+high-noise environments characterized by an error rate of
+0.3. Under these conditions, the accuracies of the HQNN-
+Quanv and QNN models decline to 0.3340 and 0.4615, re-
+spectively. In contrast, the proposed model exhibits a nota-
+ble accuracy of 0.8405 under identical conditions, thereby
+demonstrating a robust resilience to qubit bit-fip errors.
+• Impact of Phase-Flip Noise: All models demonstrate
+a relatively stable robustness in the presence of phase-fip
+noise. The proposed model attains an accuracy exceeding
+0.8600atanerrorrateof0.3,suggestinganotabledegreeof
+tolerance to phase decoherence.
+TABLE 5 | Classifcation performance comparison with the data noise.
+Model No noise
+Data noise
+Error rate 0.1 Error rate 0.2 Error rate 0.3
+Propose 0.9005 0.8915 0.8900 0.8425
+HQNN-Quanv 0.8320 0.8344 0.7796 0.7125
+QNN 0.8350 0.8170 0.7544 0.7100
+CNN 0.8935 0.8840 0.8530 0.7844
+0.90
+0.85
+0.80
+0.75
+0.70
+0.65Acc
+0.60
+0.55
+0.50
+0.45
+0.40
+0.35
+0.30
+0.25
+0.20 01 0 2 0
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-ResNet
+QC-Inception
+Propose
+VCNN
+HQNN-Quanv
+(a)
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9 Loss
+1.0
+1.1
+1.2
+1.4
+1.3
+1.6
+1.5
+1.8
+1.7
+2.0
+1.9
+01 0 2 0
+Epoch
+30 40 50
+CNN
+QC-CNN
+QC-ResNet
+QC-Inception
+Propose
+VCNN
+HQNN-Quanv (b)
+FIGURE 8 | Validation performance of various models on the overhead-MNIST dataset over training iterations: (a) accuracy and (b) loss.
+TABLE 6 | Classifcation performance comparison with the bit-fip noise.
+Model No noise
+Bit-fip noise
+Error rate 0.1 Error rate 0.2 Error rate 0.3
+Propose 0.9005 0.8769 0.8558 0.8405
+HQNN-Quanv 0.8320 0.6775 0.6523 0.6399
+QNN 0.8350 0.7115 0.6124 0.4615
+12 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 13 ---
+• ImpactofDepolarizingNoise:Thedepolarizingchannel,
+as a more comprehensive quantum noise model, signif-
+cantly afects the existing models. However, the proposed
+modelachievesanaccuracyof0.8327atanerrorrateof0.3,
+whichnotablysurpassestheperformanceofHQNN-Quanv
+(0.6059) and QNN (0.5904).
+The fndings indicate that the proposed model demonstrates
+enhanced robustness in the presence of various common noise
+disturbances, particularly qubit bit-fip and depolarizing noise.
+This attribute is of paramount signifcance for the practical
+applications of quantum computing, where noise is prevalent.
+5 | Conclusion
+Specifcally, we show that training performance is jointly
+infuenced by expressibility, entangling capability, and gradient
+discreteness,andthathighexpressibilityorstrongentanglement
+alone does not guarantee efective optimization, particularly in
+the presence of barren plateaus. Furthermore, the parallel ar-
+chitecture is shown to beneft from the global nonlinear trans-
+formationsinducedbythequantumbranch,whichcomplement
+thelocalreceptivefeldsofclassicalconvolutionsandcollectively
+enhancefeaturediscrimination.Finally,themodeldemonstrates
+strong robustness under various noise conditions, which is
+theoreticallyattributedtotheredundancyintroducedbyparallel
+quantum–classical feature channels and the use of shallow,
+hardware-efcient PQCs that mitigate noise efects on NISQ
+devices. These results indicate that QC-CNN-Parallel ofers
+a principled and practically viable pathway for constructing
+robust and trainable hybrid quantum learning models.
+Insummary,the advantagesofQC-CNN-Parallel arisenotfrom
+isolated empirical observations but from the interplay of its
+parallel convolutional structure, quantum kernel design, and
+multimetricPQCselectionstrategy.Nevertheless,themodelstill
+presents limitations that warrant future investigation.
+5.1 | Future Work
+• Thecurrentmodelhasnotyetbeenevaluatedonlarge-scale,
+complex, or multichannel datasets. Future work will focus
+on further optimizing the QC-CNN-Parallel architecture—
+both in the quantum and classical convolutional compo-
+nents—to achieve more efcient feature fusion and circuit
+design, and to assess scalability and robustness in higher-
+dimensional and multimodal tasks.
+• Thenoiseanalysisinthisworkissimulator-basedanddoes
+not fully capture correlated noise present in real quantum
+hardware. With continued improvements in qubit counts
+and hardware fdelity, we plan to implement and evaluate
+themodel on physicalquantum devicesto furtherexamine
+its hardware adaptability and real-world performance.
+Author Contributions
+H.L. conceived the study, designed the methodology, conducted the
+experiments, performed data analysis, and drafted the original manu-
+script. X.L. supervised the research, contributed to the conceptual
+framework and methodology, reviewed and edited the manuscript, and
+acted as the corresponding author.
+Acknowledgments
+No further acknowledgments are necessary.
+Funding
+This research received no external funding.
+Disclosure
+All authors have read and approved the fnal manuscript.
+Conficts of Interest
+The authors declare no conficts of interest.
+Data Availability Statement
+Thedatathatsupportthefndingsofthisstudyareopenlyavailableinthe
+MNIST repository athttps://yann.lecun.com/exdb/mnist/, the Fashion-
+MNISTrepositoryat https://github.com/zalandoresearch/fashion-mnist,
+andtheOverhead-MNISTrepositoryat https://github.com/reveondivad/
+ov-mnist. No additional data were generated during this study.
+References
+1. J. Biamonte, P. Wittek, N. Pancotti, P. Rebentrost, N. Wiebe, and
+S. Lloyd, “Quantum Machine Learning,” Nature 549, no. 7671 (2017):
+195–202, https://doi.org/10.1038/nature23474.
+TABLE 7 | Classifcation performance comparison with the phase-fip noise.
+Model No noise
+Phase-fip noise
+Error rate 0.1 Error rate 0.2 Error rate 0.3
+Propose 0.9005 0.8836 0.8618 0.8602
+HQNN-Quanv 0.8320 0.8279 0.8254 0.8267
+QNN 0.8350 0.8272 0.8191 0.8167
+TABLE 8 | Classifcation performance comparison with the depolarizing noise.
+Model No noise
+Depolarizing noise
+Error rate 0.1 Error rate 0.2 Error rate 0.3
+Propose 0.9005 0.8639 0.8664 0.8327
+HQNN-Quanv 0.8320 0.7021 0.6502 0.6059
+QNN 0.8350 0.7552 0.6944 0.5904
+Quantum Engineering, 2026 13 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 14 ---
+2. L. Gyongyosi and S. Imre, “A Survey on Quantum Computing
+Technology,”ComputerScienceReview 31(2019):51–71, https://doi.org/
+10.1016/j.cosrev.2018.11.002.
+3. R. Horodecki, P. Horodecki, M. Horodecki, and K. Horodecki,
+“Quantum Entanglement,” Reviews of Modern Physics81, no. 2 (2009):
+865–942.
+4. K. Bharti, A. Cervera-Lierta, T. H. Kyaw, et al., “Noisy Intermediate-
+ScaleQuantumAlgorithms,” ReviewsofModernPhysics 94,no.1(2022):
+015004, https://doi.org/10.1103/revmodphys.94.015004.
+5. R. Tripathi, S. Tomar, and S. Kumar, A Comprehensive Survey on
+Quantum Annealing: Applications, Challenges, and Future Research Di-
+rections (Authorea Preprints, 2025).
+6. M. Schuld, “Supervised Quantum Machine Learning Models Are
+Kernel Methods,” Quantum Physics 1 (2021): arXiv preprint arXiv:
+2101.11020.
+7. A.Abbas,D.Sutter,C.Zoufal,A.Lucchi,A.Figalli,andS.Woerner,“The
+Power of Quantum Neural Networks,”Nature Computational Science1,
+no. 6 (2021): 403–409,https://doi.org/10.1038/s43588-021-00084-1.
+8. M.Kjaergaard,M.E.Schwartz,J.Braumüller,etal.,“Superconducting
+Qubits: Current State of Play,” Annual Review of Condensed Matter
+Physics 11, no. 1 (2020): 369–395, https://doi.org/10.1146/annurev-con-
+matphys-031119-050605.
+9. Q. A. I. Google, “Suppressing Quantum Errors by Scaling a Surface
+Code Logical Qubit,” Nature 614 (2023): 676–681.
+10. S. Endo, Z. Cai, S. C. Benjamin, and X. Yuan, “Hybrid Quantum-
+Classical Algorithms and Quantum Error Mitigation,” Journal of the
+PhysicalSocietyofJapan 90,no.3(2021):032001, https://doi.org/10.7566/
+jpsj.90.032001.
+11. Y. Wu, J. Yao, P. Zhang, and H. Zhai, “Expressivity of Quantum
+Neural Networks,” Physical Review Research3, no. 3 (2021): L032049,
+https://doi.org/10.1103/physrevresearch.3.l032049.
+12. H. Y. Huang, M. Broughton, M. Mohseni, et al., “Power of Data in
+QuantumMachineLearning,” NatureCommunications 12,no.1(2021):
+2631, https://doi.org/10.1038/s41467-021-22539-9.
+13. A. Sagingalieva, M. Kordzanganeh, N. Kenbayev, D. Kosichkina,
+T. Tomashuk, and A. Melnikov, “Hybrid Quantum Neural Network for
+Drug Response Prediction,” Cancers 15, no. 10 (2023): 2705, https://
+doi.org/10.3390/cancers15102705.
+14. J. K. Fahim, P. C. Paul, M. R. Hossain, M. T. Ahmed, and
+D. Chakraborty, “HQCNN: A Hybrid Quantum-Classical Neural Net-
+workforMedicalImageClassifcation,” QuantumPhysics 1(2025):arXiv
+preprint arXiv:2509.14277.
+15. A. Banerjee, “Quantum-Enhanced Machine Learning for Precision
+Breast Cancer Diagnosis,” in 2025 17th International Conference on
+COMmunication Systems and NETworks (COMSNETS)(Bengaluru, In-
+dia, February 2025), 1124–1129.
+16. M. Vitz, H. Mohammadbagherpoor, S. Sandeep, A. Vlasic,
+R.Padbury,andA.Pham,“HybridQuantumGraphNeuralNetworkfor
+Molecular Property Prediction,” Quantum Physics1 (2024): arXiv pre-
+print arXiv:2405.05205.
+17. P. Reddy and A. B. Bhattacherjee, “A Hybrid Quantum Regression
+Model for the Prediction of Molecular Atomization Energies,”Machine
+Learning:ScienceandTechnology 2,no.2(2021):025019, https://doi.org/
+10.1088/2632-2153/abd486.
+18. X. Lou, H. Zan, Z. Wang, J. Shi, and S. Zhang, “Privacy-Preserving
+Bidirectional Data Transmission of Smart Grid via Semi-Quantum
+Computation: On Mutual Identity and Message Authentication,” IEEE
+Transactions on Dependable and Secure Computing22 (2025).
+19. P. Mironowicz, A. Mandarino, A. Yilmaz, and T. Ankenbrand,
+“ApplicationsofQuantumMachineLearningforQuantitativeFinance,”
+Quantum Physics1 (2024): arXiv preprint arXiv:2405.10119.
+20. E. Paquet and F. Soleymani, “QuantumLeap: Hybrid Quantum
+Neural Network for Financial Predictions,” Expert Systems With Appli-
+cations 195 (2022): 116583, https://doi.org/10.1016/j.eswa.2022.116583.
+21. X. He, L. Gong, and N. Zhou, “Image Denoising With Hybrid
+Classical-QuantumConvolutionalNeuralNetwork,” MemeticComputing
+17, no. 2 (2025): 23,https://doi.org/10.1007/s12293-025-00463-5.
+22. S. Y. Huang, W. J. An, D. S. Zhang, and N. R. Zhou, “Image Clas-
+sifcation and Adversarial Robustness Analysis Based on Hybrid
+Quantum–Classical Convolutional Neural Network,” Optics Communi-
+cations 533 (2023): 129287, https://doi.org/10.1016/
+j.optcom.2023.129287.
+23. J.-J. Pei, L.-H. Gong, L.-G. Qin, and N.-R. Zhou, “One-To-Many
+Image Generation Model Based on Parameterized Quantum Circuits,”
+Digital Signal Processing 165 (2025): 105340, https://doi.org/10.1016/
+j.dsp.2025.105340.
+24. Y. Ding, Z. Li, and N. Zhou, “Quantum Generative Adversarial
+NetworkBasedon theQuantum BornMachine,” AdvancedEngineering
+Informatics68(2025): 103622, https://doi.org/10.1016/j.aei.2025.103622.
+25. L. H. Gong, Y. Q. Chen, S. Zhou, and Q. W. Zeng, “Dual Discrim-
+inators Quantum Generation Adversarial Network Based on Quantum
+Convolutional Neural Network,” Advanced Quantum Technologies 8,
+no. 10 (2025): e2500224, https://doi.org/10.1002/qute.202500224.
+26. C. Gong, Z. Y. Wen, Y. W. Deng, N. R. Zhou, and Q. W. Zeng,
+“UnrolledGenerativeAdversarialNetworkforContinuousDistributions
+UnderHybridQuantum-ClassicalModel,” LaserPhysicsLetters 21,no.12
+(2024): 125207, https://doi.org/10.1088/1612-202x/ad8742.
+27. I.Cong,S.Choi,andM.D.Lukin,“QuantumConvolutionalNeural
+Networks,”NaturePhysics 15,no.12(2019):1273–1278, https://doi.org/
+10.1038/s41567-019-0648-8.
+28. J.Liu, K.H.Lim, K. L.Wood, W.Huang, C.Guo,and H.L. Huang,
+“Hybrid Quantum-Classical Convolutional Neural Networks,” Science
+ChinaPhysics,Mechanics&Astronomy 64,no.9(2021):290311, https://
+doi.org/10.1007/s11433-021-1734-3.
+29. M.Henderson,S.Shakya,S.Pradhan,andT.Cook,“Quanvolutional
+NeuralNetworks:PoweringImageRecognitionWithQuantumCircuits,”
+QuantumMachineIntelligence 2,no.1(2020):2, https://doi.org/10.1007/
+s42484-020-00012-y.
+30. F.Huang,X.Tan, R.Huang,andQ.Xu,“Variational Convolutional
+Neural Networks Classifers,” Physica A: Statistical Mechanics and Its
+Applications 605 (2022): 128067, https://doi.org/10.1016/
+j.physa.2022.128067.
+31. A. Senokosov, A. Sedykh, A. Sagingalieva, B. Kyriacou, and
+A. Melnikov, “Quantum Machine Learning for Image Classifcation,”
+Machine Learning: Science and Technology 5, no. 1 (2024): 015040,
+https://doi.org/10.1088/2632-2153/ad2aef.
+32. Q. Xiang, D. Li, Z. Hu, et al., “Quantum Classical Hybrid Con-
+volutional Neural Networks for Breast Cancer Diagnosis,” Scientifc
+Reports 14, no. 1 (2024): 24699, https://doi.org/10.1038/s41598-024-
+74778-7.
+33. S. Shi, Z. Wang, R. Shang, et al., “Hybrid Quantum-Classical Con-
+volutional Neural Network for Phytoplankton Classifcation,” Frontiers
+in Marine Science 10 (2023): 1158548, https://doi.org/10.3389/
+fmars.2023.1158548.
+34. L. Wang, Y. Liu, J. Ji, F. Meng, Z. Zhang, and X. Yu, “Hybrid
+Quantum-ClassicalInceptionNeuralNetworkforImageClassifcation,”
+Advanced Quantum Technologies(2025): 2400700.
+35. J. R. McClean, S. Boixo, V. N. Smelyanskiy, R. Babbush, and
+H. Neven, “Barren Plateaus in Quantum Neural Network Training
+Landscapes,” Nature Communications 9, no. 1 (2018): 4812, https://
+doi.org/10.1038/s41467-018-07090-4.
+36. M. Rath and H. Date, “Quantum Data Encoding: A Comparative
+AnalysisofClassical-to-QuantumMappingTechniquesandTheirImpact
+14 of 15 Quantum Engineering, 2026
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+--- PAGE 15 ---
+on Machine Learning Accuracy,” European Physical Journal Quantum
+Technology11,no.1(2024):72, https://doi.org/10.1140/epjqt/s40507-024-
+00285-3.
+37. J. Eisinger, W. Gauderis, L. D. Huybrecht, and G. A. Wiggins,
+“Classical Data in Quantum Machine Learning Algorithms: Amplitude
+EncodingandtheRelationBetweenEntropyandLinguisticAmbiguity,”
+Entropy 27, no. 4 (2025): 433,https://doi.org/10.3390/e27040433.
+38. E.Ovalle-Magallanes,D.E.Alvarado-Carrillo,J.G.Avina-Cervantes,
+I. Cruz-Aceves, and J. Ruiz-Pinales, “Quantum Angle Encoding With
+LearnableRotationAppliedtoQuantum–ClassicalConvolutionalNeural
+Networks,” Applied Soft Computing141 (2023): 110307,https://doi.org/
+10.1016/j.asoc.2023.110307.
+39. V. Bergholm, J. Izaac, M. Schuld, et al., “Pennylane: Automatic
+Diferentiation of Hybrid Quantum-Classical Computations,”Quantum
+Physics 1 (2018): arXiv Preprint arXiv:1811.04968.
+40. S. Sim, P. D. Johnson, and A. Aspuru-Guzik, “Expressibility and
+Entangling Capability of Parameterized Quantum Circuits for Hybrid
+Quantum-Classical Algorithms,” Advanced Quantum Technologies 2,
+no. 12 (2019): 1900070, https://doi.org/10.1002/qute.201900070.
+Appendix A
+(See Table A1).
+TABLE A1 | The glossary of abbreviations used in this study.
+Abbreviation Full name Description
+QML Quantum machine learning Machine learning models enhanced by quantum computation.
+NISQ Noisy Intermediate-Scale quantum Quantum computing era characterized by quantum devices with
+limited qubits and noise.
+CNN Parameterized quantum circuit Classical deep neural network with convolutional layers for feature extraction.
+QNN Parameterized quantum neural network Quantum neural network with trainable parameters
+HQNN Hybrid quantum neural network Hybrid architecture integrating classical neural network layers with
+quantum circuits.
+QC-CNN Quantum convolutional neural network Fully quantum CNN where convolution and pooling are implemented
+by quantum circuits.
+QC-CNN Quantum–classical convolutional neural
+network
+Hybrid quantum–classical model integrating quantum circuits into CNN
+architecture.
+PQC Parameterized quantum circuit Quantum circuit with trainable parameters.
+HQNN-Parallel Hybrid quantum neural network with parallel
+quantum dense layers
+Hybrid architecture with parallel quantum dense layers.
+HQNN-Quanv Hybrid quantum neural network with
+quanvolutional layer
+Hybrid model incorporating a quanvolutional layer for
+quantum feature extraction.
+Quantum Engineering, 2026 15 of 15
+ que, 2026, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1155/que2/6643049 by Dr. B R Ambedkar National Institution, Wiley Online Library on [07/08/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License

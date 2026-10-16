@@ -699,3 +699,135 @@ git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
 [GIT] Fetching origin...
 
 [GIT] Staging all project changes...
+
+[GIT] Removing large checkpoint files from staging...
+Unstaged changes after reset:
+M	logs/pbs_output.log
+Unstaged changes after reset:
+M	logs/pbs_output.log
+
+======================================================================
+Files staged for GitHub:
+======================================================================
+M	implementation/results/experiment1/table3_circuit_classification.json
+M	logs/pbs_output.log
+
+[GIT] Commit message:
+PBS cycle 4: cycle 4 completed
+[main fcddcb9] PBS cycle 4: cycle 4 completed
+ 2 files changed, 59 insertions(+), 1 deletion(-)
+
+[GIT] Pushing to GitHub...
+
+======================================================================
+  [GIT SUCCESS] GitHub PUSH SUCCESSFUL
+======================================================================
+Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+Cycle      : 4
+Time       : Fri Oct 16 07:04:51 AM IST 2026
+======================================================================
+
+[SUCCESS] Current cycle pushed to GitHub.
+
+======================================================================
+                 SUBMITTING NEXT PBS CYCLE
+======================================================================
+Current cycle : 4
+Next cycle    : 5
+Time          : Fri Oct 16 07:04:51 AM IST 2026
+======================================================================
+
+Continuation job submitted successfully:
+35644.master
+
+======================================================================
+                    PBS CYCLE FINISHED
+======================================================================
+Cycle        : 4
+Next Job ID  : 35644.master
+Finished     : Fri Oct 16 07:04:52 AM IST 2026
+======================================================================
+
+
+======================================================================
+                    PBS CYCLE START
+======================================================================
+Cycle Number       : 5 / 20
+PBS Job ID         : 35644.master
+Running Node       : master
+Started At         : Fri Oct 16 07:04:53 AM IST 2026
+Project Root       : /Data4/it_25201815/parallel_quantum-5
+Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
+Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+======================================================================
+
+======================================================================
+                    PYTHON ENVIRONMENT
+======================================================================
+Python executable:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+Python version:
+Python 3.11.16
+
+Python executable reported by Python:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+======================================================================
+                    GPU INFORMATION
+======================================================================
+0, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+1, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+2, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+3, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+4, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+5, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+6, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+7, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+
+======================================================================
+                    GIT CONFIGURATION
+======================================================================
+Git repository:
+/Data4/it_25201815/parallel_quantum-5
+
+Git remote:
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (fetch)
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (push)
+
+Current branch:
+main
+
+======================================================================
+                    EXPERIMENT EXECUTION
+======================================================================
+Experiments         : 1 2 3 4 5
+PBS walltime        : 48.0 hours
+Python time budget  : 47.0 hours
+Checkpoint interval : 25 batches
+Started             : Fri Oct 16 07:04:53 AM IST 2026
+======================================================================
+
+
+======================================================================
+  QC-CNN-Parallel Batch Execution Runner
+  Target Experiments: [1, 2, 3, 4, 5]
+  Max Queue Budget  : 47.00 hours (Queue limit: 48h)
+  Batch Checkpoint  : Every 25 batches
+  Resume enabled    : True
+======================================================================
+
+============================================================
+  EXPERIMENT 1: PQC Selection Study (Tables 2 & 3)
+============================================================
+============================================================
+  Experiment 1: PQC Selection Study  (Table 2 & 3)
+  Walltime budget: 47.00 hours (Cluster queue safe)
+============================================================
+  ⟳ Table 2 metrics already computed — loading from checkpoint.
+  ⟳ Loaded checkpoint: 2 circuit-dataset benchmark(s) completed.
+
+--- Circuit: RX-Linear — ✓ already completed, skipping ---
+
+--- Circuit: RX-Circle (4 params) ---
+  ⟳ Resumed RX-Circle on MNIST at epoch 15 (best: 0.7430)

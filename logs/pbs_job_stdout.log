@@ -3,10 +3,10 @@
 ======================================================================
                     PBS CYCLE START
 ======================================================================
-Cycle Number       : 3 / 20
-PBS Job ID         : 35096.master
+Cycle Number       : 4 / 20
+PBS Job ID         : 35372.master
 Running Node       : master
-Started At         : Mon Oct 12 09:04:03 AM IST 2026
+Started At         : Wed Oct 14 08:04:21 AM IST 2026
 Project Root       : /Data4/it_25201815/parallel_quantum-5
 Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
 Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -56,7 +56,7 @@ Experiments         : 1 2 3 4 5
 PBS walltime        : 48.0 hours
 Python time budget  : 47.0 hours
 Checkpoint interval : 25 batches
-Started             : Mon Oct 12 09:04:04 AM IST 2026
+Started             : Wed Oct 14 08:04:22 AM IST 2026
 ======================================================================
 
 
@@ -80,37 +80,38 @@ Started             : Mon Oct 12 09:04:04 AM IST 2026
 
 --- Circuit: RX-Linear (4 params) ---
   ✓ MNIST already completed: best_acc = 0.817
-  ⟳ Resumed RX-Linear on Fashion-MNIST at epoch 43 (best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 43/70 — Loss: 0.3626, Val Acc: 0.7725 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 44/70 — Loss: 0.3549, Val Acc: 0.7660 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 45/70 — Loss: 0.3597, Val Acc: 0.7825 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 46/70 — Loss: 0.3577, Val Acc: 0.7835 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 47/70 — Loss: 0.3398, Val Acc: 0.7790 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 48/70 — Loss: 0.3458, Val Acc: 0.7905 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 49/70 — Loss: 0.3440, Val Acc: 0.7895 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 50/70 — Loss: 0.3411, Val Acc: 0.7635 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 51/70 — Loss: 0.3417, Val Acc: 0.7800 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 52/70 — Loss: 0.3387, Val Acc: 0.7800 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 53/70 — Loss: 0.3422, Val Acc: 0.7520 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 54/70 — Loss: 0.3408, Val Acc: 0.7765 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 55/70 — Loss: 0.3414, Val Acc: 0.7785 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 56/70 — Loss: 0.3312, Val Acc: 0.7770 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 57/70 — Loss: 0.3358, Val Acc: 0.7770 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 58/70 — Loss: 0.3290, Val Acc: 0.7905 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 59/70 — Loss: 0.3438, Val Acc: 0.7845 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 60/70 — Loss: 0.3329, Val Acc: 0.7830 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 61/70 — Loss: 0.3219, Val Acc: 0.7925 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 62/70 — Loss: 0.3303, Val Acc: 0.7715 (Best: 0.7970)
-  [RX-Linear|Fashion-MNIST] Epoch 63/70 — Loss: 0.3242, Val Acc: 0.7700 (Best: 0.7970)
+  ⟳ Resumed RX-Linear on Fashion-MNIST at epoch 65 (best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 65/70 — Loss: 0.3243, Val Acc: 0.7730 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 66/70 — Loss: 0.3207, Val Acc: 0.7760 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 67/70 — Loss: 0.3298, Val Acc: 0.7575 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 68/70 — Loss: 0.3181, Val Acc: 0.7720 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 69/70 — Loss: 0.3178, Val Acc: 0.7740 (Best: 0.7970)
+  [RX-Linear|Fashion-MNIST] Epoch 70/70 — Loss: 0.3245, Val Acc: 0.7790 (Best: 0.7970)
+  Fashion-MNIST: best_acc = 0.7970
 
-  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 3/313.
+--- Circuit: RX-Circle (4 params) ---
+  [RX-Circle|MNIST] Epoch 1/70 — Loss: 1.5703, Val Acc: 0.6915 (Best: 0.6915)
+  [RX-Circle|MNIST] Epoch 2/70 — Loss: 1.1033, Val Acc: 0.7015 (Best: 0.7015)
+  [RX-Circle|MNIST] Epoch 3/70 — Loss: 0.9702, Val Acc: 0.7145 (Best: 0.7145)
+  [RX-Circle|MNIST] Epoch 4/70 — Loss: 0.8986, Val Acc: 0.7245 (Best: 0.7245)
+  [RX-Circle|MNIST] Epoch 5/70 — Loss: 0.8512, Val Acc: 0.7210 (Best: 0.7245)
+  [RX-Circle|MNIST] Epoch 6/70 — Loss: 0.8174, Val Acc: 0.7305 (Best: 0.7305)
+  [RX-Circle|MNIST] Epoch 7/70 — Loss: 0.7901, Val Acc: 0.7300 (Best: 0.7305)
+  [RX-Circle|MNIST] Epoch 8/70 — Loss: 0.7683, Val Acc: 0.7350 (Best: 0.7350)
+  [RX-Circle|MNIST] Epoch 9/70 — Loss: 0.7484, Val Acc: 0.7360 (Best: 0.7360)
+  [RX-Circle|MNIST] Epoch 10/70 — Loss: 0.7332, Val Acc: 0.7375 (Best: 0.7375)
+  [RX-Circle|MNIST] Epoch 11/70 — Loss: 0.7190, Val Acc: 0.7380 (Best: 0.7380)
+  [RX-Circle|MNIST] Epoch 12/70 — Loss: 0.7061, Val Acc: 0.7430 (Best: 0.7430)
+  [RX-Circle|MNIST] Epoch 13/70 — Loss: 0.6946, Val Acc: 0.7430 (Best: 0.7430)
 
-  [CHECKPOINT] Circuit RX-Linear on Fashion-MNIST paused at epoch 64.
+  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 149/313.
+
+  [CHECKPOINT] Circuit RX-Circle on MNIST paused at epoch 14.
 
 ======================================================================
   ⏳ [WALLTIME BUDGET PAUSE]
-  Walltime limit reached on Circuit RX-Linear (Fashion-MNIST, Epoch 64).
-  Elapsed wall-clock time: 47.00 hours.
+  Walltime limit reached on Circuit RX-Circle (MNIST, Epoch 14).
+  Elapsed wall-clock time: 47.01 hours.
   All model parameters, batch states, optimizer buffers, and RNG seeds
   have been safely written to disk via atomic checkpoints.
   Exiting with status code 42 for automatic cluster queue re-submission.
@@ -121,7 +122,7 @@ Started             : Mon Oct 12 09:04:04 AM IST 2026
                     PYTHON PROCESS FINISHED
 ======================================================================
 Exit code : 42
-Finished  : Wed Oct 14 08:04:13 AM IST 2026
+Finished  : Fri Oct 16 07:04:45 AM IST 2026
 ======================================================================
 
 ======================================================================
@@ -131,9 +132,9 @@ Finished  : Wed Oct 14 08:04:13 AM IST 2026
 ======================================================================
                     GITHUB SYNCHRONIZATION
 ======================================================================
-Reason: cycle 3 completed
-Cycle : 3
-Time  : Wed Oct 14 08:04:13 AM IST 2026
+Reason: cycle 4 completed
+Cycle : 4
+Time  : Fri Oct 16 07:04:45 AM IST 2026
 ======================================================================
 [GIT] Remote:
 git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -151,18 +152,13 @@ M	logs/pbs_output.log
 ======================================================================
 Files staged for GitHub:
 ======================================================================
+M	implementation/results/experiment1/table3_circuit_classification.json
 M	logs/pbs_output.log
-A	scripts/logs/.log
-A	scripts/logs/pbs_error.log
-A	scripts/logs/pbs_output.log
 
 [GIT] Commit message:
-PBS cycle 3: cycle 3 completed
-[main d872edd] PBS cycle 3: cycle 3 completed
- 4 files changed, 61 insertions(+)
- create mode 100644 scripts/logs/.log
- create mode 100644 scripts/logs/pbs_error.log
- create mode 100644 scripts/logs/pbs_output.log
+PBS cycle 4: cycle 4 completed
+[main fcddcb9] PBS cycle 4: cycle 4 completed
+ 2 files changed, 59 insertions(+), 1 deletion(-)
 
 [GIT] Pushing to GitHub...
 
@@ -170,8 +166,8 @@ PBS cycle 3: cycle 3 completed
   [GIT SUCCESS] GitHub PUSH SUCCESSFUL
 ======================================================================
 Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
-Cycle      : 3
-Time       : Wed Oct 14 08:04:19 AM IST 2026
+Cycle      : 4
+Time       : Fri Oct 16 07:04:51 AM IST 2026
 ======================================================================
 
 [SUCCESS] Current cycle pushed to GitHub.
@@ -179,18 +175,18 @@ Time       : Wed Oct 14 08:04:19 AM IST 2026
 ======================================================================
                  SUBMITTING NEXT PBS CYCLE
 ======================================================================
-Current cycle : 3
-Next cycle    : 4
-Time          : Wed Oct 14 08:04:19 AM IST 2026
+Current cycle : 4
+Next cycle    : 5
+Time          : Fri Oct 16 07:04:51 AM IST 2026
 ======================================================================
 
 Continuation job submitted successfully:
-35372.master
+35644.master
 
 ======================================================================
                     PBS CYCLE FINISHED
 ======================================================================
-Cycle        : 3
-Next Job ID  : 35372.master
-Finished     : Wed Oct 14 08:04:20 AM IST 2026
+Cycle        : 4
+Next Job ID  : 35644.master
+Finished     : Fri Oct 16 07:04:52 AM IST 2026
 ======================================================================
