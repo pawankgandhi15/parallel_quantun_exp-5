@@ -889,3 +889,146 @@ git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
 [GIT] Fetching origin...
 
 [GIT] Staging all project changes...
+
+[GIT] Removing large checkpoint files from staging...
+Unstaged changes after reset:
+M	logs/pbs_output.log
+Unstaged changes after reset:
+M	logs/pbs_output.log
+
+======================================================================
+Files staged for GitHub:
+======================================================================
+M	logs/pbs_output.log
+
+[GIT] Commit message:
+PBS cycle 5: cycle 5 completed
+[main 119e4e0] PBS cycle 5: cycle 5 completed
+ 1 file changed, 58 insertions(+)
+
+[GIT] Pushing to GitHub...
+
+======================================================================
+  [GIT SUCCESS] GitHub PUSH SUCCESSFUL
+======================================================================
+Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+Cycle      : 5
+Time       : Sun Oct 18 06:05:14 AM IST 2026
+======================================================================
+
+[SUCCESS] Current cycle pushed to GitHub.
+
+======================================================================
+                 SUBMITTING NEXT PBS CYCLE
+======================================================================
+Current cycle : 5
+Next cycle    : 6
+Time          : Sun Oct 18 06:05:14 AM IST 2026
+======================================================================
+
+Continuation job submitted successfully:
+35976.master
+
+======================================================================
+                    PBS CYCLE FINISHED
+======================================================================
+Cycle        : 5
+Next Job ID  : 35976.master
+Finished     : Sun Oct 18 06:05:15 AM IST 2026
+======================================================================
+
+
+======================================================================
+                    PBS CYCLE START
+======================================================================
+Cycle Number       : 6 / 20
+PBS Job ID         : 35976.master
+Running Node       : master
+Started At         : Sun Oct 18 06:05:16 AM IST 2026
+Project Root       : /Data4/it_25201815/parallel_quantum-5
+Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
+Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+======================================================================
+
+======================================================================
+                    PYTHON ENVIRONMENT
+======================================================================
+Python executable:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+Python version:
+Python 3.11.16
+
+Python executable reported by Python:
+/Data4/it_25201815/.conda/envs/qcm/bin/python
+
+======================================================================
+                    GPU INFORMATION
+======================================================================
+0, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+1, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+2, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+3, NVIDIA H100 PCIe, 81559 MiB, 580.126.09
+4, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+5, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+6, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+7, NVIDIA H100 NVL, 95830 MiB, 580.126.09
+
+======================================================================
+                    GIT CONFIGURATION
+======================================================================
+Git repository:
+/Data4/it_25201815/parallel_quantum-5
+
+Git remote:
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (fetch)
+origin	git@github.com:pawankgandhi15/parallel_quantun_exp-5.git (push)
+
+Current branch:
+main
+
+======================================================================
+                    EXPERIMENT EXECUTION
+======================================================================
+Experiments         : 1 2 3 4 5
+PBS walltime        : 48.0 hours
+Python time budget  : 47.0 hours
+Checkpoint interval : 25 batches
+Started             : Sun Oct 18 06:05:16 AM IST 2026
+======================================================================
+
+
+======================================================================
+  QC-CNN-Parallel Batch Execution Runner
+  Target Experiments: [1, 2, 3, 4, 5]
+  Max Queue Budget  : 47.00 hours (Queue limit: 48h)
+  Batch Checkpoint  : Every 25 batches
+  Resume enabled    : True
+======================================================================
+
+============================================================
+  EXPERIMENT 1: PQC Selection Study (Tables 2 & 3)
+============================================================
+============================================================
+  Experiment 1: PQC Selection Study  (Table 2 & 3)
+  Walltime budget: 47.00 hours (Cluster queue safe)
+============================================================
+  ⟳ Table 2 metrics already computed — loading from checkpoint.
+  ⟳ Loaded checkpoint: 2 circuit-dataset benchmark(s) completed.
+
+--- Circuit: RX-Linear — ✓ already completed, skipping ---
+
+--- Circuit: RX-Circle (4 params) ---
+  ⟳ Resumed RX-Circle on MNIST at epoch 35 (best: 0.7455)
+  [RX-Circle|MNIST] Epoch 35/70 — Loss: 0.5803, Val Acc: 0.7425 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 36/70 — Loss: 0.5757, Val Acc: 0.7375 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 37/70 — Loss: 0.5726, Val Acc: 0.7435 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 38/70 — Loss: 0.5696, Val Acc: 0.7430 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 39/70 — Loss: 0.5665, Val Acc: 0.7385 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 40/70 — Loss: 0.5643, Val Acc: 0.7350 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 41/70 — Loss: 0.5622, Val Acc: 0.7335 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 42/70 — Loss: 0.5604, Val Acc: 0.7415 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 43/70 — Loss: 0.5575, Val Acc: 0.7380 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 44/70 — Loss: 0.5548, Val Acc: 0.7395 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 45/70 — Loss: 0.5526, Val Acc: 0.7420 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 46/70 — Loss: 0.5506, Val Acc: 0.7375 (Best: 0.7455)
