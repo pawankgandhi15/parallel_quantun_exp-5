@@ -2,5 +2,8 @@
   "RX-Linear": {
     "MNIST": 0.817,
     "Fashion-MNIST": 0.797
+  },
+  "RX-Circle": {
+    "MNIST": 0.7455
   }
 }
