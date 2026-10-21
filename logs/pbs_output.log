@@ -1210,3 +1210,13 @@ Started             : Tue Oct 20 05:05:32 AM IST 2026
 --- Circuit: RX-Circle (4 params) ---
   ⟳ Resumed RX-Circle on MNIST at epoch 55 (best: 0.7455)
   [RX-Circle|MNIST] Epoch 55/70 — Loss: 0.5362, Val Acc: 0.7375 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 56/70 — Loss: 0.5341, Val Acc: 0.7405 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 57/70 — Loss: 0.5328, Val Acc: 0.7305 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 58/70 — Loss: 0.5306, Val Acc: 0.7380 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 59/70 — Loss: 0.5297, Val Acc: 0.7350 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 60/70 — Loss: 0.5276, Val Acc: 0.7350 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 61/70 — Loss: 0.5263, Val Acc: 0.7385 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 62/70 — Loss: 0.5250, Val Acc: 0.7385 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 63/70 — Loss: 0.5233, Val Acc: 0.7365 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 64/70 — Loss: 0.5220, Val Acc: 0.7380 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 65/70 — Loss: 0.5211, Val Acc: 0.7325 (Best: 0.7455)
