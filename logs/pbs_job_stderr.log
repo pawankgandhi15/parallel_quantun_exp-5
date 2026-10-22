@@ -1,2 +1,3 @@
+/var/spool/pbs/mom_priv/jobs/36414.master.SC: line 548: 1727126 Killed                  "$PYTHON" -u run_all.py --exp 1 2 3 4 5 --max_hours 47.0 --checkpoint_interval_batches 25
 To github.com:pawankgandhi15/parallel_quantun_exp-5.git
-   4555912..7daeaa1  main -> main
+   7f8f669..7bad20e  main -> main

@@ -3,10 +3,10 @@
 ======================================================================
                     PBS CYCLE START
 ======================================================================
-Cycle Number       : 6 / 20
-PBS Job ID         : 35976.master
+Cycle Number       : 7 / 20
+PBS Job ID         : 36414.master
 Running Node       : master
-Started At         : Sun Oct 18 06:05:16 AM IST 2026
+Started At         : Tue Oct 20 05:05:31 AM IST 2026
 Project Root       : /Data4/it_25201815/parallel_quantum-5
 Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
 Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -56,7 +56,7 @@ Experiments         : 1 2 3 4 5
 PBS walltime        : 48.0 hours
 Python time budget  : 47.0 hours
 Checkpoint interval : 25 batches
-Started             : Sun Oct 18 06:05:16 AM IST 2026
+Started             : Tue Oct 20 05:05:32 AM IST 2026
 ======================================================================
 
 
@@ -81,46 +81,32 @@ Started             : Sun Oct 18 06:05:16 AM IST 2026
 --- Circuit: RX-Linear — ✓ already completed, skipping ---
 
 --- Circuit: RX-Circle (4 params) ---
-  ⟳ Resumed RX-Circle on MNIST at epoch 35 (best: 0.7455)
-  [RX-Circle|MNIST] Epoch 35/70 — Loss: 0.5803, Val Acc: 0.7425 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 36/70 — Loss: 0.5757, Val Acc: 0.7375 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 37/70 — Loss: 0.5726, Val Acc: 0.7435 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 38/70 — Loss: 0.5696, Val Acc: 0.7430 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 39/70 — Loss: 0.5665, Val Acc: 0.7385 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 40/70 — Loss: 0.5643, Val Acc: 0.7350 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 41/70 — Loss: 0.5622, Val Acc: 0.7335 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 42/70 — Loss: 0.5604, Val Acc: 0.7415 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 43/70 — Loss: 0.5575, Val Acc: 0.7380 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 44/70 — Loss: 0.5548, Val Acc: 0.7395 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 45/70 — Loss: 0.5526, Val Acc: 0.7420 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 46/70 — Loss: 0.5506, Val Acc: 0.7375 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 47/70 — Loss: 0.5483, Val Acc: 0.7415 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 48/70 — Loss: 0.5469, Val Acc: 0.7390 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 49/70 — Loss: 0.5446, Val Acc: 0.7380 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 50/70 — Loss: 0.5426, Val Acc: 0.7405 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 51/70 — Loss: 0.5401, Val Acc: 0.7370 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 52/70 — Loss: 0.5393, Val Acc: 0.7380 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 53/70 — Loss: 0.5374, Val Acc: 0.7410 (Best: 0.7455)
-
-  [WALLTIME] Budget limit reached or signal caught during epoch! Paused at batch 53/313.
-
-  [CHECKPOINT] Circuit RX-Circle on MNIST paused at epoch 54.
-
-======================================================================
-  ⏳ [WALLTIME BUDGET PAUSE]
-  Walltime limit reached on Circuit RX-Circle (MNIST, Epoch 54).
-  Elapsed wall-clock time: 47.00 hours.
-  All model parameters, batch states, optimizer buffers, and RNG seeds
-  have been safely written to disk via atomic checkpoints.
-  Exiting with status code 42 for automatic cluster queue re-submission.
-======================================================================
-
+  ⟳ Resumed RX-Circle on MNIST at epoch 55 (best: 0.7455)
+  [RX-Circle|MNIST] Epoch 55/70 — Loss: 0.5362, Val Acc: 0.7375 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 56/70 — Loss: 0.5341, Val Acc: 0.7405 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 57/70 — Loss: 0.5328, Val Acc: 0.7305 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 58/70 — Loss: 0.5306, Val Acc: 0.7380 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 59/70 — Loss: 0.5297, Val Acc: 0.7350 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 60/70 — Loss: 0.5276, Val Acc: 0.7350 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 61/70 — Loss: 0.5263, Val Acc: 0.7385 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 62/70 — Loss: 0.5250, Val Acc: 0.7385 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 63/70 — Loss: 0.5233, Val Acc: 0.7365 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 64/70 — Loss: 0.5220, Val Acc: 0.7380 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 65/70 — Loss: 0.5211, Val Acc: 0.7325 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 66/70 — Loss: 0.5193, Val Acc: 0.7370 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 67/70 — Loss: 0.5182, Val Acc: 0.7375 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 68/70 — Loss: 0.5168, Val Acc: 0.7330 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 69/70 — Loss: 0.5159, Val Acc: 0.7365 (Best: 0.7455)
+  [RX-Circle|MNIST] Epoch 70/70 — Loss: 0.5139, Val Acc: 0.7325 (Best: 0.7455)
+  MNIST: best_acc = 0.7455
+  [RX-Circle|Fashion-MNIST] Epoch 1/70 — Loss: 0.9880, Val Acc: 0.7150 (Best: 0.7150)
+  [RX-Circle|Fashion-MNIST] Epoch 2/70 — Loss: 0.7741, Val Acc: 0.7320 (Best: 0.7320)
 
 ======================================================================
                     PYTHON PROCESS FINISHED
 ======================================================================
-Exit code : 42
-Finished  : Tue Oct 20 05:05:22 AM IST 2026
+Exit code : 137
+Finished  : Thu Oct 22 02:28:02 AM IST 2026
 ======================================================================
 
 ======================================================================
@@ -130,9 +116,9 @@ Finished  : Tue Oct 20 05:05:22 AM IST 2026
 ======================================================================
                     GITHUB SYNCHRONIZATION
 ======================================================================
-Reason: cycle 6 completed
-Cycle : 6
-Time  : Tue Oct 20 05:05:22 AM IST 2026
+Reason: cycle 7 completed
+Cycle : 7
+Time  : Thu Oct 22 02:28:02 AM IST 2026
 ======================================================================
 [GIT] Remote:
 git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -150,12 +136,14 @@ M	logs/pbs_output.log
 ======================================================================
 Files staged for GitHub:
 ======================================================================
+M	implementation/results/experiment1/table3_circuit_classification.json
+M	logs/pbs_error.log
 M	logs/pbs_output.log
 
 [GIT] Commit message:
-PBS cycle 6: cycle 6 completed
-[main 7daeaa1] PBS cycle 6: cycle 6 completed
- 1 file changed, 46 insertions(+)
+PBS cycle 7: cycle 7 completed
+[main 7bad20e] PBS cycle 7: cycle 7 completed
+ 3 files changed, 37 insertions(+)
 
 [GIT] Pushing to GitHub...
 
@@ -163,27 +151,32 @@ PBS cycle 6: cycle 6 completed
   [GIT SUCCESS] GitHub PUSH SUCCESSFUL
 ======================================================================
 Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
-Cycle      : 6
-Time       : Tue Oct 20 05:05:28 AM IST 2026
+Cycle      : 7
+Time       : Thu Oct 22 02:28:08 AM IST 2026
 ======================================================================
 
 [SUCCESS] Current cycle pushed to GitHub.
 
 ======================================================================
+  [RESUBMIT NOTICE] Process was interrupted with exit code 137.
+  Resuming seamlessly from latest disk checkpoint in next cycle.
+======================================================================
+
+======================================================================
                  SUBMITTING NEXT PBS CYCLE
 ======================================================================
-Current cycle : 6
-Next cycle    : 7
-Time          : Tue Oct 20 05:05:28 AM IST 2026
+Current cycle : 7
+Next cycle    : 8
+Time          : Thu Oct 22 02:28:08 AM IST 2026
 ======================================================================
 
 Continuation job submitted successfully:
-36414.master
+36724.master
 
 ======================================================================
                     PBS CYCLE FINISHED
 ======================================================================
-Cycle        : 6
-Next Job ID  : 36414.master
-Finished     : Tue Oct 20 05:05:30 AM IST 2026
+Cycle        : 7
+Next Job ID  : 36724.master
+Finished     : Thu Oct 22 02:28:10 AM IST 2026
 ======================================================================
