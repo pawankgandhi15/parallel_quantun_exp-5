@@ -11,3 +11,28 @@ To github.com:pawankgandhi15/parallel_quantun_exp-5.git
 /var/spool/pbs/mom_priv/jobs/36414.master.SC: line 548: 1727126 Killed                  "$PYTHON" -u run_all.py --exp 1 2 3 4 5 --max_hours 47.0 --checkpoint_interval_batches 25
 To github.com:pawankgandhi15/parallel_quantun_exp-5.git
    7f8f669..7bad20e  main -> main
+Traceback (most recent call last):
+  File "/Data4/it_25201815/.conda/envs/qcm/lib/python3.11/site-packages/torch/serialization.py", line 1003, in save
+    _save(
+  File "/Data4/it_25201815/.conda/envs/qcm/lib/python3.11/site-packages/torch/serialization.py", line 1259, in _save
+    zip_file.write_record("data.pkl", data_value, len(data_value))
+RuntimeError: basic_ios::clear: iostream error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Data4/it_25201815/parallel_quantum-5/implementation/run_all.py", line 326, in <module>
+    main()
+  File "/Data4/it_25201815/parallel_quantum-5/implementation/run_all.py", line 227, in main
+    run_experiment1(
+  File "/Data4/it_25201815/parallel_quantum-5/implementation/experiments/experiment1_circuit_selection.py", line 385, in run_experiment1
+    safe_torch_save({
+  File "/Data4/it_25201815/parallel_quantum-5/implementation/training/trainer.py", line 176, in safe_torch_save
+    torch.save(data, tmp_path)
+  File "/Data4/it_25201815/.conda/envs/qcm/lib/python3.11/site-packages/torch/serialization.py", line 1002, in save
+    with _open_zipfile_writer(f) as opened_zipfile:
+  File "/Data4/it_25201815/.conda/envs/qcm/lib/python3.11/site-packages/torch/serialization.py", line 834, in __exit__
+    self.file_like.write_end_of_file()
+RuntimeError: [enforce fail at inline_container.cc:672] . unexpected pos 128 vs 0
+error: file write error: No space left on device
+fatal: unable to write loose object file

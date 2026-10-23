@@ -1395,3 +1395,63 @@ Started             : Thu Oct 22 02:28:12 AM IST 2026
   [RX-Circle|Fashion-MNIST] Epoch 3/70 — Loss: 0.7168, Val Acc: 0.7505 (Best: 0.7505)
   [RX-Circle|Fashion-MNIST] Epoch 4/70 — Loss: 0.6957, Val Acc: 0.7460 (Best: 0.7505)
   [RX-Circle|Fashion-MNIST] Epoch 5/70 — Loss: 0.6599, Val Acc: 0.7450 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 6/70 — Loss: 0.6326, Val Acc: 0.7385 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 7/70 — Loss: 0.6285, Val Acc: 0.7515 (Best: 0.7515)
+  [RX-Circle|Fashion-MNIST] Epoch 8/70 — Loss: 0.6148, Val Acc: 0.7585 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 9/70 — Loss: 0.5947, Val Acc: 0.7420 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 10/70 — Loss: 0.5940, Val Acc: 0.7420 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 11/70 — Loss: 0.5767, Val Acc: 0.7335 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 12/70 — Loss: 0.5665, Val Acc: 0.7395 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 13/70 — Loss: 0.5521, Val Acc: 0.7500 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 14/70 — Loss: 0.5513, Val Acc: 0.7535 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 15/70 — Loss: 0.5417, Val Acc: 0.7395 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 16/70 — Loss: 0.5396, Val Acc: 0.7555 (Best: 0.7585)
+
+======================================================================
+                    PYTHON PROCESS FINISHED
+======================================================================
+Exit code : 1
+Finished  : Fri Oct 23 01:08:05 PM IST 2026
+======================================================================
+
+======================================================================
+             SYNCHRONIZING CURRENT CYCLE
+======================================================================
+
+======================================================================
+                    GITHUB SYNCHRONIZATION
+======================================================================
+Reason: cycle 8 completed
+Cycle : 8
+Time  : Fri Oct 23 01:08:05 PM IST 2026
+======================================================================
+[GIT] Remote:
+git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
+
+[GIT] Fetching origin...
+
+[GIT] Staging all project changes...
+
+[GIT] Removing large checkpoint files from staging...
+Unstaged changes after reset:
+M	logs/pbs_error.log
+M	logs/pbs_output.log
+Unstaged changes after reset:
+M	logs/pbs_error.log
+M	logs/pbs_output.log
+
+======================================================================
+Files staged for GitHub:
+======================================================================
+
+[GIT] No changes to commit.
+[GIT] Nothing to push.
+
+[SUCCESS] Current cycle pushed to GitHub.
+
+======================================================================
+                    EXPERIMENT ERROR
+======================================================================
+Python exit code: 1
+Automatic resubmission stopped.
+======================================================================

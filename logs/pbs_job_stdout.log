@@ -3,10 +3,10 @@
 ======================================================================
                     PBS CYCLE START
 ======================================================================
-Cycle Number       : 7 / 20
-PBS Job ID         : 36414.master
+Cycle Number       : 8 / 20
+PBS Job ID         : 36724.master
 Running Node       : master
-Started At         : Tue Oct 20 05:05:31 AM IST 2026
+Started At         : Thu Oct 22 02:28:11 AM IST 2026
 Project Root       : /Data4/it_25201815/parallel_quantum-5
 Python             : /Data4/it_25201815/.conda/envs/qcm/bin/python
 Git Repository     : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -56,7 +56,7 @@ Experiments         : 1 2 3 4 5
 PBS walltime        : 48.0 hours
 Python time budget  : 47.0 hours
 Checkpoint interval : 25 batches
-Started             : Tue Oct 20 05:05:32 AM IST 2026
+Started             : Thu Oct 22 02:28:12 AM IST 2026
 ======================================================================
 
 
@@ -76,37 +76,33 @@ Started             : Tue Oct 20 05:05:32 AM IST 2026
   Walltime budget: 47.00 hours (Cluster queue safe)
 ============================================================
   ⟳ Table 2 metrics already computed — loading from checkpoint.
-  ⟳ Loaded checkpoint: 2 circuit-dataset benchmark(s) completed.
+  ⟳ Loaded checkpoint: 3 circuit-dataset benchmark(s) completed.
 
 --- Circuit: RX-Linear — ✓ already completed, skipping ---
 
 --- Circuit: RX-Circle (4 params) ---
-  ⟳ Resumed RX-Circle on MNIST at epoch 55 (best: 0.7455)
-  [RX-Circle|MNIST] Epoch 55/70 — Loss: 0.5362, Val Acc: 0.7375 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 56/70 — Loss: 0.5341, Val Acc: 0.7405 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 57/70 — Loss: 0.5328, Val Acc: 0.7305 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 58/70 — Loss: 0.5306, Val Acc: 0.7380 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 59/70 — Loss: 0.5297, Val Acc: 0.7350 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 60/70 — Loss: 0.5276, Val Acc: 0.7350 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 61/70 — Loss: 0.5263, Val Acc: 0.7385 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 62/70 — Loss: 0.5250, Val Acc: 0.7385 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 63/70 — Loss: 0.5233, Val Acc: 0.7365 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 64/70 — Loss: 0.5220, Val Acc: 0.7380 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 65/70 — Loss: 0.5211, Val Acc: 0.7325 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 66/70 — Loss: 0.5193, Val Acc: 0.7370 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 67/70 — Loss: 0.5182, Val Acc: 0.7375 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 68/70 — Loss: 0.5168, Val Acc: 0.7330 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 69/70 — Loss: 0.5159, Val Acc: 0.7365 (Best: 0.7455)
-  [RX-Circle|MNIST] Epoch 70/70 — Loss: 0.5139, Val Acc: 0.7325 (Best: 0.7455)
-  MNIST: best_acc = 0.7455
-  [RX-Circle|Fashion-MNIST] Epoch 1/70 — Loss: 0.9880, Val Acc: 0.7150 (Best: 0.7150)
-  [RX-Circle|Fashion-MNIST] Epoch 2/70 — Loss: 0.7741, Val Acc: 0.7320 (Best: 0.7320)
+  ✓ MNIST already completed: best_acc = 0.7455
+  ⟳ Resumed RX-Circle on Fashion-MNIST at epoch 3 (best: 0.7320)
+  [RX-Circle|Fashion-MNIST] Epoch 3/70 — Loss: 0.7168, Val Acc: 0.7505 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 4/70 — Loss: 0.6957, Val Acc: 0.7460 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 5/70 — Loss: 0.6599, Val Acc: 0.7450 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 6/70 — Loss: 0.6326, Val Acc: 0.7385 (Best: 0.7505)
+  [RX-Circle|Fashion-MNIST] Epoch 7/70 — Loss: 0.6285, Val Acc: 0.7515 (Best: 0.7515)
+  [RX-Circle|Fashion-MNIST] Epoch 8/70 — Loss: 0.6148, Val Acc: 0.7585 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 9/70 — Loss: 0.5947, Val Acc: 0.7420 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 10/70 — Loss: 0.5940, Val Acc: 0.7420 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 11/70 — Loss: 0.5767, Val Acc: 0.7335 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 12/70 — Loss: 0.5665, Val Acc: 0.7395 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 13/70 — Loss: 0.5521, Val Acc: 0.7500 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 14/70 — Loss: 0.5513, Val Acc: 0.7535 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 15/70 — Loss: 0.5417, Val Acc: 0.7395 (Best: 0.7585)
+  [RX-Circle|Fashion-MNIST] Epoch 16/70 — Loss: 0.5396, Val Acc: 0.7555 (Best: 0.7585)
 
 ======================================================================
                     PYTHON PROCESS FINISHED
 ======================================================================
-Exit code : 137
-Finished  : Thu Oct 22 02:28:02 AM IST 2026
+Exit code : 1
+Finished  : Fri Oct 23 01:08:05 PM IST 2026
 ======================================================================
 
 ======================================================================
@@ -116,9 +112,9 @@ Finished  : Thu Oct 22 02:28:02 AM IST 2026
 ======================================================================
                     GITHUB SYNCHRONIZATION
 ======================================================================
-Reason: cycle 7 completed
-Cycle : 7
-Time  : Thu Oct 22 02:28:02 AM IST 2026
+Reason: cycle 8 completed
+Cycle : 8
+Time  : Fri Oct 23 01:08:05 PM IST 2026
 ======================================================================
 [GIT] Remote:
 git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
@@ -129,54 +125,24 @@ git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
 
 [GIT] Removing large checkpoint files from staging...
 Unstaged changes after reset:
+M	logs/pbs_error.log
 M	logs/pbs_output.log
 Unstaged changes after reset:
+M	logs/pbs_error.log
 M	logs/pbs_output.log
 
 ======================================================================
 Files staged for GitHub:
 ======================================================================
-M	implementation/results/experiment1/table3_circuit_classification.json
-M	logs/pbs_error.log
-M	logs/pbs_output.log
 
-[GIT] Commit message:
-PBS cycle 7: cycle 7 completed
-[main 7bad20e] PBS cycle 7: cycle 7 completed
- 3 files changed, 37 insertions(+)
-
-[GIT] Pushing to GitHub...
-
-======================================================================
-  [GIT SUCCESS] GitHub PUSH SUCCESSFUL
-======================================================================
-Repository : git@github.com:pawankgandhi15/parallel_quantun_exp-5.git
-Cycle      : 7
-Time       : Thu Oct 22 02:28:08 AM IST 2026
-======================================================================
+[GIT] No changes to commit.
+[GIT] Nothing to push.
 
 [SUCCESS] Current cycle pushed to GitHub.
 
 ======================================================================
-  [RESUBMIT NOTICE] Process was interrupted with exit code 137.
-  Resuming seamlessly from latest disk checkpoint in next cycle.
+                    EXPERIMENT ERROR
 ======================================================================
-
-======================================================================
-                 SUBMITTING NEXT PBS CYCLE
-======================================================================
-Current cycle : 7
-Next cycle    : 8
-Time          : Thu Oct 22 02:28:08 AM IST 2026
-======================================================================
-
-Continuation job submitted successfully:
-36724.master
-
-======================================================================
-                    PBS CYCLE FINISHED
-======================================================================
-Cycle        : 7
-Next Job ID  : 36724.master
-Finished     : Thu Oct 22 02:28:10 AM IST 2026
+Python exit code: 1
+Automatic resubmission stopped.
 ======================================================================
